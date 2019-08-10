@@ -8,7 +8,8 @@
           <router-link :to="{ name: 'product', params: { id: product.id }}">{{ product.name }}</router-link>
         </p>
 
-        <p class="card-text text-truncate">價格：{{ product.price }}</p>
+        <p class="card-text text-truncate">原價：{{ product.origin_price }}</p>
+        <p class="card-text text-truncate">特價：{{ product.sell_price }}</p>
         <p class="card-text">{{ product.description }}</p>
       </div>
 
@@ -49,7 +50,7 @@ export default {
     //   }
     // },
     addToCart(id, qty) {
-      const api = 'https://cool-shop-backend.herokuapp.com/api/cart'
+      const api = 'https://ec-website-api.herokuapp.com/api/cart'
       const vm = this
       const cart = {
         // 定義資料結構
@@ -59,7 +60,6 @@ export default {
       vm.axios.post(api, { data: cart }).then(response => {
         console.log(response)
         vm.$emit('updateCart')
-        vm.$emit('message:push', response.data.message, 'warning')
       })
     }
   }

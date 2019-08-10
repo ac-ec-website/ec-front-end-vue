@@ -287,7 +287,7 @@ export default {
   },
   methods: {
     async fetchProducts() {
-      const api = 'https://cool-shop-backend.herokuapp.com/api/products'
+      const api = 'https://ec-website-api.herokuapp.com/api/products'
       const vm = this
       const response = await vm.axios.get(api)
       console.log(response)
@@ -295,7 +295,7 @@ export default {
       if (response.statusText !== 'OK') {
         throw new Error(statusText)
       }
-      vm.products = response.data
+      vm.products = response.data.products
       // this.products = dummyData.restaurants
     }
   },
