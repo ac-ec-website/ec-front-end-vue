@@ -1,15 +1,15 @@
 <template>
   <div class="container py-5">
     <!-- 類別標籤  -->
-    <NavCate :categories="categories" />
+    <!-- <NavCate :categories="categories" /> -->
 
     <div class="row">
       <!-- 產品卡片 -->
-      <ProductsCard v-for="restaurant in restaurants" :key="restaurant.id" :initial-restaurant="restaurant" />
+      <ProductsCard v-for="product in products" :key="product.id" :initial-product="product" />
     </div>
 
     <!-- 分頁標籤  -->
-    <Pagination v-if="totalPage > 1" :category-id="categoryId" :current-page="currentPage" :total-page="totalPage" />
+    <!-- <Pagination v-if="totalPage > 1" :category-id="categoryId" :current-page="currentPage" :total-page="totalPage" /> -->
   </div>
 </template>
 
@@ -275,23 +275,28 @@ const dummyData = {
 export default {
   data() {
     return {
-      categories: [],
-      categoryId: '',
-      currentPage: 1,
-      restaurants: [],
-      totalPage: 0
+      // categories: [],
+      // categoryId: '',
+      // currentPage: 1,
+      products: []
+      // totalPage: 0
     }
   },
   created() {
-    this.fetchRestaurants()
+    this.fetchProducts()
   },
   methods: {
-    fetchRestaurants() {
-      this.categories = dummyData.categories
-      this.categoryId = dummyData.categoryId
-      this.currentPage = dummyData.page
-      this.restaurants = dummyData.restaurants
-      this.totalPage = dummyData.totalPage.length
+    async fetchProducts() {
+      const api = 'https://cool-shop-backend.herokuapp.com/api/products'
+      const vm = this
+      const response = await vm.axios.get(api)
+      console.log(response)
+
+      if (response.statusText !== 'OK') {
+        throw new Error(statusText)
+      }
+      vm.products = response.data
+      // this.products = dummyData.restaurants
     }
   },
   components: {
