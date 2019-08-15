@@ -14,9 +14,15 @@
         <td>{{ product.name }}</td>
 
         <td class="d-flex justify-content-between">
-          <a href="#" class="btn btn-link">Show</a>
+          <router-link
+            :to="{name: 'admin-product', params: {productId: product.id}}"
+            class="btn btn-link"
+          >Show</router-link>
 
-          <a href="#" class="btn btn-link">Edit</a>
+          <router-link
+            :to="{name: 'admin-product-edit', params: {productId: product.id}}"
+            class="btn btn-link"
+          >Edit</router-link>
 
           <button
             type="button"

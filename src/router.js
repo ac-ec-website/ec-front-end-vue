@@ -60,9 +60,14 @@ export default new Router({
       component: () => import('./views/admin/AdminProducts.vue')
     },
     {
-      path: '/admin/products/create',
+      path: '/admin/products/new',
       name: 'admin-products-new',
       component: () => import('./views/admin/AdminProductNew.vue')
+    },
+    {
+      path: '/admin/products/:productId',
+      name: 'admin-product',
+      component: () => import('./views/admin/AdminProduct.vue')
     },
     {
       path: '/admin/products/:productId/edit',
