@@ -65,29 +65,29 @@ export default {
           title: '無法取得產品，請稍後再試'
         })
       }
+    },
+    async deleteProduct(productId) {
+      try {
+        const vm = this
+        const api = `https://ec-website-api.herokuapp.com/api/admin/products/${productId}`
+        const { data, statusText } = await vm.axios.delete(api)
+
+        if (statusText !== 'OK' || data.status !== 'success') {
+          throw new Error(statusText)
+        }
+
+        vm.products = this.products.filter(product => product.id !== productId)
+        Toast.fire({
+          type: 'success',
+          title: '刪除產品成功'
+        })
+      } catch (error) {
+        Toast.fire({
+          type: 'error',
+          title: '無法取得刪除產品，請稍後再試'
+        })
+      }
     }
-    // async deleteProduct(productId) {
-    //   try {
-    //     const vm = this
-    //     const api = `https://ec-website-api.herokuapp.com/api/admin/products/${productId}`
-    //     const { data, statusText } = await vm.axios.delete(api)
-
-    //     if (statusText !== 'OK' || data.status !== 'success') {
-    //       throw new Error(statusText)
-    //     }
-
-    //     vm.products = this.products.filter(product => product.id !== productId)
-    //     Toast.fire({
-    //       type: 'success',
-    //       title: '刪除產品成功'
-    //     })
-    //   } catch (error) {
-    //     Toast.fire({
-    //       type: 'error',
-    //       title: '無法取得刪除產品，請稍後再試'
-    //     })
-    //   }
-    // }
   }
 }
 </script> 

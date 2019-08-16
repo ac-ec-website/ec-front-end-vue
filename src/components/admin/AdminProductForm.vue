@@ -102,25 +102,26 @@
       />
     </div>
 
-    <button type="submit" class="btn btn-primary">送出</button>
+    <button
+      type="submit"
+      class="btn btn-primary"
+      :disabled="isProcessing"
+    >{{ isProcessing ? "處理中..." : "上架商品" }}</button>
   </form>
 </template>
 
 <script>
+import { Toast } from '@/utils/helpers'
+
 export default {
   props: {
     initialProduct: {
       type: Object,
-      default: () => ({
-        name: '',
-        description: '',
-        stock_quantity: 0,
-        cost_price: 0,
-        origin_price: 0,
-        sell_price: 0,
-        product_status: true,
-        image: ''
-      })
+      default: () => ({})
+    },
+    isProcessing: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -132,8 +133,17 @@ export default {
         cost_price: 0,
         origin_price: 0,
         sell_price: 0,
-        product_status: true,
+        product_status: false,
         image: ''
+      },
+      isLoading: true
+    }
+  },
+  watch: {
+    initialProduct(product) {
+      this.product = {
+        ...this.product,
+        ...product
       }
     }
   },
@@ -152,6 +162,14 @@ export default {
       this.product.image = imageURL
     },
     handleSubmit(e) {
+      if (!this.product.name) {
+        Toast.fire({
+          type: 'warning',
+          title: '請填寫產品名稱'
+        })
+        return
+      }
+
       const form = e.target
       const formData = new FormData(form)
       this.$emit('after-submit', formData)
