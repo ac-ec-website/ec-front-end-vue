@@ -27,7 +27,7 @@
           <button
             type="button"
             class="btn btn-link"
-            @click.stop.prevent="deleteproduct(product.id)"
+            @click.stop.prevent="deleteProduct(product.id)"
           >Delete</button>
         </td>
       </tr>
@@ -36,22 +36,58 @@
 </template>
 
 <script>
+import { Toast } from '@/utils/helpers'
+
 export default {
-  props: {
-    initialProducts: {
-      type: Array,
-      default: () => []
-    }
-  },
   data() {
     return {
-      products: this.initialProducts
+      products: []
     }
   },
+  created() {
+    this.fetchProducts()
+  },
   methods: {
-    deleteproduct(productId) {
-      this.products = this.products.filter(product => product.id !== productId)
+    async fetchProducts() {
+      try {
+        const vm = this
+        const api = 'https://ec-website-api.herokuapp.com/api/admin/products'
+        const { data, statusText } = await vm.axios.get(api)
+
+        if (statusText !== 'OK') {
+          throw new Error(statusText)
+        }
+
+        vm.products = data.products
+      } catch (error) {
+        Toast.fire({
+          type: 'error',
+          title: '無法取得產品，請稍後再試'
+        })
+      }
     }
+    // async deleteProduct(productId) {
+    //   try {
+    //     const vm = this
+    //     const api = `https://ec-website-api.herokuapp.com/api/admin/products/${productId}`
+    //     const { data, statusText } = await vm.axios.delete(api)
+
+    //     if (statusText !== 'OK' || data.status !== 'success') {
+    //       throw new Error(statusText)
+    //     }
+
+    //     vm.products = this.products.filter(product => product.id !== productId)
+    //     Toast.fire({
+    //       type: 'success',
+    //       title: '刪除產品成功'
+    //     })
+    //   } catch (error) {
+    //     Toast.fire({
+    //       type: 'error',
+    //       title: '無法取得刪除產品，請稍後再試'
+    //     })
+    //   }
+    // }
   }
 }
 </script> 
