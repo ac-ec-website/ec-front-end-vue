@@ -30,7 +30,7 @@ export default {
   beforeRouteUpdate(to, from, next) {
     // 路由改變時重新抓取資料
     const { productId } = to.params
-    this.fetchRestaurant(productId)
+    this.fetchProduct(productId)
     next()
   },
   methods: {

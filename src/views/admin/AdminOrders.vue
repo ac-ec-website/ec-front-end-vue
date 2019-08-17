@@ -16,7 +16,7 @@
 
       <tbody>
         <tr v-for="order in orders" :key="order.id">
-          <th scope="row">{{ order.updatedAt | dateTime }}</th>
+          <th scope="row">{{ order.createdAt | dateTime }}</th>
           <td>{{ order.name }}</td>
 
           <td>
@@ -31,7 +31,7 @@
           <td class="text-right">{{ order.total_amount | currency }}</td>
 
           <td>
-            <strong v-if="order.payment_status === 1" class="text-success">已付款</strong>
+            <strong v-if="order.payment_status === '1'" class="text-success">已付款</strong>
             <span v-else class="text-muted">尚未付款</span>
           </td>
 
@@ -39,7 +39,10 @@
             <router-link
               :to="{name: 'admin-order', params: {orderId: order.id}}"
               class="btn btn-link"
-            >Show</router-link>
+            >
+              Show
+              <i class="fas fa-external-link-square-alt"></i>
+            </router-link>
           </td>
         </tr>
       </tbody>
@@ -89,3 +92,9 @@ export default {
   }
 }
 </script> 
+
+<style scoped>
+.btn-link {
+  color: rgba(13, 170, 243, 0.815);
+}
+</style>

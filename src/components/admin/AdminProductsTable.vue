@@ -17,18 +17,27 @@
           <router-link
             :to="{name: 'admin-product', params: {productId: product.id}}"
             class="btn btn-link"
-          >Show</router-link>
+          >
+            Show
+            <i class="fas fa-external-link-square-alt"></i>
+          </router-link>
 
           <router-link
             :to="{name: 'admin-product-edit', params: {productId: product.id}}"
             class="btn btn-link"
-          >Edit</router-link>
+          >
+            Edit
+            <i class="fas fa-edit"></i>
+          </router-link>
 
           <button
             type="button"
             class="btn btn-link"
             @click.stop.prevent="deleteProduct(product.id)"
-          >Delete</button>
+          >
+            Delete
+            <i class="fas fa-trash-alt"></i>
+          </button>
         </td>
       </tr>
     </tbody>
@@ -91,3 +100,9 @@ export default {
   }
 }
 </script> 
+
+<style scoped>
+.btn-link {
+  color: rgba(13, 170, 243, 0.815);
+}
+</style>

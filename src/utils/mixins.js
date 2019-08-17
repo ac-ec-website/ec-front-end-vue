@@ -11,7 +11,7 @@ export const fromNowFilter = {
 export const dateTimeFilter = {
   filters: {
     dateTime(time) {
-      return time ? moment(time).format('YYYY-MM-DD HH:mm') : '-'
+      return time ? moment(time).format('YYYY-MM-DD') : '-'
     }
   }
 }
