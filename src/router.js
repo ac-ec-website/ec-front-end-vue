@@ -80,7 +80,7 @@ export default new Router({
       component: () => import('./views/admin/AdminOrders.vue')
     },
     {
-      path: '/admin/order/:orderId',
+      path: '/admin/orders/:orderId',
       name: 'admin-order',
       component: () => import('./views/admin/AdminOrder.vue')
     },

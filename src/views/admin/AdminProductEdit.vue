@@ -14,6 +14,9 @@ import AdminProductForm from '@/components/admin/AdminProductForm.vue'
 import { Toast } from '@/utils/helpers'
 
 export default {
+  components: {
+    AdminProductForm
+  },
   data() {
     return {
       product: {},
@@ -27,7 +30,7 @@ export default {
   beforeRouteUpdate(to, from, next) {
     // 路由改變時重新抓取資料
     const { productId } = to.params
-    this.fetchRestaurant(productId)
+    this.fetchProduct(productId)
     next()
   },
   methods: {
@@ -69,9 +72,6 @@ export default {
         })
       }
     }
-  },
-  components: {
-    AdminProductForm
   }
 }
 </script> 
