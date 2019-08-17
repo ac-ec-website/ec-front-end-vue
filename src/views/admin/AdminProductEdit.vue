@@ -14,6 +14,9 @@ import AdminProductForm from '@/components/admin/AdminProductForm.vue'
 import { Toast } from '@/utils/helpers'
 
 export default {
+  components: {
+    AdminProductForm
+  },
   data() {
     return {
       product: {},
@@ -69,9 +72,6 @@ export default {
         })
       }
     }
-  },
-  components: {
-    AdminProductForm
   }
 }
 </script> 

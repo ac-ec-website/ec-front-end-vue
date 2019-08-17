@@ -2,7 +2,7 @@
   <div class="container py-5">
     <AdminNav />
 
-    <router-link to="/admin/products/new" class="btn btn-primary mb-4">New Products</router-link>
+    <router-link to="/admin/products/new" class="btn btn-primary btn-block mb-4">New Products</router-link>
 
     <AdminProductsTable />
   </div>
