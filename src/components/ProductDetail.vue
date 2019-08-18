@@ -13,14 +13,17 @@
       <div class="col-md-8">
         <p>{{product.description}}</p>
         <hr />
-        <span
-          class="float-right text-secondary card-text text-truncate"
-        >原價$ {{ product.origin_price }} 元</span>
-        <h5
-          class="card-text text-truncate font-weight-bold text-success"
-        >NT$ {{ product.sell_price }} 元</h5>
+        <span class="float-right text-secondary card-text text-truncate">原價$ {{ product.origin_price }} 元</span>
+        <h5 class="card-text text-truncate font-weight-bold text-success">NT$ {{ product.sell_price }} 元</h5>
         <div class="addToCart text-right py-5">
-          <button class="btn btn-danger px-5">加入購物車</button>
+          <form @submit.stop.prevent="handleAddToCart">
+            <div class="input-group">
+              <input v-model="productQuantity" type="number" name="quantity" class="form-control" min="1" />
+              <div class="input-group-append">
+                <button type="submit" class="btn btn-danger px-5">加入購物車</button>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -28,11 +31,39 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   props: {
-    product: {
+    initialProduct: {
       type: Object,
       required: true
+    }
+  },
+  data() {
+    return {
+      productQuantity: 1,
+      product: {}
+    }
+  },
+  mounted() {
+    this.fetchProduct()
+  },
+  methods: {
+    fetchProduct() {
+      this.product = this.initialProduct
+    },
+    handleAddToCart() {
+      axios
+        .post('http://localhost:3000/api/cart', {
+          productId: this.product.id,
+          quantity: parseInt(this.productQuantity)
+        })
+        .then(function(response) {
+          console.log(response)
+        })
+        .catch(function(error) {
+          console.log(error)
+        })
     }
   }
 }

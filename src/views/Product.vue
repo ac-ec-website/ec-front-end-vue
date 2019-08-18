@@ -1,6 +1,6 @@
 <template>
   <div class="container py-5">
-    <ProductDetail :product="product" />
+    <ProductDetail :initial-product="product" />
   </div>
 </template>
 
