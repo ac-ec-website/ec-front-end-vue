@@ -18,7 +18,11 @@
       <div class="ml-auto d-flex align-items-center">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <router-link to="/cart" class="mr-3 nav-link">購物車</router-link>
+            <span
+              class="nav-link mr-3 text-white"
+              style="cursor: pointer"
+              @click.stop.prevent="toggleSideCart"
+            >購物車</span>
           </li>
 
           <!-- is user is login -->
@@ -87,6 +91,9 @@ export default {
         ...dummyUser.currentUser
       }
       this.isAuthenticated = dummyUser.isAuthenticated
+    },
+    toggleSideCart() {
+      this.$root.$emit('toggleSideCart')
     }
   }
 }
