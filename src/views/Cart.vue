@@ -1,0 +1,359 @@
+<template>
+  <div class="container py-5">
+    <!-- 購物流程 Navbar -->
+    <div class="row justify-content-center mt-3">
+      <div class="col-md-7 col-12">
+        <div class="row step">
+          <div class="col text-center step-point-line step-point">
+            <span class="bg-dark px-4 py-2 rounded-pill text-light mb-3 d-inline-block">Step 1</span>
+            <p class="text-dark h6">購物車</p>
+          </div>
+          <div class="col text-center step-point-line">
+            <span
+              class="border bg-secondary px-4 py-2 rounded-pill text-dark mb-3 d-inline-block"
+            >Step 2</span>
+            <p class="text-dark h6">填寫資料與付款</p>
+          </div>
+          <div class="col text-center">
+            <span
+              class="border bg-secondary px-4 py-2 rounded-pill text-dark mb-3 d-inline-block"
+            >Step 3</span>
+            <p class="text-dark h6">訂單確認</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 購物車為空 -->
+    <div v-show="cartItems.length < 1" class="row mt-5">
+      <div class="col-md-6 col-12 mx-auto">
+        <i class="fa fa-shopping-cart fa-5" aria-hidden="true"></i>
+        <div class="mt-3 text-center">
+          <h5>你的購物車是空的</h5>
+          <p>記得加入商品到你的購物車</p>
+          <router-link to="/products" class="btn btn-success btn-large">繼續購物</router-link>
+        </div>
+      </div>
+    </div>
+
+    <!-- 購物車清單 -->
+    <div class="row mt-5">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h3>
+              購物車&nbsp;(
+              <span class="sl-cart-count ng-isolate-scope">{{cartItems.length}}</span>&nbsp;件)
+            </h3>
+          </div>
+          <div class="card-body">
+            <!-- Table Header -->
+            <div class="row table-header">
+              <div class="col-sm-3">商品資料</div>
+              <div class="col-sm-2">優惠</div>
+              <div class="col-sm-2 text-center">單件價格</div>
+              <div class="col-sm-2 text-center">數量</div>
+              <div class="col-sm-2 text-center item-total">小計</div>
+              <div class="col-sm-1"></div>
+            </div>
+
+            <hr class="table-header" />
+            <!-- Table Body -->
+            <div
+              v-for="cartItem in cartItems"
+              :key="cartItem.id"
+              class="table-row row cart-item py-1"
+            >
+              <!-- 商品資料欄位 -->
+              <div class="col-xs-12 col-sm-3 item-information">
+                <div class="row">
+                  <div class="col-6 px-0">
+                    <router-link :to="{name:products, pararm:{id:cartItems.id}}">
+                      <img class="col-auto" :src="cartItem.image | emptyImage" alt />
+                    </router-link>
+                  </div>
+                  <div class="col-6 pl-0 my-auto">
+                    <div>{{cartItem.name}}</div>
+                  </div>
+                </div>
+              </div>
+              <!-- 優惠欄位 -->
+              <div class="col-xs-12 col-sm-2 item-promotion"></div>
+              <!-- 單件欄位 -->
+              <div class="col-xs-12 col-sm-2 text-center item-price my-auto">
+                <div class="row">
+                  <span
+                    class="col-12 sell_price font-weight-bold"
+                  >NT {{cartItem.sell_price | currency}}</span>
+                  <span
+                    class="col-12 original-price text-muted font-italic"
+                    style="text-decoration:line-through;"
+                  >NT {{cartItem.origin_price | currency}}</span>
+                </div>
+              </div>
+              <!-- 數量欄位 -->
+              <div class="col-xs-12 col-sm-2 text-center item-quantity my-auto">
+                <div class="input-group">
+                  <span class="input-group-btn">
+                    <button
+                      type="button"
+                      class="btn btn-default btn-quantity-decrease"
+                      @click.stop.prevent="subItemFromCart(cartItem.CartItem.CartId,cartItem.CartItem.id)"
+                    >
+                      <i class="fa fa-minus"></i>
+                    </button>
+                  </span>
+                  <span class="form-control text-center">{{cartItem.CartItem.quantity}}</span>
+                  <span class="input-group-btn">
+                    <button
+                      type="button"
+                      class="btn btn-default btn-quantity-increase"
+                      @click.stop.prevent="addItemToCart(cartItem.CartItem.CartId,cartItem.CartItem.id)"
+                    >
+                      <i class="fa fa-plus"></i>
+                    </button>
+                  </span>
+                </div>
+              </div>
+
+              <!-- 小計欄位 -->
+              <div class="col-xs-12 col-sm-2 text-center item-total my-auto">
+                <span
+                  class="total-count"
+                >NT {{cartItem.sell_price * cartItem.CartItem.quantity | currency}}</span>
+              </div>
+
+              <!-- 刪除按鈕 -->
+              <div class="col-xs-12 col-sm-1 text-center item-action my-auto">
+                <a
+                  class="btn btn-link btn-remove-cart-item"
+                  @click.stop.prevent="deleteItemFromCart(cartItem.CartItem.CartId,cartItem.CartItem.id)"
+                >
+                  <i class="fa fa-times" aria-hidden="true"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 購物車總覽 -->
+      <div class="col-12 mt-3">
+        <div class="col-sm-5 col-md-12 text-right">
+          <section class="order-summary">
+            <div class="section-header">
+              <h3>訂單資訊</h3>
+            </div>
+            <div class="section-body">
+              <div checkout-cart-summary>
+                <div class="subtotal ng-scope">
+                  <span class="pull-left">小計:</span>
+                  <span class="pull-right">NT {{total_amount | currency}}</span>
+                </div>
+
+                <div class="delivery-fee ng-scope">
+                  <span class="pull-left">運費:</span>
+                  <span class="pull-right">NT$ 0</span>
+                </div>
+                <hr class="ng-scope" />
+                <div class="total ng-scope">
+                  <span class="pull-left">
+                    合計
+                    <span class="hidden-sm hidden-md hidden-lg">({{cartItems.length}} 件)</span>:
+                  </span>
+                  <span class="pull-right font-weight-bold">NT {{total_amount | currency}}</span>
+                </div>
+              </div>
+              <a class="btn btn-success btn-block mt-3" href="/order/create">前往結帳</a>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style>
+.step {
+  position: relative;
+  z-index: 100;
+}
+
+.step .step-point-line {
+  position: relative;
+}
+
+.step .step-point-line::after {
+  content: "";
+  display: block;
+  position: absolute;
+  z-index: -1;
+  right: -80px;
+  top: 20px;
+  width: 180px;
+  height: 2px;
+  border-bottom: 2px solid #343a40;
+}
+
+.step .step-point {
+  position: relative;
+}
+
+.step .step-point::before {
+  content: "";
+  display: block;
+  position: absolute;
+  z-index: 0;
+  right: 50px;
+  top: 16px;
+  width: 10px;
+  height: 10px;
+  background-color: #343a40;
+  border-radius: 500px;
+  animation-name: point;
+  animation-duration: 2s;
+  animation-timing-function: ease;
+  animation-iteration-count: infinite;
+}
+
+@media (max-width: 769px) {
+  .step-point {
+    position: relative;
+  }
+
+  .step-point::before {
+    content: "";
+    display: none;
+  }
+
+  .table-header {
+    content: "";
+    display: none;
+  }
+}
+
+@keyframes point {
+  0% {
+    transform: translateX(0rem);
+    opacity: 0;
+  }
+  1% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(9rem);
+    opacity: 1;
+  }
+}
+
+.fa-shopping-cart {
+  font-size: 120px;
+  color: #cccccc;
+  display: block;
+  text-align: center;
+  padding: 10px 0;
+}
+</style>
+
+<script>
+import { emptyImageFilter, currencyFilter } from "@/utils/mixins";
+import { Toast } from "@/utils/helpers";
+
+export default {
+  mixins: [currencyFilter, emptyImageFilter],
+  data() {
+    return {
+      cart: [],
+      cartItems: [],
+      total_amount: 0
+    };
+  },
+  created() {
+    this.fetchCart();
+  },
+  methods: {
+    async fetchCart() {
+      try {
+        console.log(req, res);
+        // const vm = this;
+        // // TODO
+        // const api = "https://ec-website-api.herokuapp.com/api/cart/1";
+
+        // const { data, statusText } = await vm.axios.get(api);
+
+        // if (statusText !== "OK") {
+        //   throw new Error(statusText);
+        // }
+
+        // this.cart = data.cart;
+        // this.cartItems = data.cart.items;
+        // this.cartItems.map(d => d.id * d.id).reduce((a, b) => a + b);
+        // this.total_amount = data.total_amount;
+      } catch (error) {
+        Toast.fire({
+          type: "error",
+          title: "無法取得購物車資料，請稍後再試"
+        });
+      }
+    },
+    async addItemToCart(cartId, cartItemId) {
+      try {
+        const vm = this;
+        const api = `https://ec-website-api.herokuapp.com/api/cart/${cartId}/cartItem/${cartItemId}/add`;
+
+        const { data, statusText } = await vm.axios.post(api);
+
+        if (statusText !== "OK") {
+          throw new Error(statusText);
+        }
+        this.fetchCart();
+      } catch (error) {
+        Toast.fire({
+          type: "error",
+          title: "無法增加商品數量，請稍後再試"
+        });
+      }
+    },
+    async subItemFromCart(cartId, cartItemId) {
+      try {
+        const vm = this;
+        const api = `https://ec-website-api.herokuapp.com/api/cart/${cartId}/cartItem/${cartItemId}/sub`;
+
+        const { data, statusText } = await vm.axios.post(api);
+
+        if (statusText !== "OK") {
+          throw new Error(statusText);
+        }
+        this.fetchCart();
+      } catch (error) {
+        Toast.fire({
+          type: "error",
+          title: "無法刪減商品數量，請稍後再試"
+        });
+      }
+    },
+    async deleteItemFromCart(cartId, cartItemId) {
+      try {
+        const vm = this;
+        const api = `https://ec-website-api.herokuapp.com/api/cart/${cartId}/cartItem/${cartItemId}`;
+
+        const { data, statusText } = await vm.axios.delete(api);
+
+        if (statusText !== "OK") {
+          throw new Error(statusText);
+        }
+        this.fetchCart();
+      } catch (error) {
+        Toast.fire({
+          type: "error",
+          title: "無法移除該商品，請稍後再試"
+        });
+      }
+    }
+  }
+};
+</script>
