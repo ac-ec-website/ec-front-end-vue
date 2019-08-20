@@ -16,13 +16,17 @@
 
         <hr />
       </div>
-      <router-link to="/cart" class="w-100 btn btn-danger">訂單結帳</router-link>
+      <router-link
+        :to="{ name: 'cart', params: { cartId: initialCart.id }}"
+        class="w-100 btn btn-danger"
+      >訂單結帳</router-link>
+      <!-- <router-link to="/cart" class="w-100 btn btn-danger">訂單結帳</router-link> -->
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
+import axios from "axios";
 
 export default {
   props: {
@@ -34,12 +38,12 @@ export default {
   data() {
     return {
       cart: {}
-    }
+    };
   },
   methods: {
     deleteItem(cartItemId) {
-      this.$emit('clickDeleteItem', this.initialCart.id, cartItemId)
+      this.$emit("clickDeleteItem", this.initialCart.id, cartItemId);
     }
   }
-}
+};
 </script>
