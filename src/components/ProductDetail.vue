@@ -20,19 +20,50 @@
           class="card-text text-truncate font-weight-bold text-success"
         >NT$ {{ product.sell_price }} 元</h5>
         <div class="addToCart text-right py-5">
-          <button class="btn btn-danger px-5">加入購物車</button>
+          <form @submit.stop.prevent="handleAddToCart">
+            <div class="input-group">
+              <input
+                v-model="productQuantity"
+                type="number"
+                name="quantity"
+                class="form-control"
+                min="1"
+              />
+              <div class="input-group-append">
+                <button type="submit" class="btn btn-danger px-5">加入購物車</button>
+              </div>
+            </div>
+          </form>
         </div>
+        <a class="text-primary" style="cursor: pointer" @click="$router.go(-1)">回前一頁</a>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   props: {
-    product: {
+    initialProduct: {
       type: Object,
       required: true
+    }
+  },
+  data() {
+    return {
+      productQuantity: 1,
+      product: this.initialProduct
+    }
+  },
+  watch: {
+    initialProduct: function() {
+      this.product = this.initialProduct
+    }
+  },
+  methods: {
+    handleAddToCart() {
+      this.$emit('clickAddToCart', this.product.id, parseInt(this.productQuantity))
     }
   }
 }

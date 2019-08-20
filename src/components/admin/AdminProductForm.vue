@@ -69,16 +69,28 @@
     </div>
 
     <div class="form-group">
-      <div class="form-check">
+      <div class="form-check form-check-inline">
         <input
           class="form-check-input"
-          type="checkbox"
-          :true-value="true"
-          :false-value="false"
+          type="radio"
+          :value="true"
           v-model="product.product_status"
-          id="product_status"
+          id="product_status1"
+          name="product_status"
         />
-        <label class="form-check-label" for="product_status">是否啟用</label>
+        <label class="form-check-label" for="product_status1">啟用</label>
+      </div>
+
+      <div class="form-check form-check-inline">
+        <input
+          class="form-check-input"
+          type="radio"
+          :value="false"
+          v-model="product.product_status"
+          id="product_status2"
+          name="product_status"
+        />
+        <label class="form-check-label" for="product_status2">不啟用</label>
       </div>
     </div>
 
