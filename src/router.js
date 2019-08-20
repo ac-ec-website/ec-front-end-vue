@@ -8,8 +8,7 @@ Vue.use(Router)
 export default new Router({
   linkExactActiveClass: 'active',
 
-  routes: [
-    {
+  routes: [{
       path: '/',
       name: 'root',
       redirect: '/products'
@@ -30,7 +29,7 @@ export default new Router({
       component: Products
     },
     {
-      path: '/cart',
+      path: '/cart/:cartId',
       name: 'cart',
       component: () => import('./views/Cart.vue')
     },

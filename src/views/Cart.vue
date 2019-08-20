@@ -23,8 +23,9 @@
         </div>
       </div>
     </div>
+
     <!-- 購物車為空 -->
-    <div v-show="cartItems.length < 1" class="row mt-5">
+    <div v-if="cartItems.length < 1" class="row mt-5">
       <div class="col-md-6 col-12 mx-auto">
         <i class="fa fa-shopping-cart fa-5" aria-hidden="true"></i>
         <div class="mt-3 text-center">
@@ -35,8 +36,9 @@
       </div>
     </div>
 
-    <!-- 購物車清單 -->
-    <div class="row mt-5">
+    <!-- 購物車有商品 -->
+    <div v-else class="row mt-3">
+      <!-- 購物車清單 -->
       <div class="col-12">
         <div class="card">
           <div class="card-header">
@@ -59,20 +61,20 @@
             <hr class="table-header" />
             <!-- Table Body -->
             <div
-              v-for="cartItem in cartItems"
-              :key="cartItem.id"
+              v-for="product in cartItems"
+              :key="product.id"
               class="table-row row cart-item py-1"
             >
               <!-- 商品資料欄位 -->
               <div class="col-xs-12 col-sm-3 item-information">
                 <div class="row">
                   <div class="col-6 px-0">
-                    <router-link :to="{name:products, pararm:{id:cartItems.id}}">
-                      <img class="col-auto" :src="cartItem.image | emptyImage" alt />
+                    <router-link :to="{name:'product', params:{ productId: product.id }}">
+                      <img class="col-auto" :src="product.image | emptyImage" alt />
                     </router-link>
                   </div>
                   <div class="col-6 pl-0 my-auto">
-                    <div>{{cartItem.name}}</div>
+                    <div>{{product.name}}</div>
                   </div>
                 </div>
               </div>
@@ -83,11 +85,11 @@
                 <div class="row">
                   <span
                     class="col-12 sell_price font-weight-bold"
-                  >NT {{cartItem.sell_price | currency}}</span>
+                  >NT {{product.sell_price | currency}}</span>
                   <span
                     class="col-12 original-price text-muted font-italic"
                     style="text-decoration:line-through;"
-                  >NT {{cartItem.origin_price | currency}}</span>
+                  >NT {{product.origin_price | currency}}</span>
                 </div>
               </div>
               <!-- 數量欄位 -->
@@ -97,17 +99,17 @@
                     <button
                       type="button"
                       class="btn btn-default btn-quantity-decrease"
-                      @click.stop.prevent="subItemFromCart(cartItem.CartItem.CartId,cartItem.CartItem.id)"
+                      @click.stop.prevent="subItemFromCart(cartId,product.CartItem.id)"
                     >
                       <i class="fa fa-minus"></i>
                     </button>
                   </span>
-                  <span class="form-control text-center">{{cartItem.CartItem.quantity}}</span>
+                  <span class="form-control text-center">{{product.CartItem.quantity}}</span>
                   <span class="input-group-btn">
                     <button
                       type="button"
                       class="btn btn-default btn-quantity-increase"
-                      @click.stop.prevent="addItemToCart(cartItem.CartItem.CartId,cartItem.CartItem.id)"
+                      @click.stop.prevent="addItemToCart(cartId,product.CartItem.id)"
                     >
                       <i class="fa fa-plus"></i>
                     </button>
@@ -119,14 +121,14 @@
               <div class="col-xs-12 col-sm-2 text-center item-total my-auto">
                 <span
                   class="total-count"
-                >NT {{cartItem.sell_price * cartItem.CartItem.quantity | currency}}</span>
+                >NT {{product.sell_price * product.CartItem.quantity | currency}}</span>
               </div>
 
               <!-- 刪除按鈕 -->
               <div class="col-xs-12 col-sm-1 text-center item-action my-auto">
                 <a
                   class="btn btn-link btn-remove-cart-item"
-                  @click.stop.prevent="deleteItemFromCart(cartItem.CartItem.CartId,cartItem.CartItem.id)"
+                  @click.stop.prevent="deleteItemFromCart(cartId,product.CartItem.id)"
                 >
                   <i class="fa fa-times" aria-hidden="true"></i>
                 </a>
@@ -135,36 +137,36 @@
           </div>
         </div>
       </div>
-      <!-- 購物車總覽 -->
-      <div class="col-12 mt-3">
-        <div class="col-sm-5 col-md-12 text-right">
-          <section class="order-summary">
-            <div class="section-header">
-              <h3>訂單資訊</h3>
-            </div>
-            <div class="section-body">
-              <div checkout-cart-summary>
-                <div class="subtotal ng-scope">
-                  <span class="pull-left">小計:</span>
-                  <span class="pull-right">NT {{total_amount | currency}}</span>
-                </div>
 
-                <div class="delivery-fee ng-scope">
-                  <span class="pull-left">運費:</span>
-                  <span class="pull-right">NT$ 0</span>
-                </div>
-                <hr class="ng-scope" />
-                <div class="total ng-scope">
-                  <span class="pull-left">
-                    合計
-                    <span class="hidden-sm hidden-md hidden-lg">({{cartItems.length}} 件)</span>:
-                  </span>
-                  <span class="pull-right font-weight-bold">NT {{total_amount | currency}}</span>
-                </div>
-              </div>
-              <a class="btn btn-success btn-block mt-3" href="/order/create">前往結帳</a>
+      <!-- 購物車總覽 -->
+      <div class="col-12 mt-3 d-flex justify-content-end">
+        <div class="card text-right w-100">
+          <div class="card-header">
+            <h3>訂單資訊</h3>
+          </div>
+
+          <div class="card-body">
+            <div class="subtotal ng-scope">
+              <span class="pull-left">小計:</span>
+              <span class="pull-right">NT {{total_amount | currency}}</span>
             </div>
-          </section>
+
+            <div class="delivery-fee ng-scope">
+              <span class="pull-left">運費:</span>
+              <span class="pull-right">NT {{shipping_fee | currency}}</span>
+            </div>
+            <hr class="ng-scope" />
+            <div class="total ng-scope">
+              <span class="pull-left">
+                合計
+                <span class="hidden-sm hidden-md hidden-lg">({{cartItems.length}} 件)</span>:
+              </span>
+              <span
+                class="pull-right font-weight-bold"
+              >NT {{total_amount + shipping_fee | currency}}</span>
+            </div>
+          </div>
+          <router-link to="/order/create" class="btn btn-success btn-block mt-3">前往結帳</router-link>
         </div>
       </div>
     </div>
@@ -174,7 +176,7 @@
 <style>
 .step {
   position: relative;
-  z-index: 100;
+  z-index: 3;
 }
 
 .step .step-point-line {
@@ -267,37 +269,42 @@ export default {
   mixins: [currencyFilter, emptyImageFilter],
   data() {
     return {
-      cart: [],
+      cartId: 0,
       cartItems: [],
-      total_amount: 0
+      total_amount: 0,
+      shipping_fee: 0
     };
   },
   created() {
-    this.fetchCart();
+    const cartId = this.$route.params.cartId;
+    this.fetchCart(cartId);
   },
   methods: {
-    async fetchCart() {
+    async fetchCart(id) {
       try {
-        console.log(req, res);
-        // const vm = this;
-        // // TODO
-        // const api = "https://ec-website-api.herokuapp.com/api/cart/1";
+        const vm = this;
+        const api = `https://ec-website-api.herokuapp.com/api/cart/${id}`;
 
-        // const { data, statusText } = await vm.axios.get(api);
+        const { data, statusText } = await vm.axios.get(api);
 
-        // if (statusText !== "OK") {
-        //   throw new Error(statusText);
-        // }
+        if (statusText !== "OK") {
+          throw new Error(statusText);
+        }
 
-        // this.cart = data.cart;
-        // this.cartItems = data.cart.items;
-        // this.cartItems.map(d => d.id * d.id).reduce((a, b) => a + b);
-        // this.total_amount = data.total_amount;
+        // 購物車 Id
+        this.cartId = id;
+        // 購物車內商品資訊
+        this.cartItems = data.cart.items;
+        this.cartItems.map(d => d.id * d.id).reduce((a, b) => a + b);
+        // 購物車總價
+        this.total_amount = data.total_amount;
       } catch (error) {
-        Toast.fire({
-          type: "error",
-          title: "無法取得購物車資料，請稍後再試"
-        });
+        if (cartItems.length > 1) {
+          Toast.fire({
+            type: "error",
+            title: "無法取得購物車資料，請稍後再試"
+          });
+        }
       }
     },
     async addItemToCart(cartId, cartItemId) {
@@ -310,7 +317,7 @@ export default {
         if (statusText !== "OK") {
           throw new Error(statusText);
         }
-        this.fetchCart();
+        this.fetchCart(cartId);
       } catch (error) {
         Toast.fire({
           type: "error",
@@ -328,7 +335,7 @@ export default {
         if (statusText !== "OK") {
           throw new Error(statusText);
         }
-        this.fetchCart();
+        this.fetchCart(cartId);
       } catch (error) {
         Toast.fire({
           type: "error",
@@ -346,7 +353,7 @@ export default {
         if (statusText !== "OK") {
           throw new Error(statusText);
         }
-        this.fetchCart();
+        this.fetchCart(cartId);
       } catch (error) {
         Toast.fire({
           type: "error",
