@@ -15,6 +15,14 @@
           <strong v-if="order.payment_status === '1'" class="text-success">已付款</strong>
           <span v-else class="text-muted">尚未付款</span>
         </div>
+
+        <div class="mb-3">
+          出貨狀態：
+          <strong v-show="order.shipping_status === '0'" class="text-muted">處理中</strong>
+          <strong v-show="order.shipping_status === '1'" class="text-danger">配送中</strong>
+          <strong v-show="order.shipping_status === '2'" class="text-success">已到貨</strong>
+        </div>
+
         <a href="#" @click="$router.back()">回上一頁</a>
       </div>
 
