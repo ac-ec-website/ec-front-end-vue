@@ -25,7 +25,7 @@
         <input id="password-check" v-model="passwordCheck" name="passwordCheck" type="password" class="form-control" placeholder="Password" required />
       </div>
 
-      <button class="btn btn-lg btn-primary btn-block mb-3" type="submit">Submit</button>
+      <button :disabled="isProcessing" class="btn btn-lg btn-primary btn-block mb-3" type="submit">Submit</button>
 
       <div class="text-center mb-3">
         <p>
@@ -47,19 +47,63 @@ export default {
       name: '',
       email: '',
       password: '',
-      passwordCheck: ''
+      passwordCheck: '',
+      isProcessing: false
     }
   },
   methods: {
-    handleSubmit(e) {
-      const data = JSON.stringify({
-        name: this.name,
-        email: this.email,
-        password: this.password,
-        passwordCheck: this.passwordCheck
-      })
-      // TODO: 向後端驗證使用者登入資訊是否合法
-      console.log('data', data)
+    async handleSubmit(e) {
+      const vm = this
+      try {
+        if (!this.name || !this.email || !this.password || !this.passwordCheck) {
+          Toast.fire({
+            type: 'warning',
+            title: '所有欄位都要填寫'
+          })
+          return
+        }
+
+        if (this.password !== this.passwordCheck) {
+          Toast.fire({
+            type: 'warning',
+            title: '兩次密碼輸入不同！'
+          })
+          this.password = ''
+          this.passwordCheck = ''
+          return
+        }
+
+        this.isProcessing = true
+        const { data, statusText } = await vm.axios.post('http://localhost:3000/api/admin/signup', {
+          name: this.name,
+          email: this.email,
+          password: this.password,
+          passwordCheck: this.passwordCheck
+        })
+        console.log(data, statusText)
+
+        if (data.status !== 'success') {
+          Toast.fire({
+            type: 'warning',
+            title: data.message
+          })
+          this.password = ''
+          this.passwordCheck = ''
+          this.isProcessing = false
+          return
+        }
+
+        Toast.fire({
+          type: 'success',
+          title: '註冊成功！申請管理員審核中'
+        })
+        vm.$router.push('/admin/signin')
+      } catch (error) {
+        console.log(error, error.response.data)
+        vm.isProcessing = false
+        this.password = ''
+        this.passwordCheck = ''
+      }
     }
   }
 }
