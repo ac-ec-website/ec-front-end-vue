@@ -54,6 +54,16 @@ export default new Router({
       redirect: '/admin/products'
     },
     {
+      path: '/admin/signup',
+      name: 'admin-signup',
+      component: () => import('./views/admin/AdminSignUp.vue')
+    },
+    {
+      path: '/admin/signin',
+      name: 'admin-signin',
+      component: () => import('./views/admin/AdminSignIn.vue')
+    },
+    {
       path: '/admin/products',
       name: 'admin-products',
       component: () => import('./views/admin/AdminProducts.vue')
