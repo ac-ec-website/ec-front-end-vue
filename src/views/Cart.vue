@@ -49,16 +49,16 @@
           </div>
           <div class="card-body">
             <!-- Table Header -->
-            <div class="row table-header">
+            <div class="row hidden-In-Mobile">
               <div class="col-sm-3">商品資料</div>
-              <div class="col-sm-2">優惠</div>
+              <div class="col-sm-1">優惠</div>
               <div class="col-sm-2 text-center">單件價格</div>
-              <div class="col-sm-2 text-center">數量</div>
+              <div class="col-sm-3 text-center">數量</div>
               <div class="col-sm-2 text-center item-total">小計</div>
               <div class="col-sm-1"></div>
             </div>
 
-            <hr class="table-header" />
+            <hr class="hidden-In-Mobile" />
             <!-- Table Body -->
             <div
               v-for="product in cartItems"
@@ -66,34 +66,35 @@
               class="table-row row cart-item py-1"
             >
               <!-- 商品資料欄位 -->
-              <div class="col-xs-12 col-sm-3 item-information">
+              <div class="col-7 col-md-3 item-information">
                 <div class="row">
+                  <!-- 商品圖片 -->
                   <div class="col-6 px-0">
                     <router-link :to="{name:'product', params:{ productId: product.id }}">
                       <img class="col-auto" :src="product.image | emptyImage" alt />
                     </router-link>
                   </div>
+                  <!-- 商品名稱 -->
                   <div class="col-6 pl-0 my-auto">
                     <div>{{product.name}}</div>
                   </div>
                 </div>
               </div>
               <!-- 優惠欄位 -->
-              <div class="col-xs-12 col-sm-2 item-promotion"></div>
+              <div class="col-1 col-md-1 item-promotion"></div>
               <!-- 單件欄位 -->
-              <div class="col-xs-12 col-sm-2 text-center item-price my-auto">
+              <div class="col-4 col-md-2 text-center item-price my-auto">
                 <div class="row">
                   <span
-                    class="col-12 sell_price font-weight-bold"
+                    class="col-12 col-md-12 sell_price font-weight-bold"
                   >NT {{product.sell_price | currency}}</span>
                   <span
-                    class="col-12 original-price text-muted font-italic"
-                    style="text-decoration:line-through;"
+                    class="col-12 col-md-12 original-price text-muted font-italic"
                   >NT {{product.origin_price | currency}}</span>
                 </div>
               </div>
               <!-- 數量欄位 -->
-              <div class="col-xs-12 col-sm-2 text-center item-quantity my-auto">
+              <div class="col-12 col-md-3 text-center item-quantity my-auto">
                 <div class="input-group">
                   <span class="input-group-btn">
                     <button
@@ -118,14 +119,14 @@
               </div>
 
               <!-- 小計欄位 -->
-              <div class="col-xs-12 col-sm-2 text-center item-total my-auto">
+              <div class="col-8 col-md-2 text-center item-total my-auto">
                 <span
                   class="total-count"
                 >NT {{product.sell_price * product.CartItem.quantity | currency}}</span>
               </div>
 
               <!-- 刪除按鈕 -->
-              <div class="col-xs-12 col-sm-1 text-center item-action my-auto">
+              <div class="col-4 col-md-1 text-center item-action my-auto">
                 <a
                   class="btn btn-link btn-remove-cart-item"
                   @click.stop.prevent="deleteItemFromCart(cartId,product.CartItem.id)"
@@ -226,7 +227,7 @@
     display: none;
   }
 
-  .table-header {
+  .hidden-In-Mobile {
     content: "";
     display: none;
   }
@@ -259,9 +260,14 @@
   text-align: center;
   padding: 10px 0;
 }
+
+.original-price {
+  text-decoration: line-through;
+}
 </style>
 
 <script>
+import axios from "axios";
 import { emptyImageFilter, currencyFilter } from "@/utils/mixins";
 import { Toast } from "@/utils/helpers";
 
@@ -276,14 +282,15 @@ export default {
     };
   },
   created() {
-    const cartId = this.$route.params.cartId;
-    this.fetchCart(cartId);
+    this.fetchCart();
   },
   methods: {
-    async fetchCart(id) {
+    async fetchCart() {
       try {
         const vm = this;
-        const api = `https://ec-website-api.herokuapp.com/api/cart/${id}`;
+        const id = vm.cartId;
+        // const api = "https://ec-website-api.herokuapp.com/api/cart";
+        const api = "http://localhost:3000/api/cart";
 
         const { data, statusText } = await vm.axios.get(api);
 
@@ -299,7 +306,7 @@ export default {
         // 購物車總價
         this.total_amount = data.total_amount;
       } catch (error) {
-        if (cartItems.length > 1) {
+        if (this.cartItems.length > 1) {
           Toast.fire({
             type: "error",
             title: "無法取得購物車資料，請稍後再試"
@@ -310,7 +317,8 @@ export default {
     async addItemToCart(cartId, cartItemId) {
       try {
         const vm = this;
-        const api = `https://ec-website-api.herokuapp.com/api/cart/${cartId}/cartItem/${cartItemId}/add`;
+        // const api = `https://ec-website-api.herokuapp.com/api/cart/${cartId}/cartItem/${cartItemId}/add`;
+        const api = `http://localhost:3000/api/cart/${cartId}/cartItem/${cartItemId}/add`;
 
         const { data, statusText } = await vm.axios.post(api);
 
@@ -328,7 +336,8 @@ export default {
     async subItemFromCart(cartId, cartItemId) {
       try {
         const vm = this;
-        const api = `https://ec-website-api.herokuapp.com/api/cart/${cartId}/cartItem/${cartItemId}/sub`;
+        // const api = `https://ec-website-api.herokuapp.com/api/cart/${cartId}/cartItem/${cartItemId}/sub`;
+        const api = `http://localhost:3000/api/cart/${cartId}/cartItem/${cartItemId}/sub`;
 
         const { data, statusText } = await vm.axios.post(api);
 
@@ -346,7 +355,8 @@ export default {
     async deleteItemFromCart(cartId, cartItemId) {
       try {
         const vm = this;
-        const api = `https://ec-website-api.herokuapp.com/api/cart/${cartId}/cartItem/${cartItemId}`;
+        // const api = `https://ec-website-api.herokuapp.com/api/cart/${cartId}/cartItem/${cartItemId}`;
+        const api = `http://localhost:3000/api/cart/${cartId}/cartItem/${cartItemId}`;
 
         const { data, statusText } = await vm.axios.delete(api);
 
