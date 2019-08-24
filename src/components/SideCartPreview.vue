@@ -16,11 +16,7 @@
 
         <hr />
       </div>
-      <router-link
-        :to="{ name: 'cart', params: { cartId: initialCart.id }}"
-        class="w-100 btn btn-danger"
-      >訂單結帳</router-link>
-      <!-- <router-link to="/cart" class="w-100 btn btn-danger">訂單結帳</router-link> -->
+      <router-link to="/cart" class="w-100 btn btn-danger">訂單結帳</router-link>
     </div>
   </div>
 </template>

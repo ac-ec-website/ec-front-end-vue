@@ -29,7 +29,7 @@ export default new Router({
       component: Products
     },
     {
-      path: '/cart/:cartId',
+      path: '/cart',
       name: 'cart',
       component: () => import('./views/Cart.vue')
     },
@@ -39,7 +39,7 @@ export default new Router({
       component: () => import('./views/OrderCreate.vue')
     },
     {
-      path: '/order/:orderId',
+      path: '/order',
       name: 'orderDetail',
       component: () => import('./views/OrderDetail.vue')
     },
