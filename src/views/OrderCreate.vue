@@ -155,9 +155,9 @@
       <!-- 左側 -->
       <div class="col-sm-6">
         <!-- 1. 客戶資料 -->
-        <div class="customer-form">
-          <div class="section-header">
-            <h4>顧客資料</h4>
+        <section class="customer-form">
+          <div class="row section-header">
+            <span class="col-12 px-0">顧客資料</span>
           </div>
           <div class="section-body">
             <div name="customerForm">
@@ -203,12 +203,85 @@
               </div>
             </div>
           </div>
-        </div>
+        </section>
+        <!-- 2. 訂單備註 -->
+        <!-- ::TODO:: -->
       </div>
       <!-- 右側 -->
       <div class="col-sm-6">
         <!-- 3. 送貨資料 -->
+        <section class="delivery-form">
+          <div class="row section-header">
+            <span class="col-6 px-0">送貨資料</span>
+            <span class="col-6 px-0 text-right">運費: NT {{shipping_fee}}</span>
+          </div>
+          <div class="section-body">
+            <p>已選擇的送貨方式: {{shipping_method}}</p>
+            <form
+              checkout-delivery-form
+              name="deliveryForm"
+              class="ng-pristine ng-isolate-scope ng-valid-date ng-invalid ng-invalid-required"
+              style
+            >
+              <div id="delivery-form-content">
+                <!-- ::TODO:: 暫不啟用，等 User 建置完成 -->
+                <!-- <div class="form-group">
+                  <label class="control-label">
+                    <input type="checkbox" name="order[delivery_data][recipient_is_customer]" /> 收件人資料與顧客資料相同
+                  </label>
+                </div>-->
+                <div class="form-group">
+                  <label for="recipient-name" class="control-label">收件人名稱</label>
+                  <input
+                    id="recipient-name"
+                    type="text"
+                    class="form-control"
+                    name="orderRecipientName"
+                    value
+                    required
+                  />
+                  <span>請填入收件人真實姓名，以確保順利收件</span>
+                </div>
+                <div class="form-group">
+                  <label for="recipient-phone" class="control-label">收件人電話號碼</label>
+                  <input
+                    id="recipient-phone"
+                    type="tel"
+                    class="form-control"
+                    name="orderRecipientPhone"
+                    required
+                  />
+                </div>
+
+                <hr />
+                <div class="form-group">
+                  <label for="recipient-address" class="control-label">收件人地址</label>
+                  <input
+                    id="recipient-phone"
+                    type="address"
+                    class="form-control"
+                    name="orderRecipientAddress"
+                    required
+                  />
+                </div>
+              </div>
+            </form>
+          </div>
+        </section>
         <!-- 3. 付款資料 -->
+        <section class="payment-form">
+          <div class="row section-header">
+            <span class="col-12 px-0">付款資料</span>
+          </div>
+          <div class="row section-body">
+            <div name="paymentForm" class="col-12">
+              <div class="form-group">已選擇的付款方式: {{payment_method}}</div>
+            </div>
+            <div
+              class="col-12 font-weight-bold"
+            >合計:&nbsp;&nbsp;NT {{total_amount + shipping_fee | currency}}</div>
+          </div>
+        </section>
       </div>
 
       <!-- 表單送出 -->
@@ -217,16 +290,16 @@
           <div class="card-body">
             <div class="row py-2">
               <!-- 左側 -->
-              <div class="col-sm-6">
-                <a href="#" class="btn btn-link" @click="$router.back()"><回上一頁</a>
+              <div class="col-4 col-md-6">
+                <a href="#" class="btn btn-link" @click="$router.back()"><返回購物車</a>
               </div>
               <!-- 右側 -->
-              <div class="col-sm-6">
+              <div class="col-8 col-md-6">
                 <button
                   type="submit"
                   class="btn btn-success btn-block text-white"
                   :disabled="isProcessing"
-                >{{ isProcessing ? "處理中..." : "提交訂單" }}</button>
+                >{{ isProcessing ? "處理中..." : "買單去" }}</button>
               </div>
             </div>
           </div>
@@ -339,8 +412,8 @@ section {
   padding: 10px 15px;
   margin: 0 -15px;
   font-weight: 500;
+  font-size: 18px;
   background-color: #f6f6f6;
-  line-height: 26px;
 }
 
 .section-body {
@@ -361,6 +434,8 @@ export default {
       cartItems: [],
       total_amount: 0,
       shipping_fee: 0,
+      shipping_method: "住家宅配",
+      payment_method: "信用卡線上支付",
       status: false,
       isProcessing: false
     };
