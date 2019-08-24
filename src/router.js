@@ -2,13 +2,22 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import SignIn from './views/SignIn.vue'
 import Products from './views/Products.vue'
-
+// import store from './store'
 Vue.use(Router)
+// const checkIsAdmin = (to, from, next) => {
+//   const currentUser = store.state.currentUser
+//   if (currentUser.role !== 'admin') {
+//     next('/404')
+//     return
+//   }
+//   next()
+// }
 
-export default new Router({
+const router = new Router({
   linkExactActiveClass: 'active',
 
-  routes: [{
+  routes: [
+    {
       path: '/',
       name: 'root',
       redirect: '/products'
@@ -67,31 +76,37 @@ export default new Router({
       path: '/admin/products',
       name: 'admin-products',
       component: () => import('./views/admin/AdminProducts.vue')
+      // beforeEnter: checkIsAdmin
     },
     {
       path: '/admin/products/new',
       name: 'admin-products-new',
       component: () => import('./views/admin/AdminProductNew.vue')
+      // beforeEnter: checkIsAdmin
     },
     {
       path: '/admin/products/:productId',
       name: 'admin-product',
       component: () => import('./views/admin/AdminProduct.vue')
+      // beforeEnter: checkIsAdmin
     },
     {
       path: '/admin/products/:productId/edit',
       name: 'admin-product-edit',
       component: () => import('./views/admin/AdminProductEdit.vue')
+      // beforeEnter: checkIsAdmin
     },
     {
       path: '/admin/orders',
       name: 'admin-orders',
       component: () => import('./views/admin/AdminOrders.vue')
+      // beforeEnter: checkIsAdmin
     },
     {
       path: '/admin/orders/:orderId',
       name: 'admin-order',
       component: () => import('./views/admin/AdminOrder.vue')
+      // beforeEnter: checkIsAdmin
     },
     {
       path: '*',
@@ -100,3 +115,18 @@ export default new Router({
     }
   ]
 })
+
+// router.beforeEach((to, from, next) => {
+//   if (to.path.indexOf('admin') < 0) {
+//     next()
+//     return
+//   }
+
+//   console.log('store.state.token:', store.state.token.slice(0, 10))
+//   if (!store.state.token) {
+//     store.dispatch('fetchCurrentUser')
+//   }
+//   next()
+// })
+
+export default router

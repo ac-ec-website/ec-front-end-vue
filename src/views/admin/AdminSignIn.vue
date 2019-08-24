@@ -52,7 +52,7 @@ export default {
         }
 
         this.isProcessing = true
-        const { data, statusText } = await vm.axios.post('http://localhost:3000/api/admin/signin', {
+        const { data, statusText } = await vm.axios.post('https://ec-website-api.herokuapp.com/api/admin/signin', {
           email: this.email,
           password: this.password
         })
@@ -72,6 +72,9 @@ export default {
           type: 'success',
           title: '登入成功！'
         })
+        // localStorage.setItem('token', data.token)
+        // this.$store.commit('setCurrentUser', data.user)
+
         vm.$router.push('/admin')
       } catch (error) {
         console.log(error, error.response.data)

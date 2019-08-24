@@ -74,7 +74,7 @@ export default {
         }
 
         this.isProcessing = true
-        const { data, statusText } = await vm.axios.post('http://localhost:3000/api/admin/signup', {
+        const { data, statusText } = await vm.axios.post('https://ec-website-api.herokuapp.com/api/admin/signup', {
           name: this.name,
           email: this.email,
           password: this.password,
