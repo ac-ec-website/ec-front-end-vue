@@ -10,7 +10,8 @@
           <th scope="col">購買款項</th>
           <th scope="col">應付金額</th>
           <th scope="col">是否付款</th>
-          <th scope="col">訂單詳情</th>
+          <th scope="col">出貨狀態</th>
+          <th scope="col">訂單</th>
         </tr>
       </thead>
 
@@ -31,16 +32,78 @@
           <td class="text-right">{{ order.total_amount | currency }}</td>
 
           <td>
-            <strong v-if="order.payment_status === '1'" class="text-success">已付款</strong>
-            <span v-else class="text-muted">尚未付款</span>
+            <div v-show="!order.isEditing">
+              <strong v-if="order.payment_status === '1'" class="text-success">已付款</strong>
+              <span v-else class="text-muted">尚未付款</span>
+            </div>
+
+            <div v-show="order.isEditing">
+              <select
+                id="payment_status"
+                v-model="order.payment_status"
+                class="form-control"
+                name="payment_status"
+                required
+              >
+                <option value selected disabled>--請確認--</option>
+                <option value="0">尚未付款</option>
+                <option value="1">已付款</option>
+              </select>
+            </div>
           </td>
 
           <td>
+            <div v-show="!order.isEditing">
+              <strong v-if="order.shipping_status === '0'" class="text-muted">處理中</strong>
+              <strong v-else-if="order.shipping_status === '1'" class="text-danger">配送中</strong>
+              <strong v-else-if="order.shipping_status === '2'" class="text-success">已到貨</strong>
+            </div>
+
+            <div v-show="order.isEditing">
+              <select
+                id="shipping_status"
+                v-model="order.shipping_status"
+                class="form-control"
+                name="shipping_status"
+                required
+              >
+                <option value selected disabled>--請選擇--</option>
+                <option value="0">處理中</option>
+                <option value="1">配送中</option>
+                <option value="2">已到貨</option>
+              </select>
+            </div>
+          </td>
+
+          <td>
+            <button
+              v-show="!order.isEditing"
+              type="button"
+              class="btn btn-link"
+              @click.stop.prevent="toggleIsEditing(order.id)"
+            >
+              狀態管理
+              <i class="fas fa-file-invoice-dollar"></i>
+            </button>
+
+            <button
+              v-show="order.isEditing"
+              type="button"
+              class="btn btn-link"
+              @click.stop.prevent="updateOrder({ 
+                orderId: order.id,
+                payment_status: order.payment_status,
+                shipping_status: order.shipping_status })"
+            >
+              Check
+              <i class="fas fa-check"></i>
+            </button>
+
             <router-link
               :to="{name: 'admin-order', params: {orderId: order.id}}"
               class="btn btn-link"
             >
-              Show
+              詳情
               <i class="fas fa-external-link-square-alt"></i>
             </router-link>
           </td>
@@ -75,19 +138,46 @@ export default {
         const vm = this
         const api = 'https://ec-website-api.herokuapp.com/api/admin/orders'
         const { data, statusText } = await vm.axios.get(api)
-        console.log(data, statusText)
 
         if (statusText !== 'OK') {
           throw new Error(statusText)
         }
 
-        vm.orders = data.orders
+        vm.orders = data.orders.map(order => ({ ...order, isEditing: false }))
       } catch (error) {
         Toast.fire({
           type: 'error',
           title: '無法取得訂單，請稍後再試'
         })
       }
+    },
+    async updateOrder({ orderId, payment_status, shipping_status }) {
+      try {
+        const vm = this
+        const api = `https://ec-website-api.herokuapp.com/api/admin/orders/${orderId}`
+        const value = { payment_status, shipping_status }
+        const { data, statusText } = await vm.axios.put(api, value)
+
+        if (statusText !== 'OK' || data.status !== 'success') {
+          throw new Error(statusText)
+        }
+
+        this.toggleIsEditing(orderId)
+      } catch (error) {
+        Toast.fire({
+          type: 'error',
+          title: '無法更新金流狀態，請稍後再試'
+        })
+      }
+    },
+    toggleIsEditing(orderId) {
+      const vm = this
+
+      vm.orders = vm.orders.map(order => {
+        if (order.id !== orderId) return order
+
+        return { ...order, isEditing: !order.isEditing }
+      })
     }
   }
 }
@@ -95,6 +185,6 @@ export default {
 
 <style scoped>
 .btn-link {
-  color: rgba(13, 170, 243, 0.815);
+  color: rgba(12, 61, 167, 0.815);
 }
 </style>
