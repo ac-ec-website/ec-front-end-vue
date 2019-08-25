@@ -44,6 +44,11 @@ export default new Router({
       component: () => import('./views/OrderDetail.vue')
     },
     {
+      path: '/payment',
+      name: 'payment',
+      component: () => import('./views/Payment.vue')
+    },
+    {
       path: '/products/:productId',
       name: 'product',
       component: () => import('./views/Product.vue')

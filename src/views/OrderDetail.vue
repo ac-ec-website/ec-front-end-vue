@@ -24,20 +24,8 @@
       </div>
     </div>
 
-    <!-- 購物車為空 -->
-    <div v-if="orderItems.length < 1" class="row mt-5">
-      <div class="col-md-6 col-12 mx-auto">
-        <i class="fa fa-shopping-cart fa-5" aria-hidden="true"></i>
-        <div class="mt-3 text-center">
-          <h5>你的購物車是空的</h5>
-          <p>記得加入商品到你的購物車</p>
-          <router-link to="/products" class="btn btn-success btn-large">繼續購物</router-link>
-        </div>
-      </div>
-    </div>
-
     <!-- 訂單商品資訊 -->
-    <div v-else class="row mt-3">
+    <div class="row mt-3">
       <!-- 購物車清單 -->
       <div class="col-12">
         <!-- 開關合控制 -->
@@ -261,6 +249,9 @@
         </div>
 
         <div class="row mt-3 justify-content-end">
+          <div class="col-12 col-md-6">
+            <router-link to="/payment" class="w-100 btn btn-success">付款去</router-link>
+          </div>
           <div class="col-12 col-md-6">
             <router-link to="/products" class="w-100 btn btn-success">繼續購物</router-link>
           </div>

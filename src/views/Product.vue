@@ -44,6 +44,7 @@ export default {
   methods: {
     async fetchProduct(productId) {
       axios.defaults.withCredentials = true;
+
       const result = await axios.get(
         "https://ec-website-api.herokuapp.com/api/products/" + productId
       );
@@ -55,8 +56,10 @@ export default {
       this.cart = result.data.cart;
     },
     handleAddToCart(productId, quantity) {
-      const vm = this;
       axios.defaults.withCredentials = true;
+
+      const vm = this;
+
       axios
         .post("https://ec-website-api.herokuapp.com/api/cart", {
           productId,
