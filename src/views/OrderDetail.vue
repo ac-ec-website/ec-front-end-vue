@@ -366,7 +366,7 @@ export default {
         axios.defaults.withCredentials = true;
 
         const vm = this;
-        const api = "https://ec-website-api.herokuapp.com/api/cart";
+        const api = "https://ec-website-api.herokuapp.com/api/order";
         // const api = "http://localhost:3000/api/order";
         const { data, statusText } = await vm.axios.get(api);
         console.log("訂單資料 orderdata", data);
