@@ -288,6 +288,7 @@ export default {
     async fetchCart() {
       try {
         axios.defaults.withCredentials = true;
+
         const vm = this;
         const id = vm.cartId;
         const api = "https://ec-website-api.herokuapp.com/api/cart";

@@ -9,9 +9,10 @@ import router from './router'
 import store from './store'
 
 Vue.config.productionTip = false
-Vue.use(VueAxios, axios)
-axios.defaults.withCredentials = true
+
+axios.defaults.withCredentials = true;
 // axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token')
+Vue.use(VueAxios, axios)
 
 new Vue({
   router,

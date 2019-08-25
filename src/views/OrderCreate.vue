@@ -440,6 +440,7 @@ export default {
     async fetchCart() {
       try {
         axios.defaults.withCredentials = true;
+
         const vm = this;
         const id = vm.cartId;
         const api = "https://ec-website-api.herokuapp.com/api/cart";
@@ -477,7 +478,9 @@ export default {
 
         const form = e.target;
         const formData = new FormData(form);
+
         const { data, statusText } = await vm.axios.post(api, formData);
+        console.log("新增的訂單資料", data);
 
         if (statusText !== "OK" || data.status !== "success") {
           throw new Error(statusText);
