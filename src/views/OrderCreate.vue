@@ -168,7 +168,6 @@
                   type="text"
                   class="form-control"
                   name="orderCustomerName"
-                  required
                 />
               </div>
               <div class="form-group">
@@ -178,7 +177,6 @@
                   type="email"
                   class="form-control"
                   name="orderCustomerEmail"
-                  required
                 />
               </div>
               <div class="form-group">
@@ -188,7 +186,6 @@
                   type="tel"
                   class="form-control"
                   name="orderCustomerPhone"
-                  required
                 />
               </div>
               <div class="form-group">
@@ -198,7 +195,6 @@
                   type="address"
                   class="form-control"
                   name="orderCustomerAddress"
-                  required
                 />
               </div>
             </div>
@@ -220,7 +216,7 @@
             <form
               checkout-delivery-form
               name="deliveryForm"
-              class="ng-pristine ng-isolate-scope ng-valid-date ng-invalid ng-invalid-required"
+              class="ng-pristine ng-isolate-scope ng-valid-date ng-invalid ng-invalid-"
               style
             >
               <div id="delivery-form-content">
@@ -238,7 +234,6 @@
                     class="form-control"
                     name="orderRecipientName"
                     value
-                    required
                   />
                   <span>請填入收件人真實姓名，以確保順利收件</span>
                 </div>
@@ -249,7 +244,6 @@
                     type="tel"
                     class="form-control"
                     name="orderRecipientPhone"
-                    required
                   />
                 </div>
 
@@ -261,7 +255,6 @@
                     type="address"
                     class="form-control"
                     name="orderRecipientAddress"
-                    required
                   />
                 </div>
               </div>
@@ -446,10 +439,11 @@ export default {
   methods: {
     async fetchCart() {
       try {
+        axios.defaults.withCredentials = true;
         const vm = this;
         const id = vm.cartId;
-        // const api = "https://ec-website-api.herokuapp.com/api/cart";
-        const api = "http://localhost:3000/api/cart";
+        const api = "https://ec-website-api.herokuapp.com/api/cart";
+        // const api = "http://localhost:3000/api/cart";
 
         const { data, statusText } = await vm.axios.get(api);
 
@@ -473,8 +467,11 @@ export default {
     },
     async postOrder(e) {
       try {
+        axios.defaults.withCredentials = true;
+
         const vm = this;
-        const api = "http://localhost:3000/api/order";
+        const api = "https://ec-website-api.herokuapp.com/api/order";
+        // const api = "http://localhost:3000/api/order";
 
         vm.isProcessing = true;
 

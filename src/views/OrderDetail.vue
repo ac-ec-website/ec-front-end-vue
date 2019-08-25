@@ -24,17 +24,29 @@
       </div>
     </div>
 
-    <!-- 購物車有商品 -->
-    <div class="row mt-3">
+    <!-- 購物車為空 -->
+    <div v-if="orderItems.length < 1" class="row mt-5">
+      <div class="col-md-6 col-12 mx-auto">
+        <i class="fa fa-shopping-cart fa-5" aria-hidden="true"></i>
+        <div class="mt-3 text-center">
+          <h5>你的購物車是空的</h5>
+          <p>記得加入商品到你的購物車</p>
+          <router-link to="/products" class="btn btn-success btn-large">繼續購物</router-link>
+        </div>
+      </div>
+    </div>
+
+    <!-- 訂單商品資訊 -->
+    <div v-else class="row mt-3">
       <!-- 購物車清單 -->
       <div class="col-12">
         <!-- 開關合控制 -->
-        <div class="card" data-toggle="collapse" href="#cartSummary" aria-expanded="true">
+        <div class="card" data-toggle="collapse" href="#orderSummary" aria-expanded="true">
           <div class="card-header py-3 text-center border">
             <h4>合計: NT {{total_amount + shipping_fee | currency}}</h4>
             <h5>
               購物車&nbsp;(
-              <span class="sl-cart-count ng-isolate-scope">{{cartItems.length}}</span>&nbsp;件)
+              <span class="sl-cart-count ng-isolate-scope">{{orderItems.length}}</span>&nbsp;件)
               <i
                 v-if="!status"
                 class="fa fa-angle-down"
@@ -50,7 +62,7 @@
             </h5>
           </div>
 
-          <div id="cartSummary" class="collapse">
+          <div id="orderSummary" class="collapse">
             <div class="card-body border">
               <!-- Table Header -->
               <div class="row table-header">
@@ -64,7 +76,7 @@
               <hr class="table-header" />
               <!-- Table Body -->
               <div
-                v-for="product in cartItems"
+                v-for="product in orderItems"
                 :key="product.id"
                 class="table-row row cart-item py-1"
               >
@@ -96,14 +108,14 @@
                 </div>
                 <!-- 數量欄位 -->
                 <div class="col-6 col-md-2 text-center item-quantity my-auto">
-                  <div>{{product.CartItem.quantity}}</div>
+                  <div>{{ product.OrderItem.quantity }}</div>
                 </div>
 
                 <!-- 小計欄位 -->
                 <div class="col-6 col-md-3 text-center item-total my-auto">
                   <span
                     class="total-count"
-                  >NT {{product.sell_price * product.CartItem.quantity | currency}}</span>
+                  >NT {{product.sell_price * product.OrderItem.quantity | currency}}</span>
                 </div>
               </div>
             </div>
@@ -133,6 +145,124 @@
             <div class="card-footer text-center">
               <i class="fa fa-angle-up" aria-hidden="true"></i>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 訂單詳情列表  -->
+    <div class="row mt-3">
+      <div class="col-12 mx-auto">
+        <div class="card">
+          <div class="card-header py-3 text-center border">
+            <div class="row">
+              <div class="col-3 col-md-5 my-auto text-right">
+                <i class="fas fa-check" aria-hidden="true"></i>
+              </div>
+
+              <div class="col-9 col-md-7 text-left">
+                <h4>謝謝您！您的訂單已經成立！</h4>
+                <span>訂單號碼 {{orderId}}</span>
+                <p>訂單確認電郵已經發送到您的電子郵箱</p>
+                <!-- ::TODO:: 需隱藏部分信箱資訊 -->
+                <b>lovepanda996331****@gmail.com</b>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <!-- 訂單詳情 第一層（訂單資訊、顧客資訊） -->
+            <div class="row mt-3">
+              <div class="col-6">
+                <h4>訂單資訊</h4>
+                <div class="row">
+                  <span class="col-xs-5 col-sm-4">訂單日期:</span>
+                  <!-- ::TODO:: 時間須轉換 -->
+                  <span class="col-xs-7 col-sm-8 datetime">{{ order.createdAt }}</span>
+                </div>
+                <div class="row">
+                  <span class="col-xs-5 col-sm-4">訂單狀態:</span>
+                  <!-- ::TODO:: 新增 orderStatus -->
+                  <span class="col-xs-7 col-sm-8">出貨中</span>
+                </div>
+
+                <!-- Order fields -->
+                <!-- backwards compatibility -->
+              </div>
+              <div class="col-6">
+                <h4>顧客資訊</h4>
+                <div class="row">
+                  <span class="col-xs-5 col-sm-4">名稱:</span>
+                  <span class="col-xs-7 col-sm-8">{{order.name}}</span>
+                </div>
+                <div class="row">
+                  <!-- ::TODO:: 新增 orderStatus -->
+                  <span class="col-xs-5 col-sm-4">電話號碼:</span>
+                  <!-- ::TODO:: 需隱藏部分電話資訊 -->
+                  <span class="col-xs-7 col-sm-8">{{order.phone}}</span>
+                </div>
+              </div>
+            </div>
+            <hr />
+            <!-- 訂單詳情 第二層（送貨資訊、付款資訊） -->
+            <div class="row mt-3">
+              <div class="col-6 order-detail-section delivery-detail">
+                <h4>送貨資訊</h4>
+                <div class="row">
+                  <span class="col-xs-5 col-sm-4">收件人名稱:</span>
+                  <!-- ::TODO:: 需新增 shipping Model -->
+                  <span class="col-xs-7 col-sm-8">王大明</span>
+                </div>
+                <div class="row">
+                  <span class="col-xs-5 col-sm-4">收件人電話號碼:</span>
+                  <!-- ::TODO:: 需隱藏部分電話資訊 -->
+                  <span class="col-xs-7 col-sm-8">0912345678</span>
+                </div>
+                <div class="row">
+                  <span class="col-xs-5 col-sm-4">送貨方式:</span>
+                  <!-- ::TODO:: 需新增 shipping Model -->
+                  <span class="col-xs-7 col-sm-8">住家宅配</span>
+                </div>
+
+                <div class="row">
+                  <span class="col-xs-5 col-sm-4">送貨狀態:</span>
+                  <!-- ::TODO:: 需新增 shipping Model -->
+                  <span class="col-xs-7 col-sm-8">備貨中</span>
+                </div>
+
+                <div class="row">
+                  <span class="col-xs-5 col-sm-4">地址:</span>
+                  <!-- ::TODO:: 需新增 shipping Model -->
+                  <span class="col-xs-7 col-sm-8">全家就是你家</span>
+                </div>
+              </div>
+
+              <div class="col-6 order-detail-section">
+                <h4>付款資訊</h4>
+                <div class="row">
+                  <span class="col-xs-5 col-sm-4">付款方式:</span>
+                  <!-- ::TODO:: Payment_Method -->
+                  <span class="col-xs-7 col-sm-8">信用卡交易</span>
+                </div>
+                <div class="row">
+                  <span class="col-xs-5 col-sm-4">付款狀態:</span>
+                  <!-- ::TODO:: Payment_Status -->
+                  <span class="col-xs-7 col-sm-8">未付款</span>
+                </div>
+
+                <div class="row">
+                  <span class="col-xs-5 col-sm-4">付款方式簡介:</span>
+                  <!-- ::TODO:: Payment_Desrciption -->
+                  <span class="col-xs-7 col-sm-8 newlines">信用卡交易</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-3 justify-content-end">
+          <div class="col-12 col-md-6">
+            <router-link to="/products" class="w-100 btn btn-success">繼續購物</router-link>
           </div>
         </div>
       </div>
@@ -200,11 +330,26 @@ section {
 .section-body {
   padding: 15px 0px;
 }
+
+.fa-check {
+  color: green;
+  text-align: center;
+  font-size: 38px;
+  border: 5px solid green;
+  line-height: 50px;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+}
 </style>
 
 <script>
 import axios from "axios";
-import { emptyImageFilter, currencyFilter } from "@/utils/mixins";
+import {
+  emptyImageFilter,
+  currencyFilter,
+  dateTimeFilter
+} from "@/utils/mixins";
 import { Toast } from "@/utils/helpers";
 
 export default {
@@ -212,7 +357,9 @@ export default {
   data() {
     return {
       cartId: 0,
-      cartItems: [],
+      orderId: 0,
+      order: {},
+      orderItems: [],
       total_amount: 0,
       shipping_fee: 0,
       status: false,
@@ -220,66 +367,37 @@ export default {
     };
   },
   created() {
-    this.fetchCart();
+    this.fetchOrder();
   },
   methods: {
-    async fetchCart() {
+    async fetchOrder() {
       try {
-        const vm = this;
-        const id = vm.cartId;
-        // const api = "https://ec-website-api.herokuapp.com/api/cart";
-        const api = "http://localhost:3000/api/cart";
+        axios.defaults.withCredentials = true;
 
+        const vm = this;
+        const api = "https://ec-website-api.herokuapp.com/api/cart";
+        // const api = "http://localhost:3000/api/order";
         const { data, statusText } = await vm.axios.get(api);
+        console.log("訂單資料 orderdata", data);
 
         if (statusText !== "OK") {
           throw new Error(statusText);
         }
 
-        // 購物車內商品資訊
-        this.cartItems = data.cart.items;
-        this.cartItems.map(d => d.id * d.id).reduce((a, b) => a + b);
-        // 購物車總價
-        this.total_amount = data.total_amount;
+        // 訂單資訊
+        this.order = data.order;
+        // 訂單編號
+        this.orderId = data.order.id;
+        // 訂單商品資訊
+        this.orderItems = data.order.items;
+        this.orderItems.map(d => d.id * d.id).reduce((a, b) => a + b);
+        // 訂單總價
+        this.total_amount = data.order.total_amount;
       } catch (error) {
-        if (this.cartItems.length > 1) {
+        if (this.orderItems.length > 1) {
           Toast.fire({
             type: "error",
-            title: "無法取得購物車資料，請稍後再試"
-          });
-        }
-      }
-    },
-    async postOrder(e) {
-      try {
-        const vm = this;
-        const api = "http://localhost:3000/api/order";
-
-        vm.isProcessing = true;
-
-        const form = e.target;
-        const formData = new FormData(form);
-        const { data, statusText } = await vm.axios.post(api, formData);
-
-        if (statusText !== "OK" || data.status !== "success") {
-          throw new Error(statusText);
-        }
-
-        vm.isProcessing = false;
-
-        Toast.fire({
-          type: "success",
-          title: "訂單已新增，請確認"
-        });
-
-        //::TODO:: 跳轉至 Step 3 頁面
-        vm.$router.push({ name: "orderDetail" });
-      } catch (error) {
-        if (this.cartItems.length > 1) {
-          this.isProcessing = false;
-          Toast.fire({
-            type: "error",
-            title: "無法新增訂單，請稍後再試"
+            title: "無法取得訂單資料，請稍後再試"
           });
         }
       }

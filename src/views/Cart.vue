@@ -275,7 +275,7 @@ export default {
   mixins: [currencyFilter, emptyImageFilter],
   data() {
     return {
-      cartId: 0,
+      cartId: null,
       cartItems: [],
       total_amount: 0,
       shipping_fee: 0
@@ -287,19 +287,22 @@ export default {
   methods: {
     async fetchCart() {
       try {
+        axios.defaults.withCredentials = true;
         const vm = this;
         const id = vm.cartId;
-        // const api = "https://ec-website-api.herokuapp.com/api/cart";
-        const api = "http://localhost:3000/api/cart";
+        const api = "https://ec-website-api.herokuapp.com/api/cart";
+        // const api = "http://localhost:3000/api/cart";
 
         const { data, statusText } = await vm.axios.get(api);
+        console.log("購物車 data", data);
 
         if (statusText !== "OK") {
           throw new Error(statusText);
         }
 
         // 購物車 Id
-        this.cartId = id;
+        this.cartId = data.cart.id;
+        console.log("取得購物車 id", this.cartId);
         // 購物車內商品資訊
         this.cartItems = data.cart.items;
         this.cartItems.map(d => d.id * d.id).reduce((a, b) => a + b);
@@ -316,9 +319,12 @@ export default {
     },
     async addItemToCart(cartId, cartItemId) {
       try {
+        axios.defaults.withCredentials = true;
+
         const vm = this;
-        // const api = `https://ec-website-api.herokuapp.com/api/cart/${cartId}/cartItem/${cartItemId}/add`;
-        const api = `http://localhost:3000/api/cart/${cartId}/cartItem/${cartItemId}/add`;
+        const id = vm.cartId;
+        const api = `https://ec-website-api.herokuapp.com/api/cart/${id}/cartItem/${cartItemId}/add`;
+        // const api = `http://localhost:3000/api/cart/${id}/cartItem/${cartItemId}/add`;
 
         const { data, statusText } = await vm.axios.post(api);
 
@@ -335,9 +341,12 @@ export default {
     },
     async subItemFromCart(cartId, cartItemId) {
       try {
+        axios.defaults.withCredentials = true;
+
         const vm = this;
-        // const api = `https://ec-website-api.herokuapp.com/api/cart/${cartId}/cartItem/${cartItemId}/sub`;
-        const api = `http://localhost:3000/api/cart/${cartId}/cartItem/${cartItemId}/sub`;
+        const id = vm.cartId;
+        const api = `https://ec-website-api.herokuapp.com/api/cart/${id}/cartItem/${cartItemId}/sub`;
+        // const api = `http://localhost:3000/api/cart/${id}/cartItem/${cartItemId}/sub`;
 
         const { data, statusText } = await vm.axios.post(api);
 
@@ -354,9 +363,12 @@ export default {
     },
     async deleteItemFromCart(cartId, cartItemId) {
       try {
+        axios.defaults.withCredentials = true;
+
         const vm = this;
-        // const api = `https://ec-website-api.herokuapp.com/api/cart/${cartId}/cartItem/${cartItemId}`;
-        const api = `http://localhost:3000/api/cart/${cartId}/cartItem/${cartItemId}`;
+        const id = vm.cartId;
+        const api = `https://ec-website-api.herokuapp.com/api/cart/${id}/cartItem/${cartItemId}`;
+        // const api = `http://localhost:3000/api/cart/${id}/cartItem/${cartItemId}`;
 
         const { data, statusText } = await vm.axios.delete(api);
 
