@@ -2,7 +2,8 @@
   <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
     <router-link to="/" class="text-white mr-3">品牌 LOGO</router-link>
 
-    <li class="float-right">
+    <li class="w-auto">
+      <span id="navbarCartItemNumber" class="badge badge-danger" style="display: none"></span>
       <span class="text-white" style="cursor: pointer" @click.stop.prevent="toggleSideCart">購物車</span>
     </li>
 
@@ -53,12 +54,26 @@
 </template>
 
 <script>
-// import { mapState } from 'vuex'
+import { mapState } from 'vuex'
+import JQuery from 'jquery'
+let $ = JQuery
 
 export default {
-  // computed: {
-  //   ...mapState(['currentUser', 'isLogin'])
-  // },
+  computed: {
+    cartItemNumber() {
+      const newCount = this.$store.state.cartItemNumber
+      console.log('computed cartItemNumber', newCount)
+
+      $('#navbarCartItemNumber').html(newCount)
+      if (this.$store.state.cartItemNumber > 0) {
+        $('#navbarCartItemNumber').show(1000)
+      } else {
+        $('#navbarCartItemNumber').hide()
+      }
+      return this.$store.state.cartItemNumber
+    }
+    // ...mapState(['currentUser', 'isLogin'])
+  },
   data() {
     return {
       currentUser: {
@@ -67,6 +82,9 @@ export default {
       },
       isLogin: true
     }
+  },
+  watch: {
+    cartItemNumber() {}
   },
   methods: {
     toggleSideCart() {

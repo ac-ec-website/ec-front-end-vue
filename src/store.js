@@ -13,9 +13,14 @@ export default new Vuex.Store({
       role: ''
     },
     isLogin: false,
-    token: ''
+    token: '',
+    cartItemNumber: 0
   },
   mutations: {
+    setNavbarCartItemNumber(state, number) {
+      console.log('setNavbarCartItemNumber', number)
+      state.cartItemNumber = number
+    },
     setCurrentUser(state, currentUser) {
       console.log('setCurrentUser')
       state.currentUser = {
