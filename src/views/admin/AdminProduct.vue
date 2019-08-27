@@ -2,15 +2,13 @@
   <div class="container py-5">
     <div class="row">
       <div class="col-md-12">
-        <h1>{{ product.name }}</h1>
+        <h2>{{ product.name }}</h2>
+        <strong>[{{ product.categoryName }}]</strong>
       </div>
 
       <div class="col-md-4">
-        <img
-          class="img-responsive center-block"
-          :src="product.image | emptyImage"
-          style="width: 250px;margin-bottom: 25px;"
-        />
+        <img class="img-responsive center-block" :src="product.image | emptyImage" />
+
         <div class="well">
           <ul class="list-unstyled">
             <li>
@@ -29,15 +27,16 @@
               <strong>庫存:</strong>
               {{ product.stock_quantity }}
             </li>
+            <li>
+              <strong v-if="product.product_status">產品已啟用</strong>
+              <strong v-else>產品未啟用</strong>
+            </li>
           </ul>
         </div>
       </div>
 
       <div class="col-md-8">
         <p>{{ product.description }}</p>
-        <hr />
-        <p v-if="product.product_status">產品已啟用</p>
-        <p v-else>產品未啟用</p>
       </div>
     </div>
     <hr />
@@ -78,7 +77,10 @@ export default {
           throw new Error(statusText)
         }
 
-        vm.product = data.product
+        vm.product = {
+          ...data.product,
+          categoryName: data.product.Category.name
+        }
       } catch (error) {
         Toast.fire({
           type: 'error',
@@ -88,4 +90,11 @@ export default {
     }
   }
 }
-</script> 
+</script>
+
+<style scoped>
+.img-responsive {
+  width: 250px;
+  margin-bottom: 25px;
+}
+</style>

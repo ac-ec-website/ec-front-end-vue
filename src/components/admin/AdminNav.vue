@@ -14,9 +14,9 @@
     <div class="col-sm-2">
       <div class="card">
         <div class="card-body">
-          <router-link class="btn btn-link" to="/admin/orders">
-            訂單列表
-            <i class="far fa-list-alt"></i>
+          <router-link class="btn btn-link" to="/admin/categories">
+            產品類別
+            <i class="fas fa-align-justify"></i>
           </router-link>
         </div>
       </div>
@@ -28,6 +28,17 @@
           <router-link class="btn btn-link" to="/admin/coupons">
             優惠券
             <i class="fas fa-ticket-alt"></i>
+          </router-link>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-2">
+      <div class="card">
+        <div class="card-body">
+          <router-link class="btn btn-link" to="/admin/orders">
+            訂單列表
+            <i class="far fa-list-alt"></i>
           </router-link>
         </div>
       </div>

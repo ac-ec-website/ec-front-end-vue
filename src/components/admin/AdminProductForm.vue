@@ -14,6 +14,24 @@
     </div>
 
     <div class="form-group">
+      <label for="CategoryId">Category</label>
+      <select
+        id="CategoryId"
+        v-model="product.CategoryId"
+        class="form-control"
+        name="CategoryId"
+        required
+      >
+        <option value selected disabled>-- 請選擇 --</option>
+        <option
+          v-for="category in categories"
+          :key="category.id"
+          :value="category.id"
+        >{{ category.name }}</option>
+      </select>
+    </div>
+
+    <div class="form-group">
       <label for="cost_price">Cost Price</label>
       <input
         id="cost_price"
@@ -146,8 +164,10 @@ export default {
         origin_price: 0,
         sell_price: 0,
         product_status: false,
-        image: ''
+        image: '',
+        CategoryId: ''
       },
+      categories: [],
       isLoading: true
     }
   },
@@ -160,12 +180,31 @@ export default {
     }
   },
   created() {
+    this.fetchCategories()
     this.product = {
       ...this.product,
       ...this.initialProduct
     }
   },
   methods: {
+    async fetchCategories() {
+      try {
+        const vm = this
+        const api = `https://ec-website-api.herokuapp.com/api/admin/categories`
+        const { data, statusText } = await vm.axios.get(api)
+
+        if (statusText !== 'OK') {
+          throw new Error(statusText)
+        }
+
+        this.categories = data.categories
+      } catch (error) {
+        Toast.fire({
+          type: 'error',
+          title: ' 無法取得餐廳類別，請稍後再試'
+        })
+      }
+    },
     handleFileChange(e) {
       const files = e.target.files
       if (!files.length) return // 如果沒有檔案則離開此函式
@@ -178,6 +217,12 @@ export default {
         Toast.fire({
           type: 'warning',
           title: '請填寫產品名稱'
+        })
+        return
+      } else if (!this.product.CategoryId) {
+        Toast.fire({
+          type: 'warning',
+          title: ' 請選擇產品類別'
         })
         return
       }
