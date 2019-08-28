@@ -139,35 +139,73 @@
         </div>
       </div>
 
-      <!-- 購物車總覽 -->
-      <div class="col-12 mt-3 d-flex justify-content-end">
-        <div class="card text-right w-100">
-          <div class="card-header">
-            <h3>訂單資訊</h3>
+      <!-- 配送選擇與訂單資訊 -->
+      <div class="col-12 mt-5">
+        <div class="row">
+          <div class="col-sm-7 col-md-8">
+            <div class="card">
+              <div class="card-header">
+                <h3>選擇配送方式</h3>
+              </div>
+              <div class="card-body">
+                <form name="cartForm">
+                  <div class="form-group">
+                    <label for="cart-delivery-method">配送方式</label>
+                    <span class="select-cart-form">
+                      <select
+                        id="cart-delivery-method"
+                        class="form-control"
+                        v-model="shipping_method"
+                        required
+                      >
+                        <option disabled value>== 請選擇 ==</option>
+                        <option name="cartDeliveryMethod" value="住家宅配">住家宅配</option>
+                        <option name="cartDeliveryMethod" value="其他">其他</option>
+                      </select>
+                    </span>
+                  </div>
+                </form>
+              </div>
+            </div>
           </div>
 
-          <div class="card-body">
-            <div class="subtotal ng-scope">
-              <span class="pull-left">小計:</span>
-              <span class="pull-right">NT {{total_amount | currency}}</span>
-            </div>
+          <div class="col-sm-5 col-md-4">
+            <div class="card text-right">
+              <div class="card-header">
+                <h3>訂單資訊</h3>
+              </div>
 
-            <div class="delivery-fee ng-scope">
-              <span class="pull-left">運費:</span>
-              <span class="pull-right">NT {{shipping_fee | currency}}</span>
-            </div>
-            <hr class="ng-scope" />
-            <div class="total ng-scope">
-              <span class="pull-left">
-                合計
-                <span class="hidden-sm hidden-md hidden-lg">({{cartItems.length}} 件)</span>:
-              </span>
-              <span
-                class="pull-right font-weight-bold"
-              >NT {{total_amount + shipping_fee | currency}}</span>
+              <div class="card-body">
+                <div class="subtotal ng-scope">
+                  <span class="pull-left">小計:</span>
+                  <span class="pull-right">NT {{total_amount | currency}}</span>
+                </div>
+
+                <div class="delivery-fee ng-scope">
+                  <span class="pull-left">運費:</span>
+                  <span class="pull-right">NT {{shipping_fee | currency}}</span>
+                </div>
+                <hr class="ng-scope" />
+                <div class="total ng-scope">
+                  <span class="pull-left">
+                    合計
+                    <span class="hidden-sm hidden-md hidden-lg">({{cartItems.length}} 件)</span>:
+                  </span>
+                  <span
+                    class="pull-right font-weight-bold"
+                  >NT {{total_amount + shipping_fee | currency}}</span>
+                </div>
+              </div>
             </div>
           </div>
-          <router-link to="/order/create" class="btn btn-success btn-block mt-3">前往結帳</router-link>
+
+          <div class="col-12">
+            <button
+              type="button"
+              class="btn btn-success btn-block mt-3"
+              @click.stop.prevent="putCart"
+            >前往結帳</button>
+          </div>
         </div>
       </div>
     </div>
@@ -278,7 +316,8 @@ export default {
       cartId: null,
       cartItems: [],
       total_amount: 0,
-      shipping_fee: 0
+      shipping_fee: 0,
+      shipping_method: ""
     };
   },
   created() {
@@ -381,6 +420,53 @@ export default {
         Toast.fire({
           type: "error",
           title: "無法移除該商品，請稍後再試"
+        });
+      }
+    },
+    async putCart(e) {
+      try {
+        axios.defaults.withCredentials = true;
+
+        const vm = this;
+        const api = "https://ec-website-api.herokuapp.com/api/cart";
+        // const api = "http://localhost:3000/api/cart";
+
+        if (!vm.shipping_method) {
+          Toast.fire({
+            type: "warning",
+            title: "請選擇配送方式"
+          });
+        }
+
+        const shippingData = {
+          shipping_method: vm.shipping_method
+        };
+
+        const { data, statusText } = await vm.axios.put(api, shippingData);
+        console.log("更新後的配送資訊", data);
+
+        if (statusText !== "OK" || data.status !== "success") {
+          throw new Error(statusText);
+        }
+
+        Toast.fire({
+          type: "success",
+          title: "配送資訊已更新"
+        });
+
+        vm.$router.push({ name: "orderCreate" });
+      } catch (error) {
+        if (!this.shipping_method) {
+          Toast.fire({
+            type: "warning",
+            title: "請選擇配送方式"
+          });
+          return;
+        }
+
+        Toast.fire({
+          type: "error",
+          title: "無法更新配送資訊，請稍後再試"
         });
       }
     }
