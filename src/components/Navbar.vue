@@ -43,7 +43,7 @@
                 <!-- is user is admin -->
                 <router-link v-if="currentUser.role === 'admin'" to="/admin/products" class="dropdown-item">管理員後台</router-link>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#" @click="logout">登出</a>
+                <a class="dropdown-item" @click="logout">登出</a>
               </div>
             </template>
           </li>
@@ -71,17 +71,8 @@ export default {
         $('#navbarCartItemNumber').hide()
       }
       return this.$store.state.cartItemNumber
-    }
-    // ...mapState(['currentUser', 'isLogin'])
-  },
-  data() {
-    return {
-      currentUser: {
-        name: 'GPW',
-        role: 'admin'
-      },
-      isLogin: true
-    }
+    },
+    ...mapState(['currentUser', 'isLogin'])
   },
   watch: {
     cartItemNumber() {}
@@ -89,11 +80,11 @@ export default {
   methods: {
     toggleSideCart() {
       this.$root.$emit('toggleSideCart')
+    },
+    logout() {
+      this.$store.commit('logout')
+      this.$router.push('/admin/signin')
     }
-    // logout() {
-    //   this.$store.commit('logout')
-    //   this.$router.push('/signin')
-    // }
   }
 }
 </script>
