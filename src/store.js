@@ -39,11 +39,13 @@ export default new Vuex.Store({
       state.isLogin = false
       state.token = ''
       localStorage.removeItem('token')
+      Vue.axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token')
     }
   },
   actions: {
     async fetchCurrentUser({ commit }) {
       try {
+        Vue.axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token')
         const { data, statusText } = await Vue.axios.get('https://ec-website-api.herokuapp.com/api/get_current_user')
 
         console.log('fetchCurrentUser', data)

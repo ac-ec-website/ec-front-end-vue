@@ -2,16 +2,18 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import SignIn from './views/SignIn.vue'
 import Products from './views/Products.vue'
-// import store from './store'
+import store from './store'
 Vue.use(Router)
-// const checkIsAdmin = (to, from, next) => {
-//   const currentUser = store.state.currentUser
-//   if (currentUser.role !== 'admin') {
-//     next('/404')
-//     return
-//   }
-//   next()
-// }
+
+const checkIsAdmin = (to, from, next) => {
+  console.log('checkIsAdmin')
+  const currentUser = store.state.currentUser
+  if (currentUser.role !== 'admin') {
+    next('/404')
+    return
+  }
+  next()
+}
 
 const router = new Router({
   linkExactActiveClass: 'active',
@@ -80,50 +82,50 @@ const router = new Router({
     {
       path: '/admin/products',
       name: 'admin-products',
-      component: () => import('./views/admin/AdminProducts.vue')
-      // beforeEnter: checkIsAdmin
+      component: () => import('./views/admin/AdminProducts.vue'),
+      beforeEnter: checkIsAdmin
     },
     {
       path: '/admin/categories',
       name: 'admin-categories',
-      component: () => import('./views/admin/AdminCategories.vue')
-      // beforeEnter: checkIsAdmin
+      component: () => import('./views/admin/AdminCategories.vue'),
+      beforeEnter: checkIsAdmin
     },
     {
       path: '/admin/products/new',
       name: 'admin-products-new',
-      component: () => import('./views/admin/AdminProductNew.vue')
-      // beforeEnter: checkIsAdmin
+      component: () => import('./views/admin/AdminProductNew.vue'),
+      beforeEnter: checkIsAdmin
     },
     {
       path: '/admin/products/:productId',
       name: 'admin-product',
-      component: () => import('./views/admin/AdminProduct.vue')
-      // beforeEnter: checkIsAdmin
+      component: () => import('./views/admin/AdminProduct.vue'),
+      beforeEnter: checkIsAdmin
     },
     {
       path: '/admin/products/:productId/edit',
       name: 'admin-product-edit',
-      component: () => import('./views/admin/AdminProductEdit.vue')
-      // beforeEnter: checkIsAdmin
+      component: () => import('./views/admin/AdminProductEdit.vue'),
+      beforeEnter: checkIsAdmin
     },
     {
       path: '/admin/orders',
       name: 'admin-orders',
-      component: () => import('./views/admin/AdminOrders.vue')
-      // beforeEnter: checkIsAdmin
+      component: () => import('./views/admin/AdminOrders.vue'),
+      beforeEnter: checkIsAdmin
     },
     {
       path: '/admin/orders/:orderId',
       name: 'admin-order',
-      component: () => import('./views/admin/AdminOrder.vue')
-      // beforeEnter: checkIsAdmin
+      component: () => import('./views/admin/AdminOrder.vue'),
+      beforeEnter: checkIsAdmin
     },
     {
       path: '/admin/users',
       name: 'admin-users',
-      component: () => import('./views/admin/AdminUsers.vue')
-      // beforeEnter: checkIsAdmin
+      component: () => import('./views/admin/AdminUsers.vue'),
+      beforeEnter: checkIsAdmin
     },
     {
       path: '*',
@@ -133,17 +135,17 @@ const router = new Router({
   ]
 })
 
-// router.beforeEach((to, from, next) => {
-//   if (to.path.indexOf('admin') < 0) {
-//     next()
-//     return
-//   }
+router.beforeEach(async (to, from, next) => {
+  if (to.path.indexOf('admin') < 0) {
+    next()
+    return
+  }
 
-//   console.log('store.state.token:', store.state.token.slice(0, 10))
-//   if (!store.state.token) {
-//     store.dispatch('fetchCurrentUser')
-//   }
-//   next()
-// })
+  console.log('store.state.token:', store.state.token.slice(0, 10))
+  if (!store.state.token) {
+    await store.dispatch('fetchCurrentUser')
+  }
+  next()
+})
 
 export default router
