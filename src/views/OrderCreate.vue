@@ -448,6 +448,8 @@ export default {
 
         const { data, statusText } = await vm.axios.get(api);
 
+        console.log("訂單創建頁面 購物車內容", data);
+
         if (statusText !== "OK") {
           throw new Error(statusText);
         }
