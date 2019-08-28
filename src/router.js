@@ -84,6 +84,12 @@ const router = new Router({
       // beforeEnter: checkIsAdmin
     },
     {
+      path: '/admin/categories',
+      name: 'admin-categories',
+      component: () => import('./views/admin/AdminCategories.vue')
+      // beforeEnter: checkIsAdmin
+    },
+    {
       path: '/admin/products/new',
       name: 'admin-products-new',
       component: () => import('./views/admin/AdminProductNew.vue')
