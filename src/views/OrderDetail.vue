@@ -14,11 +14,11 @@
             <span
               class="border bg-secondary px-4 py-2 rounded-pill text-dark mb-3 d-inline-block"
             >Step 2</span>
-            <p class="text-dark h6">填寫資料與付款</p>
+            <p class="text-dark h6">填寫資料</p>
           </div>
           <div class="col text-center">
             <span class="bg-dark px-4 py-2 rounded-pill text-light mb-3 d-inline-block">Step 3</span>
-            <p class="text-dark h6">訂單確認</p>
+            <p class="text-dark h6">訂單確認與付款</p>
           </div>
         </div>
       </div>
