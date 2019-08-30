@@ -1,13 +1,15 @@
 <template>
   <div class="container py-5">
+    <Searchbar @filter-search="filterSearch" />
     <CategoryTab :categories="categories" @filter-category="filterCategory" />
     <SideCartPreview :initial-cart="cart" v-show="showSideCart" @clickDeleteItem="handleDeleteItem" />
-    <!-- 類別標籤  -->
-    <!-- <NavCate :categories="categories" /> -->
 
     <div class="row">
       <!-- 產品卡片 -->
       <ProductsCard v-for="product in filterProducts" :key="product.id" :initial-product="product" />
+    </div>
+    <div class="text-center">
+      <div v-if="filterProducts.length === 0">喔！沒有此商品QAQ</div>
     </div>
 
     <!-- 分頁標籤  -->
@@ -22,6 +24,7 @@ import NavCate from '@/components/NavCate'
 import Pagination from '@/components/Pagination'
 import SideCartPreview from '@/components/SideCartPreview'
 import CategoryTab from '@/components/CategoryTab'
+import Searchbar from '@/components/Searchbar'
 import JQuery from 'jquery'
 let $ = JQuery
 
@@ -29,7 +32,6 @@ export default {
   data() {
     return {
       categories: [],
-      // categoryId: '',
       // currentPage: 1,
       products: [],
       filterProducts: [],
@@ -89,6 +91,17 @@ export default {
           return product
         }
       })
+    },
+    filterSearch(inputText) {
+      if (inputText === '') {
+        this.filterProducts = this.products
+        return
+      }
+      this.filterProducts = this.products.filter(product => {
+        if (product.name.indexOf(inputText) > 0 || product.Category.name.indexOf(inputText) > 0) {
+          return product
+        }
+      })
     }
   },
   components: {
@@ -96,7 +109,8 @@ export default {
     ProductsCard,
     Pagination,
     SideCartPreview,
-    CategoryTab
+    CategoryTab,
+    Searchbar
   }
 }
 </script>
