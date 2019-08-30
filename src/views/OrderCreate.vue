@@ -168,6 +168,7 @@
                   type="text"
                   class="form-control"
                   name="orderCustomerName"
+                  required
                 />
               </div>
               <div class="form-group">
@@ -177,6 +178,7 @@
                   type="email"
                   class="form-control"
                   name="orderCustomerEmail"
+                  required
                 />
               </div>
               <div class="form-group">
@@ -186,6 +188,7 @@
                   type="tel"
                   class="form-control"
                   name="orderCustomerPhone"
+                  required
                 />
               </div>
               <div class="form-group">
@@ -195,13 +198,30 @@
                   type="address"
                   class="form-control"
                   name="orderCustomerAddress"
+                  required
                 />
               </div>
             </div>
           </div>
         </section>
         <!-- 2. 訂單備註 -->
-        <!-- ::TODO:: -->
+        <section class="remark-form">
+          <div class="row section-header">
+            <span class="col-12 px-0">訂單備註</span>
+          </div>
+          <div class="section-body">
+            <div name="remarksForm">
+              <div class="form-group">
+                <textarea
+                  id="order-remarks"
+                  class="form-control"
+                  name="orderRemark"
+                  placeholder="有什麼想告訴賣家嗎？"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
       <!-- 右側 -->
       <div class="col-sm-6">
@@ -213,52 +233,47 @@
           </div>
           <div class="section-body">
             <p>已選擇的送貨方式: {{shipping_method}}</p>
-            <form
-              checkout-delivery-form
-              name="deliveryForm"
-              class="ng-pristine ng-isolate-scope ng-valid-date ng-invalid ng-invalid-"
-              style
-            >
-              <div id="delivery-form-content">
-                <!-- ::TODO:: 暫不啟用，等 User 建置完成 -->
-                <!-- <div class="form-group">
-                  <label class="control-label">
-                    <input type="checkbox" name="order[delivery_data][recipient_is_customer]" /> 收件人資料與顧客資料相同
-                  </label>
-                </div>-->
-                <div class="form-group">
-                  <label for="recipient-name" class="control-label">收件人名稱</label>
-                  <input
-                    id="recipient-name"
-                    type="text"
-                    class="form-control"
-                    name="orderRecipientName"
-                    value
-                  />
-                  <span>請填入收件人真實姓名，以確保順利收件</span>
-                </div>
-                <div class="form-group">
-                  <label for="recipient-phone" class="control-label">收件人電話號碼</label>
-                  <input
-                    id="recipient-phone"
-                    type="tel"
-                    class="form-control"
-                    name="orderRecipientPhone"
-                  />
-                </div>
-
-                <hr />
-                <div class="form-group">
-                  <label for="recipient-address" class="control-label">收件人地址</label>
-                  <input
-                    id="recipient-phone"
-                    type="address"
-                    class="form-control"
-                    name="orderRecipientAddress"
-                  />
-                </div>
+            <div id="delivery-form-content">
+              <!-- ::TODO:: 暫不啟用，等 User 建置完成 -->
+              <div class="form-group">
+                <label class="control-label">
+                  <input type="checkbox" :v-model="userDataStatus" @change="chechkIsSame()" /> 收件人資料與顧客資料相同
+                </label>
               </div>
-            </form>
+              <div class="form-group">
+                <label for="recipient-name" class="control-label">收件人名稱</label>
+                <input
+                  id="recipient-name"
+                  type="text"
+                  class="form-control"
+                  name="orderRecipientName"
+                  required
+                />
+                <span>請填入收件人真實姓名，以確保順利收件</span>
+              </div>
+              <div class="form-group">
+                <label for="recipient-phone" class="control-label">收件人電話號碼</label>
+                <input
+                  id="recipient-phone"
+                  type="tel"
+                  class="form-control"
+                  name="orderRecipientPhone"
+                  required
+                />
+              </div>
+
+              <hr />
+              <div class="form-group">
+                <label for="recipient-address" class="control-label">收件人地址</label>
+                <input
+                  id="recipient-phone"
+                  type="address"
+                  class="form-control"
+                  name="orderRecipientAddress"
+                  required
+                />
+              </div>
+            </div>
           </div>
         </section>
         <!-- 3. 付款資料 -->
@@ -268,7 +283,12 @@
           </div>
           <div class="row section-body">
             <div name="paymentForm" class="col-12">
-              <div class="form-group">已選擇的付款方式: {{payment_method}}</div>
+              <div class="form-group">訂單支援的付款方式:</div>
+              <ul>
+                <li>信用卡一次付清</li>
+                <li>ATM轉帳</li>
+                <li>超商代碼繳費</li>
+              </ul>
             </div>
             <div
               class="col-12 font-weight-bold"
@@ -427,9 +447,9 @@ export default {
       cartItems: [],
       total_amount: 0,
       shipping_fee: 0,
-      shipping_method: "住家宅配",
-      payment_method: "信用卡線上支付",
+      shipping_method: "",
       status: false,
+      userDataStatus: false,
       isProcessing: false
     };
   },
@@ -457,6 +477,10 @@ export default {
         // 購物車內商品資訊
         this.cartItems = data.cart.items;
         this.cartItems.map(d => d.id * d.id).reduce((a, b) => a + b);
+        // 運送方式
+        this.shipping_method = data.cart.shipping_method;
+        // 運費
+        this.shipping_fee = data.cart.shipping_fee;
         // 購物車總價
         this.total_amount = data.total_amount;
       } catch (error) {
@@ -495,7 +519,6 @@ export default {
           title: "訂單已新增，請確認"
         });
 
-        //::TODO:: 跳轉至 Step 3 頁面
         vm.$router.push({ name: "orderDetail" });
       } catch (error) {
         if (this.cartItems.length > 1) {
@@ -509,6 +532,9 @@ export default {
     },
     async collapseStatusChange() {
       this.status = !this.status;
+    },
+    async chechkIsSame() {
+      console.log;
     }
   }
 };
