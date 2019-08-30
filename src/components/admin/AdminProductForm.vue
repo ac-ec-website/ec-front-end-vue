@@ -14,12 +14,12 @@
     </div>
 
     <div class="form-group">
-      <label for="CategoryId">Category</label>
+      <label for="categoryId">Category</label>
       <select
-        id="CategoryId"
-        v-model="product.CategoryId"
+        id="categoryId"
+        v-model="product.categoryId"
         class="form-control"
-        name="CategoryId"
+        name="categoryId"
         required
       >
         <option value selected disabled>-- 請選擇 --</option>
@@ -165,7 +165,7 @@ export default {
         sell_price: 0,
         product_status: false,
         image: '',
-        CategoryId: ''
+        categoryId: ''
       },
       categories: [],
       isLoading: true
@@ -219,7 +219,7 @@ export default {
           title: '請填寫產品名稱'
         })
         return
-      } else if (!this.product.CategoryId) {
+      } else if (!this.product.categoryId) {
         Toast.fire({
           type: 'warning',
           title: ' 請選擇產品類別'

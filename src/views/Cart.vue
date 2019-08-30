@@ -150,7 +150,10 @@
               <div class="card-body">
                 <form name="cartForm">
                   <div class="form-group">
-                    <label for="cart-delivery-method">配送方式</label>
+                    <label for="cart-delivery-method">
+                      配送方式
+                      <span class="text-danger">*</span>
+                    </label>
                     <span class="select-cart-form">
                       <select
                         id="cart-delivery-method"

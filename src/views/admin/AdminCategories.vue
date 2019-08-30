@@ -19,7 +19,10 @@
             class="btn btn-primary"
             :disabled="isProcessing"
             @click.stop.prevent="createCategory()"
-          >New Category</button>
+          >
+            New Category
+            <i class="fas fa-plus-square"></i>
+          </button>
         </div>
       </div>
     </form>
@@ -28,7 +31,7 @@
       <thead class="thead-dark">
         <tr>
           <th scope="col" width="60">#</th>
-          <th scope="col">Category Name</th>
+          <th scope="col">Category</th>
           <th scope="col" width="250">Action</th>
         </tr>
       </thead>

@@ -86,12 +86,6 @@ const router = new Router({
       beforeEnter: checkIsAdmin
     },
     {
-      path: '/admin/categories',
-      name: 'admin-categories',
-      component: () => import('./views/admin/AdminCategories.vue'),
-      beforeEnter: checkIsAdmin
-    },
-    {
       path: '/admin/products/new',
       name: 'admin-products-new',
       component: () => import('./views/admin/AdminProductNew.vue'),
@@ -107,6 +101,60 @@ const router = new Router({
       path: '/admin/products/:productId/edit',
       name: 'admin-product-edit',
       component: () => import('./views/admin/AdminProductEdit.vue'),
+      beforeEnter: checkIsAdmin
+    },
+    {
+      path: '/admin/categories',
+      name: 'admin-categories',
+      component: () => import('./views/admin/AdminCategories.vue'),
+      beforeEnter: checkIsAdmin
+    },
+    {
+      path: '/admin/coupons',
+      name: 'admin-coupons',
+      component: () => import('./views/admin/AdminCoupons.vue'),
+      beforeEnter: checkIsAdmin
+    },
+    {
+      path: '/admin/coupons/new',
+      name: 'admin-coupons-new',
+      component: () => import('./views/admin/AdminCouponNew.vue'),
+      beforeEnter: checkIsAdmin
+    },
+    {
+      path: '/admin/coupons/:couponId',
+      name: 'admin-coupon',
+      component: () => import('./views/admin/AdminCoupon.vue'),
+      beforeEnter: checkIsAdmin
+    },
+    {
+      path: '/admin/coupons/:couponId/edit',
+      name: 'admin-coupon-edit',
+      component: () => import('./views/admin/AdminCouponEdit.vue'),
+      beforeEnter: checkIsAdmin
+    },
+    {
+      path: '/admin/discounts',
+      name: 'admin-discounts',
+      component: () => import('./views/admin/AdminDiscounts.vue'),
+      beforeEnter: checkIsAdmin
+    },
+    {
+      path: '/admin/discounts/new',
+      name: 'admin-discounts-new',
+      component: () => import('./views/admin/AdminDiscountNew.vue'),
+      beforeEnter: checkIsAdmin
+    },
+    {
+      path: '/admin/discounts/:discountId',
+      name: 'admin-discount',
+      component: () => import('./views/admin/AdminDiscount.vue'),
+      beforeEnter: checkIsAdmin
+    },
+    {
+      path: '/admin/discounts/:discountId/edit',
+      name: 'admin-discount-edit',
+      component: () => import('./views/admin/AdminDiscountEdit.vue'),
       beforeEnter: checkIsAdmin
     },
     {
