@@ -61,7 +61,7 @@ export default {
   methods: {
     async fetchUser() {
       const vm = this
-      const { data, statusText } = await vm.axios.get('http://localhost:3000/api/admin/users')
+      const { data, statusText } = await vm.axios.get('https://ec-website-api.herokuapp.com/api/admin/users')
       console.log(data)
       this.users = data.user.map(user => {
         console.log(user.id, this.$store.state.currentUser.id)
@@ -104,9 +104,8 @@ export default {
         }
         return user
       })
-      // 打 API
 
-      const { data, statusText } = await vm.axios.put('http://localhost:3000/api/admin/user', {
+      const { data, statusText } = await vm.axios.put('https://ec-website-api.herokuapp.com/api/admin/user', {
         id: userId,
         role: userRole
       })

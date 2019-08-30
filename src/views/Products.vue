@@ -1,12 +1,13 @@
 <template>
   <div class="container py-5">
+    <CategoryTab :categories="categories" @filter-category="filterCategory" />
     <SideCartPreview :initial-cart="cart" v-show="showSideCart" @clickDeleteItem="handleDeleteItem" />
     <!-- 類別標籤  -->
     <!-- <NavCate :categories="categories" /> -->
 
     <div class="row">
       <!-- 產品卡片 -->
-      <ProductsCard v-for="product in products" :key="product.id" :initial-product="product" />
+      <ProductsCard v-for="product in filterProducts" :key="product.id" :initial-product="product" />
     </div>
 
     <!-- 分頁標籤  -->
@@ -20,16 +21,18 @@ import ProductsCard from '@/components/ProductsCard'
 import NavCate from '@/components/NavCate'
 import Pagination from '@/components/Pagination'
 import SideCartPreview from '@/components/SideCartPreview'
+import CategoryTab from '@/components/CategoryTab'
 import JQuery from 'jquery'
 let $ = JQuery
 
 export default {
   data() {
     return {
-      // categories: [],
+      categories: [],
       // categoryId: '',
       // currentPage: 1,
       products: [],
+      filterProducts: [],
       cart: {},
       showSideCart: false
       // totalPage: 0
@@ -56,7 +59,9 @@ export default {
         throw new Error(statusText)
       }
       vm.products = response.data.products
+      vm.filterProducts = vm.products
       vm.cart = response.data.cart
+      vm.categories = response.data.categories
       this.$store.commit('setNavbarCartItemNumber', response.data.cart.items.length)
     },
     handleDeleteItem(cartId, cartItemId) {
@@ -73,13 +78,25 @@ export default {
         .catch(function(error) {
           console.log(error)
         })
+    },
+    filterCategory(categoryId) {
+      if (categoryId === undefined) {
+        this.filterProducts = this.products
+        return
+      }
+      this.filterProducts = this.products.filter(product => {
+        if (product.CategoryId === categoryId) {
+          return product
+        }
+      })
     }
   },
   components: {
     NavCate,
     ProductsCard,
     Pagination,
-    SideCartPreview
+    SideCartPreview,
+    CategoryTab
   }
 }
 </script>
