@@ -36,6 +36,17 @@
     <div class="col-sm-2">
       <div class="card">
         <div class="card-body">
+          <router-link class="btn btn-link" to="/admin/discounts">
+            特價活動
+            <i class="fas fa-tags"></i>
+          </router-link>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-2">
+      <div class="card">
+        <div class="card-body">
           <router-link class="btn btn-link" to="/admin/orders">
             訂單列表
             <i class="far fa-list-alt"></i>
@@ -63,6 +74,6 @@
 }
 
 .btn-link {
-  color: rgb(15, 170, 136);
+  color: rgb(243, 131, 40);
 }
 </style>

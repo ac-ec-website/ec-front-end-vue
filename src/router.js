@@ -134,6 +134,30 @@ const router = new Router({
       beforeEnter: checkIsAdmin
     },
     {
+      path: '/admin/discounts',
+      name: 'admin-discounts',
+      component: () => import('./views/admin/AdminDiscounts.vue'),
+      beforeEnter: checkIsAdmin
+    },
+    {
+      path: '/admin/discounts/new',
+      name: 'admin-discounts-new',
+      component: () => import('./views/admin/AdminDiscountNew.vue'),
+      beforeEnter: checkIsAdmin
+    },
+    {
+      path: '/admin/discounts/:discountId',
+      name: 'admin-discount',
+      component: () => import('./views/admin/AdminDiscount.vue'),
+      beforeEnter: checkIsAdmin
+    },
+    {
+      path: '/admin/discounts/:discountId/edit',
+      name: 'admin-discount-edit',
+      component: () => import('./views/admin/AdminDiscountEdit.vue'),
+      beforeEnter: checkIsAdmin
+    },
+    {
       path: '/admin/orders',
       name: 'admin-orders',
       component: () => import('./views/admin/AdminOrders.vue'),
