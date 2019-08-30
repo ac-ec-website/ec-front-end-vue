@@ -148,12 +148,11 @@
                 <i class="fas fa-check" aria-hidden="true"></i>
               </div>
 
-              <div class="col-9 col-md-7 text-left">
+              <div class="col-9 col-md-7 text-left pl-3">
                 <h4>謝謝您！您的訂單已經成立！</h4>
                 <span>訂單號碼 {{orderId}}</span>
                 <p>訂單確認電郵已經發送到您的電子郵箱</p>
-                <!-- ::TODO:: 需隱藏部分信箱資訊 -->
-                <b>lovepanda996331****@gmail.com</b>
+                <b>{{order.email}}</b>
               </div>
             </div>
           </div>
@@ -165,17 +164,13 @@
                 <h4>訂單資訊</h4>
                 <div class="row">
                   <span class="col-xs-5 col-sm-4">訂單日期:</span>
-                  <!-- ::TODO:: 時間須轉換 -->
-                  <span class="col-xs-7 col-sm-8 datetime">{{ order.createdAt }}</span>
+                  <span class="col-xs-7 col-sm-8">{{ order.createdAt | detailedTime }}</span>
                 </div>
                 <div class="row">
                   <span class="col-xs-5 col-sm-4">訂單狀態:</span>
-                  <!-- ::TODO:: 新增 orderStatus -->
-                  <span class="col-xs-7 col-sm-8">出貨中</span>
+                  <span v-if="order_status === '1' " class="col-xs-7 col-sm-8">處理中</span>
+                  <span v-else-if="order_status === '0' " class="col-xs-7 col-sm-8">已取消</span>
                 </div>
-
-                <!-- Order fields -->
-                <!-- backwards compatibility -->
               </div>
               <div class="col-6">
                 <h4>顧客資訊</h4>
@@ -184,9 +179,7 @@
                   <span class="col-xs-7 col-sm-8">{{order.name}}</span>
                 </div>
                 <div class="row">
-                  <!-- ::TODO:: 新增 orderStatus -->
                   <span class="col-xs-5 col-sm-4">電話號碼:</span>
-                  <!-- ::TODO:: 需隱藏部分電話資訊 -->
                   <span class="col-xs-7 col-sm-8">{{order.phone}}</span>
                 </div>
               </div>
@@ -194,66 +187,87 @@
             <hr />
             <!-- 訂單詳情 第二層（送貨資訊、付款資訊） -->
             <div class="row mt-3">
-              <div class="col-6 order-detail-section delivery-detail">
+              <div class="col-12 col-md-6 order-detail-section delivery-detail">
                 <h4>送貨資訊</h4>
                 <div class="row">
-                  <span class="col-xs-5 col-sm-4">收件人名稱:</span>
-                  <!-- ::TODO:: 需新增 shipping Model -->
-                  <span class="col-xs-7 col-sm-8">王大明</span>
+                  <span class="col-6 col-md-4">收件人名稱:</span>
+                  <span class="col-6 col-md-8">{{shipping.name}}</span>
                 </div>
                 <div class="row">
-                  <span class="col-xs-5 col-sm-4">收件人電話號碼:</span>
-                  <!-- ::TODO:: 需隱藏部分電話資訊 -->
-                  <span class="col-xs-7 col-sm-8">0912345678</span>
+                  <span class="col-6 col-md-4">收件人電話號碼:</span>
+                  <span class="col-6 col-md-8">{{shipping.phone}}</span>
                 </div>
                 <div class="row">
-                  <span class="col-xs-5 col-sm-4">送貨方式:</span>
-                  <!-- ::TODO:: 需新增 shipping Model -->
-                  <span class="col-xs-7 col-sm-8">住家宅配</span>
+                  <span class="col-6 col-md-4">送貨方式:</span>
+                  <span v-if="shipping.shipping_method === '住家宅配' " class="col-6 col-md-8">住家宅配</span>
+                  <span v-else-if="shipping.shipping_method === '其他' " class="col-6 col-md-8">其他</span>
                 </div>
 
                 <div class="row">
-                  <span class="col-xs-5 col-sm-4">送貨狀態:</span>
-                  <!-- ::TODO:: 需新增 shipping Model -->
-                  <span class="col-xs-7 col-sm-8">備貨中</span>
+                  <span class="col-6 col-md-4">送貨狀態:</span>
+                  <span v-if="shipping.shipping_status === '0' " class="col-6 col-md-8">尚未配送</span>
+                  <span v-else-if="shipping.shipping_status === '1' " class="col-6 col-md-8">配送中</span>
+                  <span v-else-if="shipping.shipping_status === '2' " class="col-6 col-md-8">已送達</span>
                 </div>
 
                 <div class="row">
-                  <span class="col-xs-5 col-sm-4">地址:</span>
-                  <!-- ::TODO:: 需新增 shipping Model -->
-                  <span class="col-xs-7 col-sm-8">全家就是你家</span>
+                  <span class="col-6 col-md-4">地址:</span>
+                  <span class="col-6 col-md-8">{{shipping.address}}</span>
                 </div>
               </div>
 
-              <div class="col-6 order-detail-section">
+              <div class="col-12 hidden-Except-Mobile">
+                <hr />
+              </div>
+
+              <div class="col-12 col-md-6 order-detail-section">
                 <h4>付款資訊</h4>
+
                 <div class="row">
-                  <span class="col-xs-5 col-sm-4">付款方式:</span>
-                  <!-- ::TODO:: Payment_Method -->
-                  <span class="col-xs-7 col-sm-8">信用卡交易</span>
-                </div>
-                <div class="row">
-                  <span class="col-xs-5 col-sm-4">付款狀態:</span>
-                  <!-- ::TODO:: Payment_Status -->
-                  <span class="col-xs-7 col-sm-8">未付款</span>
+                  <span class="col-6 col-md-4">付款金額:</span>
+                  <span class="col-6 col-md-8">NT {{total_amount + shipping_fee | currency}}</span>
                 </div>
 
                 <div class="row">
-                  <span class="col-xs-5 col-sm-4">付款方式簡介:</span>
-                  <!-- ::TODO:: Payment_Desrciption -->
-                  <span class="col-xs-7 col-sm-8 newlines">信用卡交易</span>
+                  <span class="col-6 col-md-4">付款方式:</span>
+                  <span v-if="payment_status ==='0'" class="col-6 col-md-8">尚未付款</span>
+                  <span v-else-if="payment_status ==='1'" class="col-6 col-md-8">
+                    <span v-if="payment_method='CREDIT'">信用卡一次付清</span>
+                    <span v-else-if="payment_method='VACC'">ATM轉帳</span>
+                    <span v-else-if="payment_method='CVS'">超商代碼繳費</span>
+                  </span>
+                </div>
+
+                <div class="row">
+                  <span class="col-6 col-md-4">付款狀態:</span>
+                  <span v-if="payment_status ==='0'" class="col-6 col-md-8">尚未付款</span>
+                  <span
+                    v-else-if="payment_status ==='1'"
+                    class="col-6 col-md-8 text-danger font-weight-bold"
+                  >已付款</span>
+                </div>
+
+                <div class="row">
+                  <span class="col-6 col-md-4">付款方式簡介:</span>
+                  <span v-if="payment_status ==='0'" class="col-6 col-md-8">無</span>
+                  <span v-else-if="payment_status ==='1'" class="col-6 col-md-8">
+                    <span v-if="payment_method='CREDIT'">信用卡一次付清</span>
+                    <span v-else-if="payment_method='VACC'">ATM轉帳</span>
+                    <span v-else-if="payment_method='CVS'">超商代碼繳費</span>
+                  </span>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="row mt-3 justify-content-end">
-          <div class="col-12 col-md-6">
+        <div class="row mt-3">
+          <div v-if="payment_status === '0' " class="col-12 col-md-12">
             <router-link to="/payment" class="w-100 btn btn-success">付款去</router-link>
           </div>
-          <div class="col-12 col-md-6">
-            <router-link to="/products" class="w-100 btn btn-success">繼續購物</router-link>
+
+          <div v-else-if="payment_status === '1' " class="col-12 col-md-12">
+            <router-link to="/products" class="w-100 btn btn-info">繼續購物</router-link>
           </div>
         </div>
       </div>
@@ -281,6 +295,13 @@
   width: 180px;
   height: 2px;
   border-bottom: 2px solid #343a40;
+}
+
+@media (min-width: 769.9px) {
+  .hidden-Except-Mobile {
+    content: "";
+    display: none;
+  }
 }
 
 @media (max-width: 769px) {
@@ -337,21 +358,25 @@ section {
 <script>
 import axios from "axios";
 import {
-  emptyImageFilter,
+  detailedTimeFilter,
   currencyFilter,
-  dateTimeFilter
+  emptyImageFilter
 } from "@/utils/mixins";
 import { Toast } from "@/utils/helpers";
 
 export default {
-  mixins: [currencyFilter, emptyImageFilter],
+  mixins: [detailedTimeFilter, currencyFilter, emptyImageFilter],
   data() {
     return {
-      cartId: 0,
-      orderId: 0,
       order: {},
+      orderId: 0,
+      order_status: null,
       orderItems: [],
       total_amount: 0,
+      payment: [],
+      payment_status: null,
+      payment_method: null,
+      shipping: [],
       shipping_fee: 0,
       status: false,
       isProcessing: false
@@ -376,14 +401,25 @@ export default {
         }
 
         // 訂單資訊
-        this.order = data.order;
+        vm.order = data.order;
         // 訂單編號
-        this.orderId = data.order.id;
+        vm.orderId = data.order.id;
+        // 訂單狀態
+        vm.order_status = data.order.order_status;
         // 訂單商品資訊
-        this.orderItems = data.order.items;
-        this.orderItems.map(d => d.id * d.id).reduce((a, b) => a + b);
-        // 訂單總價
-        this.total_amount = data.order.total_amount;
+        vm.orderItems = data.order.items;
+        vm.orderItems.map(d => d.id * d.id).reduce((a, b) => a + b);
+        // 商品總價
+        vm.total_amount = data.order.total_amount;
+
+        // 付款資訊
+        vm.payment = data.payment;
+        vm.payment_status = data.payment.payment_status;
+        vm.payment_method = data.payment.payment_method;
+
+        // 運送資訊
+        vm.shipping = data.shipping;
+        vm.shipping_fee = data.shipping.shipping_fee;
       } catch (error) {
         if (this.orderItems.length > 1) {
           Toast.fire({
