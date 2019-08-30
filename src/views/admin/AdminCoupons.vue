@@ -12,7 +12,8 @@
         <tr>
           <th scope="col">#</th>
           <th scope="col">Coupon</th>
-          <th scope="col">Description</th>
+          <th scope="col">優惠券號碼</th>
+          <th scope="col">運費繳交</th>
           <th scope="col" width="300">Action</th>
         </tr>
       </thead>
@@ -21,7 +22,12 @@
         <tr v-for="coupon in coupons" :key="coupon.id">
           <th scope="row">{{ coupon.id }}</th>
           <td>{{ coupon.name }}</td>
-          <td>{{ coupon.description }}</td>
+          <td>{{ coupon.coupon_code }}</td>
+
+          <td>
+            <span v-if="coupon.shipping_free === 1" class="text-success">免運費</span>
+            <span v-else class="text-muted">需運費</span>
+          </td>
 
           <td class="d-flex justify-content-between">
             <router-link
