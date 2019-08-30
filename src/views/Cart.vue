@@ -12,13 +12,13 @@
             <span
               class="border bg-secondary px-4 py-2 rounded-pill text-dark mb-3 d-inline-block"
             >Step 2</span>
-            <p class="text-dark h6">填寫資料與付款</p>
+            <p class="text-dark h6">填寫資料</p>
           </div>
           <div class="col text-center">
             <span
               class="border bg-secondary px-4 py-2 rounded-pill text-dark mb-3 d-inline-block"
             >Step 3</span>
-            <p class="text-dark h6">訂單確認</p>
+            <p class="text-dark h6">訂單確認與與付款</p>
           </div>
         </div>
       </div>
@@ -156,9 +156,9 @@
                         id="cart-delivery-method"
                         class="form-control"
                         v-model="shipping_method"
+                        @change="TrackShippingMethod()"
                         required
                       >
-                        <option disabled value>== 請選擇 ==</option>
                         <option name="cartDeliveryMethod" value="住家宅配">住家宅配</option>
                         <option name="cartDeliveryMethod" value="其他">其他</option>
                       </select>
@@ -316,8 +316,8 @@ export default {
       cartId: null,
       cartItems: [],
       total_amount: 0,
-      shipping_fee: 0,
-      shipping_method: ""
+      shipping_fee: 60,
+      shipping_method: "住家宅配"
     };
   },
   created() {
@@ -355,6 +355,17 @@ export default {
             title: "無法取得購物車資料，請稍後再試"
           });
         }
+      }
+    },
+    async TrackShippingMethod() {
+      const vm = this;
+
+      if (vm.shipping_method === "住家宅配") {
+        vm.shipping_fee = 60;
+      }
+
+      if (vm.shipping_method === "其他") {
+        vm.shipping_fee = 100;
       }
     },
     async addItemToCart(cartId, cartItemId) {
@@ -443,6 +454,7 @@ export default {
         };
 
         const { data, statusText } = await vm.axios.put(api, shippingData);
+
         console.log("更新後的配送資訊", data);
 
         if (statusText !== "OK" || data.status !== "success") {
