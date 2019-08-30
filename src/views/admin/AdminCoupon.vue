@@ -54,13 +54,11 @@ export default {
           throw new Error(statusText)
         }
 
-        vm.coupon = {
-          ...data.coupon
-        }
+        vm.coupon = data.coupon
       } catch (error) {
         Toast.fire({
           type: 'error',
-          title: '無法取得產品資料，請稍後再試'
+          title: '無法取得 coupon 資料，請稍後再試'
         })
       }
     }
