@@ -162,8 +162,12 @@
           <div class="section-body">
             <div name="customerForm">
               <div class="form-group">
-                <label for="order-customer-name" class="control-label">顧客名稱</label>
+                <label for="order-customer-name" class="control-label">
+                  顧客名稱
+                  <span class="text-danger">*</span>
+                </label>
                 <input
+                  v-model="customerName"
                   id="order-customer-name"
                   type="text"
                   class="form-control"
@@ -172,7 +176,10 @@
                 />
               </div>
               <div class="form-group">
-                <label for="order-customer-email" class="control-label">電子信箱</label>
+                <label for="order-customer-email" class="control-label">
+                  電子信箱
+                  <span class="text-danger">*</span>
+                </label>
                 <input
                   id="order-customer-email"
                   type="email"
@@ -182,8 +189,12 @@
                 />
               </div>
               <div class="form-group">
-                <label for="order-customer-phone" class="control-label">電話號碼</label>
+                <label for="order-customer-phone" class="control-label">
+                  電話號碼
+                  <span class="text-danger">*</span>
+                </label>
                 <input
+                  v-model="customerPhone"
                   id="order-customer-phone"
                   type="tel"
                   class="form-control"
@@ -192,8 +203,12 @@
                 />
               </div>
               <div class="form-group">
-                <label for="order-customer-address" class="control-label">地址</label>
+                <label for="order-customer-address" class="control-label">
+                  地址
+                  <span class="text-danger">*</span>
+                </label>
                 <input
+                  v-model="customerAddress"
                   id="order-customer-address"
                   type="address"
                   class="form-control"
@@ -234,15 +249,18 @@
           <div class="section-body">
             <p>已選擇的送貨方式: {{shipping_method}}</p>
             <div id="delivery-form-content">
-              <!-- ::TODO:: 暫不啟用，等 User 建置完成 -->
               <div class="form-group">
                 <label class="control-label">
-                  <input type="checkbox" :v-model="userDataStatus" @change="chechkIsSame()" /> 收件人資料與顧客資料相同
+                  <input type="checkbox" v-model="shippingFormStatus" @change="automaticFillIn" /> 收件人資料與顧客資料相同
                 </label>
               </div>
               <div class="form-group">
-                <label for="recipient-name" class="control-label">收件人名稱</label>
+                <label for="recipient-name" class="control-label">
+                  收件人名稱
+                  <span class="text-danger">*</span>
+                </label>
                 <input
+                  v-model="tempName"
                   id="recipient-name"
                   type="text"
                   class="form-control"
@@ -252,8 +270,12 @@
                 <span>請填入收件人真實姓名，以確保順利收件</span>
               </div>
               <div class="form-group">
-                <label for="recipient-phone" class="control-label">收件人電話號碼</label>
+                <label for="recipient-phone" class="control-label">
+                  收件人電話號碼
+                  <span class="text-danger">*</span>
+                </label>
                 <input
+                  v-model="tempPhone"
                   id="recipient-phone"
                   type="tel"
                   class="form-control"
@@ -264,9 +286,13 @@
 
               <hr />
               <div class="form-group">
-                <label for="recipient-address" class="control-label">收件人地址</label>
+                <label for="recipient-address" class="control-label">
+                  收件人地址
+                  <span class="text-danger">*</span>
+                </label>
                 <input
-                  id="recipient-phone"
+                  v-model="tempAddress"
+                  id="recipient-address"
                   type="address"
                   class="form-control"
                   name="orderRecipientAddress"
@@ -449,7 +475,13 @@ export default {
       shipping_fee: 0,
       shipping_method: "",
       status: false,
-      userDataStatus: false,
+      shippingFormStatus: false,
+      customerName: "",
+      customerPhone: "",
+      customerAddress: "",
+      tempName: "",
+      tempPhone: "",
+      tempAddress: "",
       isProcessing: false
     };
   },
@@ -533,8 +565,17 @@ export default {
     async collapseStatusChange() {
       this.status = !this.status;
     },
-    async chechkIsSame() {
-      console.log;
+    async automaticFillIn() {
+      const vm = this;
+      if (vm.shippingFormStatus) {
+        vm.tempName = vm.customerName;
+        vm.tempPhone = vm.customerPhone;
+        vm.tempAddress = vm.customerAddress;
+      } else {
+        vm.tempName = "";
+        vm.tempPhone = "";
+        vm.tempAddress = "";
+      }
     }
   }
 };

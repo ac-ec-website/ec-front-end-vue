@@ -16,6 +16,14 @@ export const dateTimeFilter = {
   }
 }
 
+export const detailedTimeFilter = {
+  filters: {
+    detailedTime(time) {
+      return time ? moment(time).format('YYYY-MM-DD HH:MM:SS') : '-';
+    }
+  }
+}
+
 export const currencyFilter = {
   filters: {
     currency(num) {
