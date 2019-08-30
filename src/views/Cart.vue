@@ -156,9 +156,9 @@
                         id="cart-delivery-method"
                         class="form-control"
                         v-model="shipping_method"
+                        @change="TrackShippingMethod()"
                         required
                       >
-                        <option disabled value>== 請選擇 ==</option>
                         <option name="cartDeliveryMethod" value="住家宅配">住家宅配</option>
                         <option name="cartDeliveryMethod" value="其他">其他</option>
                       </select>
@@ -316,8 +316,8 @@ export default {
       cartId: null,
       cartItems: [],
       total_amount: 0,
-      shipping_fee: 0,
-      shipping_method: ""
+      shipping_fee: 60,
+      shipping_method: "住家宅配"
     };
   },
   created() {
@@ -355,6 +355,17 @@ export default {
             title: "無法取得購物車資料，請稍後再試"
           });
         }
+      }
+    },
+    async TrackShippingMethod() {
+      const vm = this;
+
+      if (vm.shipping_method === "住家宅配") {
+        vm.shipping_fee = 60;
+      }
+
+      if (vm.shipping_method === "其他") {
+        vm.shipping_fee = 100;
       }
     },
     async addItemToCart(cartId, cartItemId) {
