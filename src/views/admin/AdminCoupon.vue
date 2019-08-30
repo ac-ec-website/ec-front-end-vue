@@ -5,7 +5,7 @@
         <h3>{{ coupon.name }}</h3>
         <p>{{coupon.description}}</p>
 
-        <p>號碼：{{coupon.coupon_code}}</p>
+        <p>優惠碼：{{coupon.coupon_code}}</p>
         <p>折抵：{{coupon.percent}} %</p>
         <p>折抵費用：{{coupon.product_reduce | currency}}</p>
         <p>使用次數：{{coupon.limited_num}}</p>

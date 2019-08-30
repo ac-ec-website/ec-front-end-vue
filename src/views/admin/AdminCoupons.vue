@@ -12,7 +12,7 @@
         <tr>
           <th scope="col">#</th>
           <th scope="col">Coupon</th>
-          <th scope="col">優惠券號碼</th>
+          <th scope="col">優惠碼</th>
           <th scope="col">運費繳交</th>
           <th scope="col" width="300">Action</th>
         </tr>
