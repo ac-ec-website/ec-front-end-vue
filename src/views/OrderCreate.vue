@@ -348,6 +348,124 @@
   </div>
 </template>
 
+<script>
+import cartAPI from '@/apis/cart'
+import orderAPI from '@/apis/order'
+import { emptyImageFilter, currencyFilter } from '@/utils/mixins'
+import { Toast } from '@/utils/helpers'
+
+export default {
+  mixins: [currencyFilter, emptyImageFilter],
+  data() {
+    return {
+      cartId: 0,
+      cartItems: [],
+      total_amount: 0,
+      shipping_fee: 0,
+      shipping_method: '',
+      status: false,
+      shippingFormStatus: false,
+      customerName: '',
+      customerPhone: '',
+      customerAddress: '',
+      tempName: '',
+      tempPhone: '',
+      tempAddress: '',
+      isProcessing: false
+    }
+  },
+  created() {
+    this.fetchCart()
+  },
+  methods: {
+    async fetchCart() {
+      try {
+        const vm = this
+
+        const { data, statusText } = await cartAPI.getCart()
+
+        console.log('訂單創建頁面 購物車內容', data)
+
+        if (statusText !== 'OK') {
+          throw new Error(statusText)
+        }
+
+        // 購物車內商品資訊
+        vm.cartItems = data.cart.items
+
+        vm.$store.commit('setNavbarCartItemNumber', vm.cartItems.length)
+
+        if (vm.cartItems.length < 1) {
+          return
+        }
+
+        vm.cartItems.map(d => d.id * d.id).reduce((a, b) => a + b)
+        // 購物車總價
+        vm.total_amount = data.total_amount
+
+        // 運送方式
+        vm.shipping_method = data.cart.shipping_method
+        // 運費
+        vm.shipping_fee = data.cart.shipping_fee
+      } catch (error) {
+        Toast.fire({
+          type: 'error',
+          title: '無法取得購物車資料，請稍後再試'
+        })
+      }
+    },
+    async postOrder(e) {
+      try {
+        const vm = this
+
+        const form = e.target
+        const formData = new FormData(form)
+
+        vm.isProcessing = true
+
+        const { data, statusText } = await orderAPI.postOrder(formData)
+
+        if (statusText !== 'OK' || data.status !== 'success') {
+          throw new Error(statusText)
+        }
+
+        vm.isProcessing = false
+
+        Toast.fire({
+          type: 'success',
+          title: '訂單已新增，請確認'
+        })
+
+        vm.$store.commit('setNavbarCartItemNumber', 0)
+        vm.$router.push({ name: 'orderDetail' })
+      } catch (error) {
+        this.isProcessing = false
+        Toast.fire({
+          type: 'error',
+          title: '無法新增訂單，請稍後再試'
+        })
+      }
+    },
+    async collapseStatusChange() {
+      this.status = !this.status
+    },
+    async automaticFillIn() {
+      const vm = this
+      if (vm.shippingFormStatus) {
+        vm.tempName = vm.customerName
+        vm.tempPhone = vm.customerPhone
+        vm.tempAddress = vm.customerAddress
+      } else {
+        vm.tempName = ''
+        vm.tempPhone = ''
+        vm.tempAddress = ''
+      }
+    }
+  }
+}
+</script>
+
+
 <style>
 .step {
   position: relative;
@@ -359,7 +477,7 @@
 }
 
 .step .step-point-line::after {
-  content: "";
+  content: '';
   display: block;
   position: absolute;
   z-index: -1;
@@ -375,7 +493,7 @@
 }
 
 .step .step-point::before {
-  content: "";
+  content: '';
   display: block;
   position: absolute;
   z-index: 0;
@@ -397,12 +515,12 @@
   }
 
   .step-point::before {
-    content: "";
+    content: '';
     display: none;
   }
 
   .hidden-In-Mobile {
-    content: "";
+    content: '';
     display: none;
   }
 }
@@ -459,124 +577,3 @@ section {
   padding: 15px 0px;
 }
 </style>
-
-<script>
-import axios from "axios";
-import { emptyImageFilter, currencyFilter } from "@/utils/mixins";
-import { Toast } from "@/utils/helpers";
-
-export default {
-  mixins: [currencyFilter, emptyImageFilter],
-  data() {
-    return {
-      cartId: 0,
-      cartItems: [],
-      total_amount: 0,
-      shipping_fee: 0,
-      shipping_method: "",
-      status: false,
-      shippingFormStatus: false,
-      customerName: "",
-      customerPhone: "",
-      customerAddress: "",
-      tempName: "",
-      tempPhone: "",
-      tempAddress: "",
-      isProcessing: false
-    };
-  },
-  created() {
-    this.fetchCart();
-  },
-  methods: {
-    async fetchCart() {
-      try {
-        axios.defaults.withCredentials = true;
-
-        const vm = this;
-        const id = vm.cartId;
-        const api = "https://ec-website-api.herokuapp.com/api/cart";
-        // const api = "http://localhost:3000/api/cart";
-
-        const { data, statusText } = await vm.axios.get(api);
-
-        console.log("訂單創建頁面 購物車內容", data);
-
-        if (statusText !== "OK") {
-          throw new Error(statusText);
-        }
-
-        // 購物車內商品資訊
-        this.cartItems = data.cart.items;
-        this.cartItems.map(d => d.id * d.id).reduce((a, b) => a + b);
-        // 運送方式
-        this.shipping_method = data.cart.shipping_method;
-        // 運費
-        this.shipping_fee = data.cart.shipping_fee;
-        // 購物車總價
-        this.total_amount = data.total_amount;
-      } catch (error) {
-        if (this.cartItems.length > 1) {
-          Toast.fire({
-            type: "error",
-            title: "無法取得購物車資料，請稍後再試"
-          });
-        }
-      }
-    },
-    async postOrder(e) {
-      try {
-        axios.defaults.withCredentials = true;
-
-        const vm = this;
-        const api = "https://ec-website-api.herokuapp.com/api/order";
-        // const api = "http://localhost:3000/api/order";
-
-        vm.isProcessing = true;
-
-        const form = e.target;
-        const formData = new FormData(form);
-
-        const { data, statusText } = await vm.axios.post(api, formData);
-        console.log("新增的訂單資料", data);
-
-        if (statusText !== "OK" || data.status !== "success") {
-          throw new Error(statusText);
-        }
-
-        vm.isProcessing = false;
-
-        Toast.fire({
-          type: "success",
-          title: "訂單已新增，請確認"
-        });
-
-        vm.$router.push({ name: "orderDetail" });
-      } catch (error) {
-        if (this.cartItems.length > 1) {
-          this.isProcessing = false;
-          Toast.fire({
-            type: "error",
-            title: "無法新增訂單，請稍後再試"
-          });
-        }
-      }
-    },
-    async collapseStatusChange() {
-      this.status = !this.status;
-    },
-    async automaticFillIn() {
-      const vm = this;
-      if (vm.shippingFormStatus) {
-        vm.tempName = vm.customerName;
-        vm.tempPhone = vm.customerPhone;
-        vm.tempAddress = vm.customerAddress;
-      } else {
-        vm.tempName = "";
-        vm.tempPhone = "";
-        vm.tempAddress = "";
-      }
-    }
-  }
-};
-</script>

@@ -2,7 +2,11 @@
   <div class="container py-5">
     <Searchbar @filter-search="filterSearch" />
     <CategoryTab :categories="categories" @filter-category="filterCategory" />
-    <SideCartPreview :initial-cart="cart" v-show="showSideCart" @clickDeleteItem="handleDeleteItem" />
+    <SideCartPreview
+      :initial-cart="cart"
+      v-show="showSideCart"
+      @clickDeleteItem="handleDeleteItem"
+    />
 
     <div class="row">
       <!-- 產品卡片 -->
@@ -18,15 +22,13 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { Toast } from '@/utils/helpers'
+import productsAPI from '@/apis/products'
 import ProductsCard from '@/components/ProductsCard'
-import NavCate from '@/components/NavCate'
 import Pagination from '@/components/Pagination'
 import SideCartPreview from '@/components/SideCartPreview'
 import CategoryTab from '@/components/CategoryTab'
 import Searchbar from '@/components/Searchbar'
-import JQuery from 'jquery'
-let $ = JQuery
 
 export default {
   data() {
@@ -50,36 +52,45 @@ export default {
   },
   methods: {
     async fetchProducts() {
-      axios.defaults.withCredentials = true
+      try {
+        const vm = this
+        const response = await productsAPI.getProducts()
 
-      const api = 'https://ec-website-api.herokuapp.com/api/products'
-      const vm = this
-      const response = await vm.axios.get(api)
-      console.log(response)
+        console.log('商品資料', response)
 
-      if (response.statusText !== 'OK') {
-        throw new Error(statusText)
+        if (response.statusText !== 'OK') {
+          throw new Error(statusText)
+        }
+
+        vm.products = response.data.products
+        vm.filterProducts = vm.products
+        vm.cart = response.data.cart
+        vm.categories = response.data.categories
+        vm.$store.commit('setNavbarCartItemNumber', response.data.cart.items.length)
+      } catch (error) {
+        Toast.fire({
+          type: 'error',
+          title: '無法取得所有商品資料，請稍後再試'
+        })
       }
-      vm.products = response.data.products
-      vm.filterProducts = vm.products
-      vm.cart = response.data.cart
-      vm.categories = response.data.categories
-      this.$store.commit('setNavbarCartItemNumber', response.data.cart.items.length)
     },
-    handleDeleteItem(cartId, cartItemId) {
-      console.log(cartId, cartItemId)
-      const productId = this.$route.params.productId
-      const vm = this
-      axios.defaults.withCredentials = true
-      axios
-        .delete(`https://ec-website-api.herokuapp.com/api/cart/${cartId}/cartItem/${cartItemId}`)
-        .then(function(response) {
-          vm.fetchProducts()
-          console.log(response)
+    async handleDeleteItem(cartId, cartItemId) {
+      try {
+        const vm = this
+
+        const { statusText } = await productsAPI.deleteItem(cartId, cartItemId)
+
+        if (statusText !== 'OK') {
+          throw new Error(statusText)
+        }
+
+        vm.fetchProducts()
+      } catch (error) {
+        Toast.fire({
+          type: 'error',
+          title: '無法刪除購物車商品，請稍後再試'
         })
-        .catch(function(error) {
-          console.log(error)
-        })
+      }
     },
     filterCategory(categoryId) {
       if (categoryId === undefined) {
@@ -105,7 +116,6 @@ export default {
     }
   },
   components: {
-    NavCate,
     ProductsCard,
     Pagination,
     SideCartPreview,

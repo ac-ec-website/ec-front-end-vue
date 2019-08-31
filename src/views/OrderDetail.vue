@@ -286,7 +286,7 @@
 }
 
 .step .step-point-line::after {
-  content: "";
+  content: '';
   display: block;
   position: absolute;
   z-index: -1;
@@ -299,14 +299,14 @@
 
 @media (min-width: 769.9px) {
   .hidden-Except-Mobile {
-    content: "";
+    content: '';
     display: none;
   }
 }
 
 @media (max-width: 769px) {
   .table-header {
-    content: "";
+    content: '';
     display: none;
   }
 }
@@ -356,13 +356,9 @@ section {
 </style>
 
 <script>
-import axios from "axios";
-import {
-  detailedTimeFilter,
-  currencyFilter,
-  emptyImageFilter
-} from "@/utils/mixins";
-import { Toast } from "@/utils/helpers";
+import orderAPI from '@/apis/order'
+import { detailedTimeFilter, currencyFilter, emptyImageFilter } from '@/utils/mixins'
+import { Toast } from '@/utils/helpers'
 
 export default {
   mixins: [detailedTimeFilter, currencyFilter, emptyImageFilter],
@@ -380,58 +376,56 @@ export default {
       shipping_fee: 0,
       status: false,
       isProcessing: false
-    };
+    }
   },
   created() {
-    this.fetchOrder();
+    this.fetchOrder()
   },
   methods: {
     async fetchOrder() {
       try {
-        axios.defaults.withCredentials = true;
+        const vm = this
 
-        const vm = this;
-        const api = "https://ec-website-api.herokuapp.com/api/order";
-        // const api = "http://localhost:3000/api/order";
-        const { data, statusText } = await vm.axios.get(api);
-        console.log("訂單資料 orderdata", data);
+        const { data, statusText } = await orderAPI.getOrder()
 
-        if (statusText !== "OK") {
-          throw new Error(statusText);
+        if (statusText !== 'OK') {
+          throw new Error(statusText)
         }
 
         // 訂單資訊
-        vm.order = data.order;
+        vm.order = data.order
         // 訂單編號
-        vm.orderId = data.order.id;
+        vm.orderId = data.order.id
         // 訂單狀態
-        vm.order_status = data.order.order_status;
+        vm.order_status = data.order.order_status
         // 訂單商品資訊
-        vm.orderItems = data.order.items;
-        vm.orderItems.map(d => d.id * d.id).reduce((a, b) => a + b);
+        vm.orderItems = data.order.items
+        vm.orderItems.map(d => d.id * d.id).reduce((a, b) => a + b)
         // 商品總價
-        vm.total_amount = data.order.total_amount;
+        vm.total_amount = data.order.total_amount
 
         // 付款資訊
-        vm.payment = data.payment;
-        vm.payment_status = data.payment.payment_status;
-        vm.payment_method = data.payment.payment_method;
+        vm.payment = data.payment
+        vm.payment_status = data.payment.payment_status
+        vm.payment_method = data.payment.payment_method
 
         // 運送資訊
-        vm.shipping = data.shipping;
-        vm.shipping_fee = data.shipping.shipping_fee;
+        vm.shipping = data.shipping
+        vm.shipping_fee = data.shipping.shipping_fee
+
+        vm.$store.commit('setNavbarCartItemNumber', 0)
       } catch (error) {
         if (this.orderItems.length > 1) {
           Toast.fire({
-            type: "error",
-            title: "無法取得訂單資料，請稍後再試"
-          });
+            type: 'error',
+            title: '無法取得訂單資料，請稍後再試'
+          })
         }
       }
     },
     async collapseStatusChange() {
-      this.status = !this.status;
+      this.status = !this.status
     }
   }
-};
+}
 </script>
