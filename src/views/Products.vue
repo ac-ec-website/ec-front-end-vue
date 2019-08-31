@@ -1,12 +1,15 @@
 <template>
   <div class="container py-5">
+    <Searchbar @filter-search="filterSearch" />
+    <CategoryTab :categories="categories" @filter-category="filterCategory" />
     <SideCartPreview :initial-cart="cart" v-show="showSideCart" @clickDeleteItem="handleDeleteItem" />
-    <!-- 類別標籤  -->
-    <!-- <NavCate :categories="categories" /> -->
 
     <div class="row">
       <!-- 產品卡片 -->
-      <ProductsCard v-for="product in products" :key="product.id" :initial-product="product" />
+      <ProductsCard v-for="product in filterProducts" :key="product.id" :initial-product="product" />
+    </div>
+    <div class="text-center">
+      <div v-if="filterProducts.length === 0">喔！沒有此商品QAQ</div>
     </div>
 
     <!-- 分頁標籤  -->
@@ -20,16 +23,18 @@ import ProductsCard from '@/components/ProductsCard'
 import NavCate from '@/components/NavCate'
 import Pagination from '@/components/Pagination'
 import SideCartPreview from '@/components/SideCartPreview'
+import CategoryTab from '@/components/CategoryTab'
+import Searchbar from '@/components/Searchbar'
 import JQuery from 'jquery'
 let $ = JQuery
 
 export default {
   data() {
     return {
-      // categories: [],
-      // categoryId: '',
+      categories: [],
       // currentPage: 1,
       products: [],
+      filterProducts: [],
       cart: {},
       showSideCart: false
       // totalPage: 0
@@ -56,7 +61,9 @@ export default {
         throw new Error(statusText)
       }
       vm.products = response.data.products
+      vm.filterProducts = vm.products
       vm.cart = response.data.cart
+      vm.categories = response.data.categories
       this.$store.commit('setNavbarCartItemNumber', response.data.cart.items.length)
     },
     handleDeleteItem(cartId, cartItemId) {
@@ -73,13 +80,37 @@ export default {
         .catch(function(error) {
           console.log(error)
         })
+    },
+    filterCategory(categoryId) {
+      if (categoryId === undefined) {
+        this.filterProducts = this.products
+        return
+      }
+      this.filterProducts = this.products.filter(product => {
+        if (product.CategoryId === categoryId) {
+          return product
+        }
+      })
+    },
+    filterSearch(inputText) {
+      if (inputText === '') {
+        this.filterProducts = this.products
+        return
+      }
+      this.filterProducts = this.products.filter(product => {
+        if (product.name.indexOf(inputText) > 0 || product.Category.name.indexOf(inputText) > 0) {
+          return product
+        }
+      })
     }
   },
   components: {
     NavCate,
     ProductsCard,
     Pagination,
-    SideCartPreview
+    SideCartPreview,
+    CategoryTab,
+    Searchbar
   }
 }
 </script>

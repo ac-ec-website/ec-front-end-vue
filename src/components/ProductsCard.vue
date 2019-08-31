@@ -10,30 +10,20 @@
 
       <div class="card-body">
         <h4 class="card-text title-wrap font-weight-bold">
-          <router-link
-            :to="{ name: 'product', params: { productId: product.id }}"
-            class="stretched-link"
-          >{{ product.name }}</router-link>
+          <router-link :to="{ name: 'product', params: { productId: product.id }}" class="stretched-link">{{ product.name }}</router-link>
         </h4>
+        <span class="badge badge-secondary">{{product.Category.name}}</span>
         <p class="card-text">{{ product.description }}</p>
         <hr />
-        <span
-          class="float-right text-secondary card-text text-truncate"
-        >原價$ {{ product.origin_price }} 元</span>
-        <h5
-          class="card-text text-truncate font-weight-bold text-success"
-        >NT$ {{ product.sell_price }} 元</h5>
+        <span class="float-right text-secondary card-text text-truncate">原價$ {{ product.origin_price }} 元</span>
+        <h5 class="card-text text-truncate font-weight-bold text-success">NT$ {{ product.sell_price }} 元</h5>
       </div>
 
       <div class="card-footer">
         <!-- <button v-if="product.isLiked" type="button" class="btn btn-danger btn-block" @click.stop.prevent="removeLike(product.id)">Unlike</button>
         <button v-else type="button" class="btn btn-primary btn-block" @click.stop.prevent="addLike(product.id)">Like</button>-->
 
-        <button
-          type="button"
-          class="btn btn-danger btn-block"
-          @click.stop.prevent="addToCart()"
-        >放入購物車</button>
+        <button type="button" class="btn btn-danger btn-block" @click.stop.prevent="addToCart()">放入購物車</button>
       </div>
     </div>
   </div>

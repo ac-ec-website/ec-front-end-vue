@@ -7,16 +7,34 @@
           <th scope="col">#</th>
           <th scope="col">Email</th>
           <th scope="col">Role</th>
-          <th scope="col" width="140">Action</th>
+          <th scope="col">Action</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td>root@example.com</td>
-          <td>admin</td>
+        <tr v-for="user in users" :key="user.id">
+          <th scope="row">{{user.id}}</th>
+          <td>{{user.email}}</td>
           <td>
-            <button type="button" class="btn btn-link">set as user</button>
+            <div v-show="user.isEditing">
+              <div class="input-group">
+                <select class="custom-select" v-model="user.role">
+                  <option>admin</option>
+                  <option>user</option>
+                </select>
+              </div>
+            </div>
+            <div v-show="!user.isEditing">{{user.role}}</div>
+          </td>
+          <td>
+            <div v-if="user.isSelf"></div>
+            <div v-else>
+              <div v-show="user.isEditing">
+                <button class="btn btn-outline-dark btn-sm" @click="updateUserRole(user.id)">Done</button>
+              </div>
+              <div v-show="!user.isEditing">
+                <button class="btn btn-outline-dark btn-sm" @click.stop.prevent="editUserRole(user.id)">Edit</button>
+              </div>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -26,6 +44,7 @@
 
 <script>
 import AdminNav from '@/components/admin/AdminNav'
+const { Toast } = require('../../utils/helpers')
 
 export default {
   components: {
@@ -42,9 +61,63 @@ export default {
   methods: {
     async fetchUser() {
       const vm = this
-      const { data, statusText } = await vm.axios.get('http://localhost:3000/api/admin/users')
+      const { data, statusText } = await vm.axios.get('https://ec-website-api.herokuapp.com/api/admin/users')
       console.log(data)
-      this.users = data.users
+      this.users = data.user.map(user => {
+        console.log(user.id, this.$store.state.currentUser.id)
+        if (user.id === this.$store.state.currentUser.id) {
+          return {
+            ...user,
+            isEditing: false,
+            isSelf: true
+          }
+        }
+        return {
+          ...user,
+          isEditing: false,
+          isSelf: false
+        }
+      })
+    },
+    editUserRole(userId) {
+      this.users = this.users.map(user => {
+        if (user.id === userId) {
+          return {
+            ...user,
+            isEditing: true
+          }
+        }
+        return user
+      })
+    },
+    async updateUserRole(userId) {
+      const vm = this
+      let userRole = ''
+
+      this.users = this.users.map(user => {
+        if (user.id === userId) {
+          userRole = user.role
+          return {
+            ...user,
+            isEditing: false
+          }
+        }
+        return user
+      })
+
+      const { data, statusText } = await vm.axios.put('https://ec-website-api.herokuapp.com/api/admin/user', {
+        id: userId,
+        role: userRole
+      })
+
+      if (statusText === 'OK') {
+        Toast.fire({
+          type: 'success',
+          title: '更新成功！'
+        })
+      }
+
+      this.fetchUser()
     }
   }
 }
