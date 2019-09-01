@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import adminCouponAPI from '@/apis/admin/adminCoupon'
 import AdminCouponForm from '@/components/admin/AdminCouponForm.vue'
 
 import { Toast } from '@/utils/helpers'
@@ -24,7 +25,7 @@ export default {
         const vm = this
         const api = 'https://ec-website-api.herokuapp.com/api/admin/coupons'
         vm.isProcessing = true
-        const { data, statusText } = await vm.axios.post(api, formData)
+        const { data, statusText } = await adminCouponAPI.postCoupon(formData)
 
         if (statusText !== 'OK' || data.status !== 'success') {
           throw new Error(statusText)
