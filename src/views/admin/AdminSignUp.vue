@@ -7,25 +7,62 @@
 
       <div class="form-label-group mb-2">
         <label for="name">Name</label>
-        <input id="name" v-model="name" name="name" type="text" class="form-control" placeholder="name" required autofocus />
+        <input
+          id="name"
+          v-model="name"
+          name="name"
+          type="text"
+          class="form-control"
+          placeholder="name"
+          required
+          autofocus
+        />
       </div>
 
       <div class="form-label-group mb-2">
         <label for="email">Email</label>
-        <input id="email" v-model="email" name="email" type="email" class="form-control" placeholder="email" required />
+        <input
+          id="email"
+          v-model="email"
+          name="email"
+          type="email"
+          class="form-control"
+          placeholder="email"
+          required
+        />
       </div>
 
       <div class="form-label-group mb-3">
         <label for="password">Password</label>
-        <input id="password" v-model="password" name="password" type="password" class="form-control" placeholder="Password" required />
+        <input
+          id="password"
+          v-model="password"
+          name="password"
+          type="password"
+          class="form-control"
+          placeholder="Password"
+          required
+        />
       </div>
 
       <div class="form-label-group mb-3">
         <label for="password-check">Password Check</label>
-        <input id="password-check" v-model="passwordCheck" name="passwordCheck" type="password" class="form-control" placeholder="Password" required />
+        <input
+          id="password-check"
+          v-model="passwordCheck"
+          name="passwordCheck"
+          type="password"
+          class="form-control"
+          placeholder="Password"
+          required
+        />
       </div>
 
-      <button :disabled="isProcessing" class="btn btn-lg btn-primary btn-block mb-3" type="submit">Submit</button>
+      <button
+        :disabled="isProcessing"
+        class="btn btn-lg btn-primary btn-block mb-3"
+        type="submit"
+      >Submit</button>
 
       <div class="text-center mb-3">
         <p>
@@ -39,6 +76,7 @@
 </template>
 
 <script>
+import adminAuthAPI from '@/apis/admin/adminAuth'
 const { Toast } = require('../../utils/helpers')
 
 export default {
@@ -55,7 +93,7 @@ export default {
     async handleSubmit(e) {
       const vm = this
       try {
-        if (!this.name || !this.email || !this.password || !this.passwordCheck) {
+        if (!vm.name || !vm.email || !vm.password || !vm.passwordCheck) {
           Toast.fire({
             type: 'warning',
             title: '所有欄位都要填寫'
@@ -63,33 +101,32 @@ export default {
           return
         }
 
-        if (this.password !== this.passwordCheck) {
+        if (vm.password !== vm.passwordCheck) {
           Toast.fire({
             type: 'warning',
             title: '兩次密碼輸入不同！'
           })
-          this.password = ''
-          this.passwordCheck = ''
+          vm.password = ''
+          vm.passwordCheck = ''
           return
         }
 
-        this.isProcessing = true
-        const { data, statusText } = await vm.axios.post('https://ec-website-api.herokuapp.com/api/admin/signup', {
-          name: this.name,
-          email: this.email,
-          password: this.password,
-          passwordCheck: this.passwordCheck
+        vm.isProcessing = true
+        const { data, statusText } = await adminAuthAPI.signUp({
+          name: vm.name,
+          email: vm.email,
+          password: vm.password,
+          passwordCheck: vm.passwordCheck
         })
-        console.log(data, statusText)
 
         if (data.status !== 'success') {
           Toast.fire({
             type: 'warning',
             title: data.message
           })
-          this.password = ''
-          this.passwordCheck = ''
-          this.isProcessing = false
+          vm.password = ''
+          vm.passwordCheck = ''
+          vm.isProcessing = false
           return
         }
 
@@ -101,8 +138,8 @@ export default {
       } catch (error) {
         console.log(error, error.response.data)
         vm.isProcessing = false
-        this.password = ''
-        this.passwordCheck = ''
+        vm.password = ''
+        vm.passwordCheck = ''
       }
     }
   }
