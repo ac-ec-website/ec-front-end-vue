@@ -9,6 +9,7 @@
 </template>
 
 <script>
+import adminDiscountAPI from '@/apis/admin/adminDiscount'
 import AdminDiscountForm from '@/components/admin/AdminDiscountForm.vue'
 
 import { Toast } from '@/utils/helpers'
@@ -36,8 +37,8 @@ export default {
     async fetchdiscount(discountId) {
       try {
         const vm = this
-        const api = `https://ec-website-api.herokuapp.com/api/admin/discounts/${discountId}`
-        const { data, statusText } = await vm.axios.get(api)
+
+        const { data, statusText } = await adminDiscountAPI.getDiscount(discountId)
 
         if (statusText !== 'OK') {
           throw new Error(statusText)
@@ -54,9 +55,9 @@ export default {
     async handleAfterSubmit(formData) {
       try {
         const vm = this
-        const api = `https://ec-website-api.herokuapp.com/api/admin/discounts/${vm.discount.id}`
+
         vm.isProcessing = true
-        const { data, statusText } = await vm.axios.put(api, formData)
+        const { data, statusText } = await adminDiscountAPI.getDiscount(vm.discount.id, formData)
 
         if (statusText !== 'OK' || data.status !== 'success') {
           throw new Error(statusText)

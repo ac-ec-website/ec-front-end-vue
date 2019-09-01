@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import adminDiscountAPI from '@/apis/admin/adminDiscount'
 import AdminDiscountForm from '@/components/admin/AdminDiscountForm.vue'
 
 import { Toast } from '@/utils/helpers'
@@ -22,9 +23,8 @@ export default {
     async handleAfterSubmit(formData) {
       try {
         const vm = this
-        const api = 'https://ec-website-api.herokuapp.com/api/admin/discounts'
         vm.isProcessing = true
-        const { data, statusText } = await vm.axios.post(api, formData)
+        const { data, statusText } = await adminDiscountAPI.postDiscount(formData)
 
         if (statusText !== 'OK' || data.status !== 'success') {
           throw new Error(statusText)
