@@ -133,6 +133,12 @@
                   <div class="col-3 d-inline-block">NT {{shipping_fee | currency}}</div>
                 </div>
 
+                <div class="col-12 coupon-fee">
+                  <!-- ::TODO:: 優惠券 -->
+                  <div class="col-9 d-inline-block">優惠券:</div>
+                  <div class="col-3 d-inline-block">- NT {{coupon_fee | currency}}</div>
+                </div>
+
                 <div class="col-12 total">
                   <div class="col-9 d-inline-block">合計:</div>
                   <div
@@ -219,7 +225,23 @@
             </div>
           </div>
         </section>
-        <!-- 2. 訂單備註 -->
+        <!-- 2. 優惠券 -->
+        <section class="coupon-form">
+          <div class="row section-header">
+            <span class="col-12 px-0">優惠券</span>
+          </div>
+          <div class="section-body">
+            <div name="couponForm">
+              <div class="input-group">
+                <input type="text" v-model="couponCode" class="form-control" name="couponCode" />
+                <div class="input-group-append">
+                  <button class="btn btn-primary" @click.stop.prevent="postCoupon">輸入優惠券</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- 3. 訂單備註 -->
         <section class="remark-form">
           <div class="row section-header">
             <span class="col-12 px-0">訂單備註</span>
@@ -351,6 +373,7 @@
 <script>
 import cartAPI from '@/apis/cart'
 import orderAPI from '@/apis/order'
+import couponAPI from '@/apis/coupons'
 import { emptyImageFilter, currencyFilter } from '@/utils/mixins'
 import { Toast } from '@/utils/helpers'
 
@@ -371,6 +394,8 @@ export default {
       tempName: '',
       tempPhone: '',
       tempAddress: '',
+      couponCode: '',
+      coupon_fee: 0,
       isProcessing: false
     }
   },
@@ -459,6 +484,63 @@ export default {
         vm.tempName = ''
         vm.tempPhone = ''
         vm.tempAddress = ''
+      }
+    },
+    async postCoupon(e) {
+      try {
+        const vm = this
+
+        if (!vm.couponCode) {
+          Toast.fire({
+            type: 'warning',
+            title: '請輸入 couponCode 優惠碼呦！'
+          })
+          return
+        }
+
+        const couponCode = {
+          couponCode: vm.couponCode
+        }
+
+        const { data, statusText } = await couponAPI.postCoupon(couponCode)
+
+        if (data.status === 'error-notFound') {
+          Toast.fire({
+            type: 'warning',
+            title: '查無此優惠券，請再次確認'
+          })
+          return
+        }
+
+        if (data.status === 'error-cantBeUsed') {
+          Toast.fire({
+            type: 'warning',
+            title: '該優惠券已被使用完畢 哭哭QQ'
+          })
+          return
+        }
+
+        if (statusText !== 'OK' || data.status !== 'success') {
+          throw new Error(statusText)
+        }
+
+        console.log('優惠券 data', data)
+
+        // 若 data.couponTye 為 運費相關且 shipping_free 為 1（代表啟用），則讓 coupon_fee 為 shipping_fee，代表扣除相對的運費
+
+        // 若 data.couponTye 為 折價相關且 product_reduce 不為空（代表啟用），則讓 coupon_fee 為 product_reduce，代表需扣除的價格
+
+        // 若 data.couponTye 為 打折相關且 percent 不為空（代表啟用），則讓 coupon_fee 為 total_amount * percent / 100，代表需扣除的價格
+
+        Toast.fire({
+          type: 'success',
+          title: '訂單可成功使用，請確認'
+        })
+      } catch (error) {
+        Toast.fire({
+          type: 'error',
+          title: '暫時無法使用 coupon 券，請稍後再試'
+        })
       }
     }
   }
