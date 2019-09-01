@@ -1,12 +1,18 @@
 <template>
   <div class="container py-5">
-    <SideCartPreview :initial-cart="cart" v-show="showSideCart" @clickDeleteItem="handleDeleteItem" />
+    <SideCartPreview
+      :initial-cart="cart"
+      v-show="showSideCart"
+      @clickDeleteItem="handleDeleteItem"
+    />
     <ProductDetail :initial-product="product" @clickAddToCart="handleAddToCart" />
   </div>
 </template>
 
 <script>
-import axios from 'axios'
+import { Toast } from '@/utils/helpers'
+import productsAPI from '@/apis/products'
+import cartAPI from '@/apis/cart'
 import ProductDetail from '../components/ProductDetail'
 import SideCartPreview from '../components/SideCartPreview'
 import { constants } from 'crypto'
@@ -39,54 +45,62 @@ export default {
   },
   methods: {
     async fetchProduct(productId) {
-      axios.defaults.withCredentials = true
+      try {
+        const vm = this
+        const response = await productsAPI.getProduct(productId)
 
-      const result = await axios.get('https://ec-website-api.herokuapp.com/api/products/' + productId)
-      // const result = await axios.get(
-      //   "http://localhost:3000/api/products/" + productId
-      // );
-      console.log(result.data)
-      this.product = result.data.product
-      this.cart = result.data.cart
-      this.$store.commit('setNavbarCartItemNumber', result.data.cart.items.length)
+        if (response.statusText !== 'OK') {
+          throw new Error(statusText)
+        }
+
+        vm.product = response.data.product
+        vm.cart = response.data.cart
+        vm.$store.commit('setNavbarCartItemNumber', response.data.cart.items.length)
+      } catch (error) {
+        Toast.fire({
+          type: 'error',
+          title: '無法取得單一商品資料，請稍後再試'
+        })
+      }
     },
-    handleAddToCart(productId, quantity) {
-      axios.defaults.withCredentials = true
+    async handleAddToCart(productId, quantity) {
+      try {
+        const vm = this
 
-      const vm = this
+        const response = await cartAPI.addToCart(productId, quantity)
 
-      axios
-        .post('https://ec-website-api.herokuapp.com/api/cart', {
-          productId,
-          quantity
+        console.log('here', response)
+
+        if (response.statusText !== 'OK') {
+          throw new Error(statusText)
+        }
+
+        vm.fetchProduct(productId)
+      } catch (error) {
+        Toast.fire({
+          type: 'error',
+          title: '無法加入購物車，請稍後再試'
         })
-        // axios
-        //   .post("http://localhost:3000/api/cart", {
-        //     productId,
-        //     quantity
-        //   })
-        .then(function(response) {
-          vm.fetchProduct(productId)
-          console.log(response)
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+      }
     },
-    handleDeleteItem(cartId, cartItemId) {
-      console.log(cartId, cartItemId)
-      const productId = this.$route.params.productId
-      const vm = this
-      axios.defaults.withCredentials = true
-      axios
-        .delete(`https://ec-website-api.herokuapp.com/api/cart/${cartId}/cartItem/${cartItemId}`)
-        .then(function(response) {
-          vm.fetchProduct(productId)
-          console.log(response)
+    async handleDeleteItem(cartId, cartItemId) {
+      try {
+        const vm = this
+        const productId = vm.$route.params.productId
+
+        const { statusText } = await productsAPI.deleteItem(cartId, cartItemId)
+
+        if (statusText !== 'OK') {
+          throw new Error(statusText)
+        }
+
+        vm.fetchProduct(productId)
+      } catch (error) {
+        Toast.fire({
+          type: 'error',
+          title: '無法刪除購物車商品，請稍後再試'
         })
-        .catch(function(error) {
-          console.log(error)
-        })
+      }
     }
   }
 }
