@@ -2,6 +2,7 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 
 const baseURL = 'https://ec-website-api.herokuapp.com/api'
+// const baseURL = 'http://localhost:3000/api'
 
 const axiosInstance = axios.create({
   baseURL

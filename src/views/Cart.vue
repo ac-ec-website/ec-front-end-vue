@@ -97,23 +97,21 @@
               <div class="col-12 col-md-3 text-center item-quantity my-auto">
                 <div class="input-group">
                   <span class="input-group-btn">
-                    <button
-                      type="button"
+                    <div
                       class="btn btn-default btn-quantity-decrease"
                       @click.stop.prevent="subItemFromCart(cartId,product.CartItem.id)"
                     >
                       <i class="fa fa-minus"></i>
-                    </button>
+                    </div>
                   </span>
                   <span class="form-control text-center">{{product.CartItem.quantity}}</span>
                   <span class="input-group-btn">
-                    <button
-                      type="button"
+                    <div
                       class="btn btn-default btn-quantity-increase"
                       @click.stop.prevent="addItemToCart(cartId,product.CartItem.id)"
                     >
                       <i class="fa fa-plus"></i>
-                    </button>
+                    </div>
                   </span>
                 </div>
               </div>
@@ -333,8 +331,10 @@ export default {
 
         const { data, statusText } = await cartAPI.getCart()
 
-        console.log('data', data)
-        console.log('statusText', statusText)
+        // 若此時 cartId 為空時，則中斷執行，引導使用者回產品頁面繼續購物
+        if (data.status === 'error') {
+          return
+        }
 
         if (statusText !== 'OK') {
           throw new Error(statusText)
@@ -394,6 +394,11 @@ export default {
         const vm = this
 
         const { data, statusText } = await cartAPI.subItemFromCart(cartId, cartItemId)
+
+        // 若是使用者讓商品數量歸 0，則呼叫刪除功能
+        if (data.cartItem[0].quantity === 0) {
+          vm.deleteItemFromCart(cartId, cartItemId)
+        }
 
         if (statusText !== 'OK') {
           throw new Error(statusText)
