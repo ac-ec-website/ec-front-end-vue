@@ -10,7 +10,12 @@
 
     <div class="row">
       <!-- 產品卡片 -->
-      <ProductsCard v-for="product in filterProducts" :key="product.id" :initial-product="product" />
+      <ProductsCard
+        v-for="product in filterProducts"
+        :key="product.id"
+        :initial-product="product"
+        @add-to-cart="handleAddToCart"
+      />
     </div>
     <div class="text-center">
       <div v-if="filterProducts.length === 0">喔！沒有此商品QAQ</div>
@@ -24,6 +29,7 @@
 <script>
 import { Toast } from '@/utils/helpers'
 import productsAPI from '@/apis/products'
+import cartAPI from '@/apis/cart'
 import ProductsCard from '@/components/ProductsCard'
 import Pagination from '@/components/Pagination'
 import SideCartPreview from '@/components/SideCartPreview'
@@ -113,6 +119,24 @@ export default {
           return product
         }
       })
+    },
+    async handleAddToCart(productId, quantity) {
+      try {
+        const vm = this
+
+        const response = await cartAPI.addToCart(productId, quantity)
+
+        if (response.statusText !== 'OK') {
+          throw new Error(statusText)
+        }
+
+        vm.fetchProducts()
+      } catch (error) {
+        Toast.fire({
+          type: 'error',
+          title: '無法加入購物車，請稍後再試'
+        })
+      }
     }
   },
   components: {
