@@ -1,5 +1,7 @@
 # ec-front-end-vue TEST
 
+[範例頁面](https://ac-ec-website.github.io/ec-front-end-vue/dist/)
+
 ## Project setup
 
 ```
