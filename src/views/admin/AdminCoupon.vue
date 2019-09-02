@@ -5,12 +5,17 @@
         <h3>{{ coupon.name }}</h3>
         <p>{{coupon.description}}</p>
 
+        <p v-show="coupon.type === 0">優惠方案：免運費</p>
+        <p v-show="coupon.type === 1">優惠方案：扣款</p>
+        <p v-show="coupon.type === 2">優惠方案：打折</p>
+
         <p>優惠碼：{{coupon.coupon_code}}</p>
-        <p>折抵：{{coupon.percent}} %</p>
-        <p>折抵費用：{{coupon.product_reduce | currency}}</p>
         <p>使用次數：{{coupon.limited_num}}</p>
         <p>結束日期：{{coupon.end_date | dateTime}}</p>
         <hr />
+
+        <p v-show="coupon.type === 1">折抵費用：{{coupon.product_reduce | currency}}</p>
+        <p v-show="coupon.type === 2">折抵：{{coupon.percent}} %</p>
 
         <div class="mb-3">
           <strong v-if="coupon.shipping_free === 1" class="text-success">免運費</strong>
