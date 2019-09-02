@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import adminProductAPI from '@/apis/admin/adminProduct'
 import { Toast } from '@/utils/helpers'
 
 export default {
@@ -60,8 +61,8 @@ export default {
     async fetchProducts() {
       try {
         const vm = this
-        const api = 'https://ec-website-api.herokuapp.com/api/admin/products'
-        const { data, statusText } = await vm.axios.get(api)
+
+        const { data, statusText } = await adminProductAPI.getProducts()
 
         if (statusText !== 'OK') {
           throw new Error(statusText)
@@ -78,8 +79,8 @@ export default {
     async deleteProduct(productId) {
       try {
         const vm = this
-        const api = `https://ec-website-api.herokuapp.com/api/admin/products/${productId}`
-        const { data, statusText } = await vm.axios.delete(api)
+
+        const { data, statusText } = await adminProductAPI.deleteProduct(productId)
 
         if (statusText !== 'OK' || data.status !== 'success') {
           throw new Error(statusText)

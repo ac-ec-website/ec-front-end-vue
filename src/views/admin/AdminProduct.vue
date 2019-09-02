@@ -46,6 +46,7 @@
 </template>
 
 <script>
+import adminProductAPI from '@/apis/admin/adminProduct'
 import { emptyImageFilter } from '@/utils/mixins'
 import { Toast } from '@/utils/helpers'
 
@@ -70,8 +71,8 @@ export default {
     async fetchProduct(productId) {
       try {
         const vm = this
-        const api = `https://ec-website-api.herokuapp.com/api/admin/products/${productId}`
-        const { data, statusText } = await vm.axios.get(api)
+
+        const { data, statusText } = await adminProductAPI.getProduct(productId)
 
         if (statusText !== 'OK') {
           throw new Error(statusText)

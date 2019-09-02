@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import adminCouponAPI from '@/apis/admin/adminCoupon'
 import { dateTimeFilter, currencyFilter } from '@/utils/mixins'
 import { Toast } from '@/utils/helpers'
 
@@ -47,8 +48,7 @@ export default {
     async fetchCoupon(couponId) {
       try {
         const vm = this
-        const api = `https://ec-website-api.herokuapp.com/api/admin/coupons/${couponId}`
-        const { data, statusText } = await vm.axios.get(api)
+        const { data, statusText } = await adminCouponAPI.getCoupon(couponId)
 
         if (statusText !== 'OK') {
           throw new Error(statusText)
