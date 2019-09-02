@@ -141,6 +141,7 @@
 </template>
 
 <script>
+import adminCategoryAPI from '@/apis/admin/adminCategory'
 import { Toast } from '@/utils/helpers'
 
 export default {
@@ -190,8 +191,8 @@ export default {
     async fetchCategories() {
       try {
         const vm = this
-        const api = `https://ec-website-api.herokuapp.com/api/admin/categories`
-        const { data, statusText } = await vm.axios.get(api)
+
+        const { data, statusText } = await adminCategoryAPI.getCategories()
 
         if (statusText !== 'OK') {
           throw new Error(statusText)

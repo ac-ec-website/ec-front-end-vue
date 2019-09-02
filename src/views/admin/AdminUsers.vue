@@ -32,7 +32,10 @@
                 <button class="btn btn-outline-dark btn-sm" @click="updateUserRole(user.id)">Done</button>
               </div>
               <div v-show="!user.isEditing">
-                <button class="btn btn-outline-dark btn-sm" @click.stop.prevent="editUserRole(user.id)">Edit</button>
+                <button
+                  class="btn btn-outline-dark btn-sm"
+                  @click.stop.prevent="editUserRole(user.id)"
+                >Edit</button>
               </div>
             </div>
           </td>
@@ -43,6 +46,7 @@
 </template>
 
 <script>
+import adminUserAPI from '@/apis/admin/adminUser'
 import AdminNav from '@/components/admin/AdminNav'
 const { Toast } = require('../../utils/helpers')
 
@@ -61,10 +65,9 @@ export default {
   methods: {
     async fetchUser() {
       const vm = this
-      const { data, statusText } = await vm.axios.get('https://ec-website-api.herokuapp.com/api/admin/users')
-      console.log(data)
+      const { data, statusText } = await adminUserAPI.getUsers()
+
       this.users = data.user.map(user => {
-        console.log(user.id, this.$store.state.currentUser.id)
         if (user.id === this.$store.state.currentUser.id) {
           return {
             ...user,
@@ -105,7 +108,7 @@ export default {
         return user
       })
 
-      const { data, statusText } = await vm.axios.put('https://ec-website-api.herokuapp.com/api/admin/user', {
+      const { data, statusText } = await adminUserAPI.putUser({
         id: userId,
         role: userRole
       })

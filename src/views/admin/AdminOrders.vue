@@ -114,6 +114,7 @@
 </template>
 
 <script>
+import adminOrderAPI from '@/apis/admin/adminOrder'
 import AdminNav from '@/components/admin/AdminNav'
 
 import { dateTimeFilter, currencyFilter } from '@/utils/mixins'
@@ -136,8 +137,7 @@ export default {
     async fetchOrders() {
       try {
         const vm = this
-        const api = 'https://ec-website-api.herokuapp.com/api/admin/orders'
-        const { data, statusText } = await vm.axios.get(api)
+        const { data, statusText } = await adminOrderAPI.getOrders()
 
         if (statusText !== 'OK') {
           throw new Error(statusText)
@@ -154,9 +154,9 @@ export default {
     async updateOrder({ orderId, payment_status, shipping_status }) {
       try {
         const vm = this
-        const api = `https://ec-website-api.herokuapp.com/api/admin/orders/${orderId}`
+
         const value = { payment_status, shipping_status }
-        const { data, statusText } = await vm.axios.put(api, value)
+        const { data, statusText } = await adminOrderAPI.putOrder(orderId, value)
 
         if (statusText !== 'OK' || data.status !== 'success') {
           throw new Error(statusText)
@@ -166,7 +166,7 @@ export default {
       } catch (error) {
         Toast.fire({
           type: 'error',
-          title: '無法更新金流狀態，請稍後再試'
+          title: '無法更新出貨或金流狀態，請稍後再試'
         })
       }
     },
