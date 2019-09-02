@@ -5,8 +5,8 @@
 </template>
 
 <script>
+import adminProductAPI from '@/apis/admin/adminProduct'
 import AdminProductForm from '@/components/admin/AdminProductForm.vue'
-
 import { Toast } from '@/utils/helpers'
 
 export default {
@@ -22,9 +22,7 @@ export default {
     async handleAfterSubmit(formData) {
       try {
         const vm = this
-        const api = 'https://ec-website-api.herokuapp.com/api/admin/products'
-        vm.isProcessing = true
-        const { data, statusText } = await vm.axios.post(api, formData)
+        const { data, statusText } = await adminProductAPI.postProduct(formData)
 
         if (statusText !== 'OK' || data.status !== 'success') {
           throw new Error(statusText)

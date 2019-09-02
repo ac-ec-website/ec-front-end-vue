@@ -7,15 +7,36 @@
 
       <div class="form-label-group mb-2">
         <label for="email">email</label>
-        <input id="email" v-model="email" name="email" type="email" class="form-control" placeholder="email" required autofocus />
+        <input
+          id="email"
+          v-model="email"
+          name="email"
+          type="email"
+          class="form-control"
+          placeholder="email"
+          required
+          autofocus
+        />
       </div>
 
       <div class="form-label-group mb-3">
         <label for="password">Password</label>
-        <input id="password" v-model="password" name="password" type="password" class="form-control" placeholder="Password" required />
+        <input
+          id="password"
+          v-model="password"
+          name="password"
+          type="password"
+          class="form-control"
+          placeholder="Password"
+          required
+        />
       </div>
 
-      <button :disabled="isProcessing" class="btn btn-lg btn-primary btn-block mb-3" type="submit">Submit</button>
+      <button
+        :disabled="isProcessing"
+        class="btn btn-lg btn-primary btn-block mb-3"
+        type="submit"
+      >Submit</button>
 
       <div class="text-center mb-3">
         <p>
@@ -29,6 +50,7 @@
 </template>
 
 <script>
+import adminAuthAPI from '@/apis/admin/adminAuth'
 const { Toast } = require('../../utils/helpers')
 
 export default {
@@ -52,11 +74,10 @@ export default {
         }
 
         this.isProcessing = true
-        const { data, statusText } = await vm.axios.post('https://ec-website-api.herokuapp.com/api/admin/signin', {
+        const { data, statusText } = await adminAuthAPI.signIn({
           email: this.email,
           password: this.password
         })
-        console.log(data, statusText)
 
         if (data.status !== 'success') {
           Toast.fire({
@@ -74,13 +95,12 @@ export default {
         })
         localStorage.setItem('token', data.token)
         vm.axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token')
-        this.$store.commit('setCurrentUser', data.user)
+        vm.$store.commit('setCurrentUser', data.user)
 
         vm.$router.push('/admin')
       } catch (error) {
-        console.log(error, error.response.data)
         vm.isProcessing = false
-        this.password = ''
+        vm.password = ''
       }
     }
   }
