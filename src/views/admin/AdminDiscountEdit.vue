@@ -44,7 +44,11 @@ export default {
           throw new Error(statusText)
         }
 
-        vm.discount = data.discount
+        vm.discount = {
+          ...data.discount,
+          start_date: data.discount.start_date.substring(0, 19),
+          end_date: data.discount.end_date.substring(0, 19)
+        }
       } catch (error) {
         Toast.fire({
           type: 'error',

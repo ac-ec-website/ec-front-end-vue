@@ -57,27 +57,27 @@
       />
     </div>
 
-    <!-- <div class="form-group">
+    <div class="form-group">
       <label for="start_date">有效日期</label>
       <input
         id="start_date"
         v-model="discount.start_date"
-        type="date"
+        type="datetime-local"
         class="form-control"
         name="start_date"
       />
-    </div>-->
+    </div>
 
-    <!-- <div class="form-group">
+    <div class="form-group">
       <label for="end_date">有效日期</label>
       <input
         id="end_date"
         v-model="discount.end_date"
-        type="date"
+        type="datetime-local"
         class="form-control"
         name="end_date"
       />
-    </div>-->
+    </div>
 
     <div class="form-group">
       <div class="form-check form-check-inline">
