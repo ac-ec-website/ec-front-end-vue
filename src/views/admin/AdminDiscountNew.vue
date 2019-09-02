@@ -21,8 +21,8 @@ export default {
   },
   methods: {
     async handleAfterSubmit(formData) {
+      const vm = this
       try {
-        const vm = this
         vm.isProcessing = true
         const { data, statusText } = await adminDiscountAPI.postDiscount(formData)
 
@@ -32,7 +32,7 @@ export default {
 
         vm.$router.push({ name: 'admin-discounts' })
       } catch (error) {
-        this.isProcessing = false
+        vm.isProcessing = false
         Toast.fire({
           type: 'error',
           title: '無法新增 discount，請稍後再試'
