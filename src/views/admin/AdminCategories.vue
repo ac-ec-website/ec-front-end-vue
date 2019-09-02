@@ -89,8 +89,8 @@
 </template>
 
 <script>
+import adminCategoryAPI from '@/apis/admin/adminCategory'
 import AdminNav from '@/components/admin/AdminNav'
-
 import { Toast } from '@/utils/helpers'
 
 export default {
@@ -111,8 +111,7 @@ export default {
     async fetchCategories() {
       try {
         const vm = this
-        const api = 'https://ec-website-api.herokuapp.com/api/admin/categories'
-        const { data, statusText } = await vm.axios.get(api)
+        const { data, statusText } = await adminCategoryAPI.getCategories()
 
         if (statusText !== 'OK') {
           throw new Error(statusText)
@@ -132,9 +131,8 @@ export default {
     async createCategory() {
       try {
         const vm = this
-        const api = 'https://ec-website-api.herokuapp.com/api/admin/categories'
         vm.isProcessing = true
-        const { data, statusText } = await vm.axios.post(api, { name: vm.newCategoryName })
+        const { data, statusText } = await adminCategoryAPI.postCategory({ name: vm.newCategoryName })
 
         if (statusText !== 'OK' || data.status !== 'success') {
           throw new Error(statusText)
@@ -157,8 +155,7 @@ export default {
     async updateCategory({ categoryId, name }) {
       try {
         const vm = this
-        const api = `https://ec-website-api.herokuapp.com/api/admin/categories/${categoryId}`
-        const { data, statusText } = await vm.axios.put(api, { name })
+        const { data, statusText } = await adminCategoryAPI.putCategory(categoryId, { name })
 
         if (statusText !== 'OK' || data.status !== 'success') {
           throw new Error(statusText)
@@ -175,8 +172,7 @@ export default {
     async deleteCategory(categoryId) {
       try {
         const vm = this
-        const api = `https://ec-website-api.herokuapp.com/api/admin/categories/${categoryId}`
-        const { data, statusText } = await vm.axios.delete(api)
+        const { data, statusText } = await adminCategoryAPI.deleteCategory(categoryId)
 
         if (statusText !== 'OK' || data.status !== 'success') {
           throw new Error(statusText)

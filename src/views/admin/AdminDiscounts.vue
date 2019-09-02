@@ -62,6 +62,7 @@
 </template>
 
 <script>
+import adminDiscountAPI from '@/apis/admin/adminDiscount'
 import AdminNav from '@/components/admin/AdminNav'
 
 import { Toast } from '@/utils/helpers'
@@ -82,8 +83,7 @@ export default {
     async fetchDiscounts() {
       try {
         const vm = this
-        const api = 'https://ec-website-api.herokuapp.com/api/admin/discounts'
-        const { data, statusText } = await vm.axios.get(api)
+        const { data, statusText } = await adminDiscountAPI.getDiscounts()
 
         if (statusText !== 'OK') {
           throw new Error(statusText)
@@ -100,8 +100,8 @@ export default {
     async deleteDiscount(discountId) {
       try {
         const vm = this
-        const api = `https://ec-website-api.herokuapp.com/api/admin/discounts/${discountId}`
-        const { data, statusText } = await vm.axios.delete(api)
+
+        const { data, statusText } = await adminDiscountAPI.deleteDiscount(discountId)
 
         if (statusText !== 'OK' || data.status !== 'success') {
           throw new Error(statusText)

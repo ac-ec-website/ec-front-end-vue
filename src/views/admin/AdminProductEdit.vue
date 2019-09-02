@@ -9,8 +9,8 @@
 </template>
 
 <script>
+import adminProductAPI from '@/apis/admin/adminProduct'
 import AdminProductForm from '@/components/admin/AdminProductForm.vue'
-
 import { Toast } from '@/utils/helpers'
 
 export default {
@@ -37,8 +37,7 @@ export default {
     async fetchProduct(productId) {
       try {
         const vm = this
-        const api = `https://ec-website-api.herokuapp.com/api/admin/products/${productId}`
-        const { data, statusText } = await vm.axios.get(api)
+        const { data, statusText } = await adminProductAPI.getProduct(productId)
 
         if (statusText !== 'OK') {
           throw new Error(statusText)
@@ -55,9 +54,10 @@ export default {
     async handleAfterSubmit(formData) {
       try {
         const vm = this
-        const api = `https://ec-website-api.herokuapp.com/api/admin/products/${vm.product.id}`
+
         vm.isProcessing = true
-        const { data, statusText } = await vm.axios.put(api, formData)
+
+        const { data, statusText } = await adminProductAPI.putProduct(vm.product.id, formData)
 
         if (statusText !== 'OK' || data.status !== 'success') {
           throw new Error(statusText)

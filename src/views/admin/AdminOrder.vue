@@ -48,6 +48,7 @@
 </template>
 
 <script>
+import adminOrderAPI from '@/apis/admin/adminOrder'
 import { dateTimeFilter, currencyFilter, emptyImageFilter } from '@/utils/mixins'
 import { Toast } from '@/utils/helpers'
 
@@ -68,11 +69,10 @@ export default {
     next()
   },
   methods: {
-    async fetchOrder(productId) {
+    async fetchOrder(orderId) {
       try {
         const vm = this
-        const api = `https://ec-website-api.herokuapp.com/api/admin/orders/${productId}`
-        const { data, statusText } = await vm.axios.get(api)
+        const { data, statusText } = await adminOrderAPI.getOrder(orderId)
 
         if (statusText !== 'OK') {
           throw new Error(statusText)
