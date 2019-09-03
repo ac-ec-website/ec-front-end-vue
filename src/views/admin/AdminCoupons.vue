@@ -13,7 +13,7 @@
           <th scope="col">#</th>
           <th scope="col">Coupon</th>
           <th scope="col">優惠碼</th>
-          <th scope="col">運費繳交</th>
+          <th scope="col">優惠方案</th>
           <th scope="col" width="300">Action</th>
         </tr>
       </thead>
@@ -25,8 +25,9 @@
           <td>{{ coupon.coupon_code }}</td>
 
           <td>
-            <span v-if="coupon.shipping_free === 1" class="text-success">免運費</span>
-            <span v-else class="text-muted">需運費</span>
+            <span v-if="coupon.type === 0" class="text-info">免運費</span>
+            <span v-else-if="coupon.type === 1" class="text-info">扣款</span>
+            <span v-else-if="coupon.type === 2" class="text-info">打折</span>
           </td>
 
           <td class="d-flex justify-content-between">

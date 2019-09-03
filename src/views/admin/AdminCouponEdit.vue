@@ -43,7 +43,10 @@ export default {
           throw new Error(statusText)
         }
 
-        vm.coupon = data.coupon
+        vm.coupon = {
+          ...data.coupon,
+          end_date: data.coupon.end_date.substring(0, 19)
+        }
       } catch (error) {
         Toast.fire({
           type: 'error',
@@ -52,10 +55,10 @@ export default {
       }
     },
     async handleAfterSubmit(formData) {
+      const vm = this
       try {
-        const vm = this
         vm.isProcessing = true
-        const { data, statusText } = await adminCouponAPI.getCoupon(vm.coupon.id, formData)
+        const { data, statusText } = await adminCouponAPI.putCoupon(vm.coupon.id, formData)
 
         if (statusText !== 'OK' || data.status !== 'success') {
           throw new Error(statusText)
@@ -63,7 +66,7 @@ export default {
 
         vm.$router.push({ name: 'admin-coupons' })
       } catch (error) {
-        this.isProcessing = false
+        vm.isProcessing = false
         Toast.fire({
           type: 'error',
           title: '無法編輯 coupon，請稍後再試'
