@@ -21,9 +21,8 @@ export default {
   },
   methods: {
     async handleAfterSubmit(formData) {
+      const vm = this
       try {
-        const vm = this
-        const api = 'https://ec-website-api.herokuapp.com/api/admin/coupons'
         vm.isProcessing = true
         const { data, statusText } = await adminCouponAPI.postCoupon(formData)
 
@@ -33,7 +32,7 @@ export default {
 
         vm.$router.push({ name: 'admin-coupons' })
       } catch (error) {
-        this.isProcessing = false
+        vm.isProcessing = false
         Toast.fire({
           type: 'error',
           title: '無法新增 coupon，請稍後再試'
