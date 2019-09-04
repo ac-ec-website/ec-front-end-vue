@@ -123,10 +123,17 @@
     </div>
 
     <button
+      v-if="editPage"
       type="submit"
       class="btn btn-primary"
       :disabled="isProcessing"
-    >{{ isProcessing ? "處理中..." : "上傳優惠券" }}</button>
+    >{{ isProcessing ? "處理中..." : "更新優惠券" }}</button>
+    <button
+      v-else
+      type="submit"
+      class="btn btn-primary"
+      :disabled="isProcessing"
+    >{{ isProcessing ? "處理中..." : "新增優惠券" }}</button>
   </form>
 </template>
 
@@ -140,6 +147,10 @@ export default {
       default: () => ({})
     },
     isProcessing: {
+      type: Boolean,
+      default: false
+    },
+    editPage: {
       type: Boolean,
       default: false
     }
