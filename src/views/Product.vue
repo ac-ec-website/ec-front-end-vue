@@ -69,8 +69,6 @@ export default {
 
         const response = await cartAPI.addToCart(productId, quantity)
 
-        console.log('here', response)
-
         if (response.statusText !== 'OK') {
           throw new Error(statusText)
         }

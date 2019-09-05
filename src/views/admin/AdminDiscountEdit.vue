@@ -1,8 +1,9 @@
 <template>
   <div class="container py-5">
     <AdminDiscountForm
-      :is-processing="isProcessing"
       :initial-discount="discount"
+      :is-processing="isProcessing"
+      :edit-page="editPage"
       @after-submit="handleAfterSubmit"
     />
   </div>
@@ -21,7 +22,8 @@ export default {
   data() {
     return {
       discount: {},
-      isProcessing: false
+      isProcessing: false,
+      editPage: true
     }
   },
   created() {
@@ -44,7 +46,11 @@ export default {
           throw new Error(statusText)
         }
 
-        vm.discount = data.discount
+        vm.discount = {
+          ...data.discount,
+          start_date: data.discount.start_date.substring(0, 19),
+          end_date: data.discount.end_date.substring(0, 19)
+        }
       } catch (error) {
         Toast.fire({
           type: 'error',
@@ -53,11 +59,10 @@ export default {
       }
     },
     async handleAfterSubmit(formData) {
+      const vm = this
       try {
-        const vm = this
-
         vm.isProcessing = true
-        const { data, statusText } = await adminDiscountAPI.getDiscount(vm.discount.id, formData)
+        const { data, statusText } = await adminDiscountAPI.putDiscount(vm.discount.id, formData)
 
         if (statusText !== 'OK' || data.status !== 'success') {
           throw new Error(statusText)
@@ -65,7 +70,7 @@ export default {
 
         vm.$router.push({ name: 'admin-discounts' })
       } catch (error) {
-        this.isProcessing = false
+        vm.isProcessing = false
         Toast.fire({
           type: 'error',
           title: '無法編輯 discount，請稍後再試'

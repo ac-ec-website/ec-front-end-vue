@@ -1,8 +1,9 @@
 <template>
   <div class="container py-5">
     <AdminProductForm
-      :is-processing="isProcessing"
       :initial-product="product"
+      :is-processing="isProcessing"
+      :edit-page="editPage"
       @after-submit="handleAfterSubmit"
     />
   </div>
@@ -20,7 +21,8 @@ export default {
   data() {
     return {
       product: {},
-      isProcessing: false
+      isProcessing: false,
+      editPage: true
     }
   },
   created() {

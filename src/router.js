@@ -9,7 +9,7 @@ const checkIsAdmin = (to, from, next) => {
   console.log('checkIsAdmin')
   const currentUser = store.state.currentUser
   if (currentUser.role !== 'admin') {
-    next('/404')
+    next('/admin/signin')
     return
   }
   next()
@@ -18,8 +18,7 @@ const checkIsAdmin = (to, from, next) => {
 const router = new Router({
   linkExactActiveClass: 'active',
 
-  routes: [
-    {
+  routes: [{
       path: '/',
       name: 'root',
       redirect: '/products'
