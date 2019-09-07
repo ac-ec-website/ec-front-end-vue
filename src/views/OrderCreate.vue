@@ -43,7 +43,7 @@
         <!-- 開關合控制 -->
         <div class="card" data-toggle="collapse" href="#cartSummary" aria-expanded="true">
           <div class="card-header py-3 text-center border">
-            <h4>合計: NT {{total_amount + shipping_fee | currency}}</h4>
+            <h4>合計: NT {{total_amount + shipping_fee - coupon_fee | currency}}</h4>
             <h5>
               購物車&nbsp;(
               <span class="sl-cart-count ng-isolate-scope">{{cartItems.length}}</span>&nbsp;件)
@@ -143,7 +143,7 @@
                   <div class="col-9 d-inline-block">合計:</div>
                   <div
                     class="col-3 d-inline-block font-weight-bold"
-                  >NT {{total_amount + shipping_fee | currency}}</div>
+                  >NT {{total_amount + shipping_fee - coupon_fee | currency}}</div>
                 </div>
               </div>
             </div>
@@ -178,6 +178,7 @@
                   type="text"
                   class="form-control"
                   name="orderCustomerName"
+                  placeholder="皮爾斯"
                   required
                 />
               </div>
@@ -187,10 +188,12 @@
                   <span class="text-danger">*</span>
                 </label>
                 <input
+                  v-model="customerEmail"
                   id="order-customer-email"
                   type="email"
                   class="form-control"
                   name="orderCustomerEmail"
+                  placeholder="pp@gmail.com"
                   required
                 />
               </div>
@@ -205,6 +208,7 @@
                   type="tel"
                   class="form-control"
                   name="orderCustomerPhone"
+                  placeholder="0912345678"
                   required
                 />
               </div>
@@ -219,6 +223,7 @@
                   type="address"
                   class="form-control"
                   name="orderCustomerAddress"
+                  placeholder="台北市中正區工程路66號"
                   required
                 />
               </div>
@@ -233,9 +238,19 @@
           <div class="section-body">
             <div name="couponForm">
               <div class="input-group">
-                <input type="text" v-model="couponCode" class="form-control" name="couponCode" />
+                <input
+                  type="text"
+                  v-model="couponCode"
+                  class="form-control"
+                  name="couponCode"
+                  :disabled="isBlocking"
+                />
                 <div class="input-group-append">
-                  <button class="btn btn-primary" @click.stop.prevent="postCoupon">輸入優惠券</button>
+                  <button
+                    class="btn btn-primary"
+                    :disabled="isBlocking"
+                    @click.stop.prevent="postCoupon"
+                  >{{ isBlocking? "已成功使用" : "輸入優惠券" }}</button>
                 </div>
               </div>
             </div>
@@ -340,7 +355,7 @@
             </div>
             <div
               class="col-12 font-weight-bold"
-            >合計:&nbsp;&nbsp;NT {{total_amount + shipping_fee | currency}}</div>
+            >合計:&nbsp;&nbsp;NT {{total_amount + shipping_fee - coupon_fee | currency}}</div>
           </div>
         </section>
       </div>
@@ -388,15 +403,17 @@ export default {
       shipping_method: '',
       status: false,
       shippingFormStatus: false,
-      customerName: '',
-      customerPhone: '',
-      customerAddress: '',
+      customerName: '皮爾斯',
+      customerEmail: 'pp@gmail.com',
+      customerPhone: '0912345678',
+      customerAddress: '台北市中正區工程路66號',
       tempName: '',
       tempPhone: '',
       tempAddress: '',
       couponCode: '',
       coupon_fee: 0,
-      isProcessing: false
+      isProcessing: false,
+      isBlocking: false
     }
   },
   created() {
@@ -526,17 +543,36 @@ export default {
 
         console.log('優惠券 data', data)
 
-        // 若 data.couponTye 為 運費相關且 shipping_free 為 1（代表啟用），則讓 coupon_fee 為 shipping_fee，代表扣除相對的運費
+        const couponData = data.couponData
 
-        // 若 data.couponTye 為 折價相關且 product_reduce 不為空（代表啟用），則讓 coupon_fee 為 product_reduce，代表需扣除的價格
+        // 運費相關
+        if (couponData.type === 0 && couponData.shipping_free === 1) {
+          vm.coupon_fee = vm.shipping_fee
+          console.log('運費', vm.coupon_fee)
+        }
 
-        // 若 data.couponTye 為 打折相關且 percent 不為空（代表啟用），則讓 coupon_fee 為 total_amount * percent / 100，代表需扣除的價格
+        // 折價相關
+        if (couponData.type === 1 && couponData.product_reduce !== null) {
+          vm.coupon_fee = couponData.product_reduce
+          console.log('折價', vm.coupon_fee)
+        }
+
+        // 打折相關
+        if (couponData.type === 2 && couponData.percent !== null) {
+          const discount = 1 - couponData.percent / 100
+          vm.coupon_fee = Math.round(vm.total_amount * discount)
+          console.log('打折', vm.coupon_fee)
+        }
 
         Toast.fire({
           type: 'success',
           title: '訂單可成功使用，請確認'
         })
+
+        // 限訂單次使用
+        vm.isBlocking = true
       } catch (error) {
+        vm.isBlocking = false
         Toast.fire({
           type: 'error',
           title: '暫時無法使用 coupon 券，請稍後再試'
