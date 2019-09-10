@@ -149,7 +149,8 @@
               </div>
 
               <div class="col-9 col-md-7 text-left pl-3">
-                <h4>謝謝您！您的訂單已經成立！</h4>
+                <h4 v-if="payment_status === '0' || '2' ">謝謝您！您的訂單已經成立！</h4>
+                <h4 v-else-if="payment_status === '1' ">謝謝您！您的訂單完成付款囉！</h4>
                 <span>訂單號碼 {{orderId}}</span>
                 <p>訂單確認電郵已經發送到您的電子郵箱</p>
                 <b>{{order.email}}</b>
@@ -245,6 +246,10 @@
                     v-else-if="payment_status ==='1'"
                     class="col-6 col-md-8 text-danger font-weight-bold"
                   >已付款</span>
+                  <span
+                    v-else-if="payment_status ==='2'"
+                    class="col-6 col-md-8 text-danger font-weight-bold"
+                  >信用卡驗證失敗，請重新付款</span>
                 </div>
 
                 <div class="row">
@@ -262,7 +267,7 @@
         </div>
 
         <div class="row mt-3">
-          <div v-if="payment_status === '0' " class="col-12 col-md-12">
+          <div v-if="payment_status === '0' || '2' " class="col-12 col-md-12">
             <router-link to="/payment" class="w-100 btn btn-success">付款去</router-link>
           </div>
 
