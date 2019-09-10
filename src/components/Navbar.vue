@@ -1,9 +1,9 @@
 <template>
-  <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
-    <router-link to="/" class="text-white mr-3">品牌 LOGO</router-link>
+  <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark justify-content-between">
+    <router-link to="/" class="text-white mr-auto">品牌 LOGO</router-link>
 
-    <li class="w-auto">
-      <span id="navbarCartItemNumber" class="badge badge-danger" style="display: none"></span>
+    <li class="mr-5" style="list-style-type: none">
+      <span id="navbarCartItemNumber" class="badge badge-danger mx-1" style="display: none;"></span>
       <span class="text-white" style="cursor: pointer" @click.stop.prevent="toggleSideCart">購物車</span>
     </li>
 
@@ -20,7 +20,7 @@
     </button>
 
     <div id="navbarSupportedContent" class="navbar-collapse collapse">
-      <div class="ml-auto d-flex align-items-center">
+      <div class="d-flex align-items-center">
         <ul class="navbar-nav mr-auto">
           <!-- <li class="nav-item">
             <span class="nav-link mr-3 text-white">Option items</span>
@@ -41,7 +41,11 @@
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                 <a class="dropdown-item" href="#">個人資訊</a>
                 <!-- is user is admin -->
-                <router-link v-if="currentUser.role === 'admin'" to="/admin/products" class="dropdown-item">管理員後台</router-link>
+                <router-link
+                  v-if="currentUser.role === 'admin'"
+                  to="/admin/products"
+                  class="dropdown-item"
+                >管理員後台</router-link>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" @click="logout">登出</a>
               </div>
@@ -88,3 +92,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.navbar-collapse {
+  flex-grow: 0;
+}
+</style>

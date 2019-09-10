@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import adminUserAPI from '@/apis/admin/adminUser'
 
 Vue.use(Vuex)
 
@@ -46,7 +47,7 @@ export default new Vuex.Store({
     async fetchCurrentUser({ commit }) {
       try {
         Vue.axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token')
-        const { data, statusText } = await Vue.axios.get('https://ec-website-api.herokuapp.com/api/get_current_user')
+        const { data, statusText } = await adminUserAPI.getCurrentUser()
 
         console.log('fetchCurrentUser', data)
         if (statusText !== 'OK' || data.status !== 'success') {

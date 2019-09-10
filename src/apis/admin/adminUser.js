@@ -1,7 +1,4 @@
-import {
-  apiHelper
-}
-from '@/utils/helpers'
+import { apiHelper } from '@/utils/helpers'
 
 export default {
   getUsers() {
@@ -10,4 +7,7 @@ export default {
   putUser(profile) {
     return apiHelper.put(`/admin/user`, profile)
   },
+  getCurrentUser() {
+    return apiHelper.get(`/get_current_user`)
+  }
 }
