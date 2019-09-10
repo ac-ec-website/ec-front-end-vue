@@ -130,6 +130,11 @@ export default {
           throw new Error(statusText)
         }
 
+        Toast.fire({
+          type: 'success',
+          title: '商品成功加入購物車！'
+        })
+
         vm.fetchProducts()
       } catch (error) {
         Toast.fire({
