@@ -94,7 +94,7 @@
                 </div>
               </div>
               <!-- 數量欄位 -->
-              <div class="col-12 col-md-3 text-center item-quantity my-auto">
+              <div class="col-4 col-md-3 text-center item-quantity my-auto">
                 <div class="input-group">
                   <span class="input-group-btn">
                     <div
@@ -117,7 +117,7 @@
               </div>
 
               <!-- 小計欄位 -->
-              <div class="col-8 col-md-2 text-center item-total my-auto">
+              <div class="col-4 col-md-2 text-center item-total my-auto">
                 <span
                   class="total-count"
                 >NT {{product.sell_price * product.CartItem.quantity | currency}}</span>
@@ -131,6 +131,28 @@
                 >
                   <i class="fa fa-times" aria-hidden="true"></i>
                 </a>
+              </div>
+            </div>
+
+            <hr class="cart-promotions-hr d-none" />
+
+            <div class="row cart-promotions d-none">
+              <h5 class="col-12">已享用之優惠</h5>
+              <div class="col-12 promotion-coupon">
+                <div class="row text-center p-3">
+                  <span
+                    class="col-4 col-md-2 ccoupon-name bg-success text-light my-auto py-2"
+                  >{{couponData.name}}</span>
+                  <span
+                    class="col-4 col-md-3 my-auto py-2 coupon-description"
+                  >{{couponData.description}}</span>
+                  <span class="col-4 col-md-7 my-auto py-2 text-right discount">
+                    <div class="row">
+                      <span class="col-12">- NT {{coupon_discount_fee | currency}}</span>
+                      <a class="col-12 text-right text-danger" @click.stop.prevent="deleteCoupon">刪除</a>
+                    </div>
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -177,24 +199,62 @@
               </div>
 
               <div class="card-body">
-                <div class="subtotal ng-scope">
-                  <span class="pull-left">小計:</span>
-                  <span class="pull-right">NT {{total_amount | currency}}</span>
+                <div class="row subtotal">
+                  <span class="col-8 col-md-6 text-left">小計:</span>
+                  <span class="col-4 col-md-6 text-right">NT {{total_amount | currency}}</span>
                 </div>
 
-                <div class="delivery-fee ng-scope">
-                  <span class="pull-left">運費:</span>
-                  <span class="pull-right">NT {{shipping_fee | currency}}</span>
+                <div class="row discount-fee">
+                  <span class="col-8 col-md-6 text-left">折扣:</span>
+                  <span class="col-4 col-md-6 text-right">- NT {{coupon_discount_fee | currency}}</span>
                 </div>
+
+                <div class="row delivery-fee">
+                  <span class="col-8 col-md-6 text-left">運費:</span>
+                  <span class="col-4 col-md-6 text-right">NT {{shipping_fee | currency}}</span>
+                </div>
+
+                <div class="row cart-coupon mt-3">
+                  <div
+                    v-if="!isCounponActivated"
+                    class="col-12 btn btn-link use-coupon text-left"
+                    @click.stop.prevent="activatedCounpon"
+                  >使用促銷代碼</div>
+                  <div v-else class="col-12 text-left">
+                    <div class="form-group">
+                      <label for="couponCode">促銷代碼</label>
+                      <div>
+                        <div class="input-group">
+                          <input
+                            type="text"
+                            v-model="couponCode"
+                            id="couponCode"
+                            class="form-control"
+                            name="couponCode"
+                            :disabled="isBlocking"
+                          />
+                          <div class="input-group-append">
+                            <button
+                              class="btn btn-primary"
+                              :disabled="isBlocking"
+                              @click.stop.prevent="postCoupon"
+                            >{{ isBlocking ? "已成功使用" : "輸入優惠券" }}</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <hr class="ng-scope" />
-                <div class="total ng-scope">
-                  <span class="pull-left">
+                <div class="row total ng-scope">
+                  <span class="col-8 col-md-6 text-left">
                     合計
                     <span class="hidden-sm hidden-md hidden-lg">({{cartItems.length}} 件)</span>:
                   </span>
                   <span
-                    class="pull-right font-weight-bold"
-                  >NT {{total_amount + shipping_fee | currency}}</span>
+                    class="col-4 col-md-6 text-right font-weight-bold"
+                  >NT {{total_amount + shipping_fee - coupon_discount_fee | currency}}</span>
                 </div>
               </div>
             </div>
@@ -307,6 +367,7 @@
 
 <script>
 import cartAPI from '@/apis/cart'
+import couponAPI from '@/apis/coupons'
 import { emptyImageFilter, currencyFilter } from '@/utils/mixins'
 import { Toast } from '@/utils/helpers'
 
@@ -318,11 +379,17 @@ export default {
       cartItems: [],
       total_amount: 0,
       shipping_fee: 60,
-      shipping_method: '住家宅配'
+      shipping_method: '住家宅配',
+      isCounponActivated: false,
+      couponData: {},
+      couponCode: '',
+      coupon_discount_fee: 0,
+      isBlocking: false
     }
   },
   created() {
     this.fetchCart()
+    this.fetchCoupon()
   },
   methods: {
     async fetchCart() {
@@ -454,6 +521,171 @@ export default {
         Toast.fire({
           type: 'error',
           title: '無法更新配送資訊，請稍後再試'
+        })
+      }
+    },
+    activatedCounpon() {
+      const vm = this
+      vm.isCounponActivated = true
+    },
+    async postCoupon(e) {
+      const vm = this
+      try {
+        if (!vm.couponCode) {
+          Toast.fire({
+            type: 'warning',
+            title: '請輸入 couponCode 優惠碼呦！'
+          })
+          return
+        }
+
+        const couponCode = {
+          couponCode: vm.couponCode
+        }
+
+        const { data, statusText } = await couponAPI.postCoupon(couponCode)
+
+        console.log('優惠券 data', data)
+
+        if (data.status === 'error-notFound') {
+          Toast.fire({
+            type: 'warning',
+            title: '查無此優惠券，請再次確認'
+          })
+          return
+        }
+
+        if (data.status === 'error-cantBeUsed') {
+          Toast.fire({
+            type: 'warning',
+            title: '該優惠券已被使用完畢 哭哭QQ'
+          })
+          return
+        }
+
+        if (statusText !== 'OK' || data.status !== 'success') {
+          throw new Error(statusText)
+        }
+
+        console.log('優惠券 data', data)
+
+        const couponData = data.couponData
+
+        // 運費相關
+        if (couponData.type === 0 && couponData.shipping_free === 1) {
+          vm.coupon_discount_fee = vm.shipping_fee
+          console.log('運費', vm.coupon_discount_fee)
+        }
+
+        // 折價相關
+        if (couponData.type === 1 && couponData.product_reduce !== null) {
+          vm.coupon_discount_fee = couponData.product_reduce
+          console.log('折價', vm.coupon_discount_fee)
+        }
+
+        // 打折相關
+        if (couponData.type === 2 && couponData.percent !== null) {
+          const discount = 1 - couponData.percent / 100
+          vm.coupon_discount_fee = Math.round(vm.total_amount * discount)
+          console.log('打折', vm.coupon_discount_fee)
+        }
+
+        vm.couponData = couponData
+
+        Toast.fire({
+          type: 'success',
+          title: '優惠券可成功使用，請確認'
+        })
+
+        // 限訂單次使用
+        vm.isBlocking = true
+        document.querySelector('.cart-promotions-hr').classList.remove('d-none')
+        document.querySelector('.cart-promotions').classList.remove('d-none')
+      } catch (error) {
+        vm.isBlocking = false
+        Toast.fire({
+          type: 'error',
+          title: '暫時無法使用 coupon 券，請稍後再試'
+        })
+      }
+    },
+    async deleteCoupon() {
+      const vm = this
+      try {
+        const { data, statusText } = await couponAPI.deleteCoupon()
+
+        console.log('優惠券 data', data)
+
+        document.querySelector('.cart-promotions-hr').classList.add('d-none')
+        document.querySelector('.cart-promotions').classList.add('d-none')
+
+        vm.isCounponActivated = false
+        vm.isBlocking = false
+
+        // 清空 coupon 資料
+        vm.couponData = {}
+        vm.couponCode = ''
+        vm.coupon_discount_fee = 0
+      } catch (error) {
+        vm.isCounponActivated = true
+        vm.isBlocking = true
+        console.log('error', error)
+      }
+    },
+    async fetchCoupon() {
+      try {
+        const vm = this
+
+        const { data, statusText } = await couponAPI.getCoupon()
+
+        console.log('優惠券資料', data)
+
+        // 若為 error 代表目前尚無 coupon 資訊，終止執行
+        if (data.status === 'error') {
+          return
+        }
+
+        if (statusText !== 'OK') {
+          throw new Error(statusText)
+        }
+
+        // 優惠券資訊
+        vm.couponData = data.couponData
+
+        // 運費相關
+        if (vm.couponData.type === 0 && vm.couponData.shipping_free === 1) {
+          vm.coupon_discount_fee = vm.shipping_fee
+          console.log('運費', vm.coupon_discount_fee)
+        }
+
+        // 折價相關
+        if (vm.couponData.type === 1 && vm.couponData.product_reduce !== null) {
+          vm.coupon_discount_fee = vm.couponData.product_reduce
+          console.log('折價', vm.coupon_discount_fee)
+        }
+
+        // 打折相關
+        if (vm.couponData.type === 2 && vm.couponData.percent !== null) {
+          const discount = 1 - vm.couponData.percent / 100
+          vm.coupon_discount_fee = Math.round(vm.total_amount * discount)
+          console.log('打折', vm.coupon_discount_fee)
+        }
+
+        Toast.fire({
+          type: 'success',
+          title: '取得優惠券資訊，請確認'
+        })
+
+        document.querySelector('.cart-promotions-hr').classList.remove('d-none')
+        document.querySelector('.cart-promotions').classList.remove('d-none')
+
+        vm.isCounponActivated = true
+        vm.couponCode = data.couponData.coupon_code
+        vm.isBlocking = true
+      } catch (error) {
+        Toast.fire({
+          type: 'error',
+          title: '無法取得優惠券資料，請稍後再試'
         })
       }
     }
