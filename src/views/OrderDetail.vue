@@ -31,7 +31,7 @@
         <!-- 開關合控制 -->
         <div class="card" data-toggle="collapse" href="#orderSummary" aria-expanded="true">
           <div class="card-header py-3 text-center border">
-            <h4>合計: NT {{total_amount + shipping_fee | currency}}</h4>
+            <h4>合計: NT {{checkoutPrice | currency}}</h4>
             <h5>
               購物車&nbsp;(
               <span class="sl-cart-count ng-isolate-scope">{{orderItems.length}}</span>&nbsp;件)
@@ -108,24 +108,50 @@
               </div>
             </div>
 
+            <div class="card-body cart-promotions border d-none">
+              <div class="row">
+                <h5 class="col-12">已享用之優惠</h5>
+                <div class="col-12 promotion-coupon">
+                  <div class="row text-center p-3">
+                    <span
+                      class="col-4 col-md-2 ccoupon-name bg-success text-light my-auto py-2"
+                    >{{couponData.name}}</span>
+                    <span
+                      class="col-4 col-md-3 my-auto py-2 coupon-description"
+                    >{{couponData.description}}</span>
+                    <span class="col-4 col-md-7 my-auto py-2 text-right discount">
+                      <div class="row">
+                        <span class="col-12">- NT {{coupon_discount_fee | currency}}</span>
+                      </div>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <!-- 訂單資訊 -->
             <div class="card-body border">
               <div class="row text-right">
                 <div class="col-12 subtotal">
-                  <div class="col-9 d-inline-block">小計:</div>
-                  <div class="col-3 d-inline-block">NT {{total_amount | currency}}</div>
+                  <div class="col-8 col-md-9 d-inline-block">小計:</div>
+                  <div class="col-4 col-md-3 d-inline-block">NT {{total_amount | currency}}</div>
                 </div>
 
                 <div class="col-12 delivery-fee">
-                  <div class="col-9 d-inline-block">運費:</div>
-                  <div class="col-3 d-inline-block">NT {{shipping_fee | currency}}</div>
+                  <div class="col-8 col-md-9 d-inline-block">運費:</div>
+                  <div class="col-4 col-md-3 d-inline-block">NT {{shipping_fee | currency}}</div>
+                </div>
+
+                <div class="col-12 coupon-fee">
+                  <div class="col-8 col-md-9 d-inline-block">折扣:</div>
+                  <div class="col-4 col-md-3 d-inline-block">- NT {{coupon_discount_fee | currency}}</div>
                 </div>
 
                 <div class="col-12 total">
-                  <div class="col-9 d-inline-block">合計:</div>
+                  <div class="col-8 col-md-9 d-inline-block">合計:</div>
                   <div
-                    class="col-3 d-inline-block font-weight-bold"
-                  >NT {{total_amount + shipping_fee | currency}}</div>
+                    class="col-4 col-md-3 d-inline-block font-weight-bold"
+                  >NT {{checkoutPrice | currency}}</div>
                 </div>
               </div>
             </div>
@@ -149,7 +175,7 @@
               </div>
 
               <div class="col-9 col-md-7 text-left pl-3">
-                <h4 v-if="payment_status === '0' || '2' ">謝謝您！您的訂單已經成立！</h4>
+                <h4 v-if="payment_status === '0' || payment_status === '2' ">謝謝您！您的訂單已經成立！</h4>
                 <h4 v-else-if="payment_status === '1' ">謝謝您！您的訂單完成付款囉！</h4>
                 <span>訂單號碼 {{orderId}}</span>
                 <p>訂單確認電郵已經發送到您的電子郵箱</p>
@@ -226,7 +252,7 @@
 
                 <div class="row">
                   <span class="col-6 col-md-4">付款金額:</span>
-                  <span class="col-6 col-md-8">NT {{total_amount + shipping_fee | currency}}</span>
+                  <span class="col-6 col-md-8">NT {{checkoutPrice | currency}}</span>
                 </div>
 
                 <div class="row">
@@ -267,7 +293,7 @@
         </div>
 
         <div class="row mt-3">
-          <div v-if="payment_status === '0' || '2' " class="col-12 col-md-12">
+          <div v-if="payment_status === '0' || payment_status === '2' " class="col-12 col-md-12">
             <router-link to="/payment" class="w-100 btn btn-success">付款去</router-link>
           </div>
 
@@ -279,6 +305,118 @@
     </div>
   </div>
 </template>
+
+
+<script>
+import orderAPI from '@/apis/order'
+import couponAPI from '@/apis/coupons'
+import { detailedTimeFilter, currencyFilter, emptyImageFilter } from '@/utils/mixins'
+import { Toast } from '@/utils/helpers'
+
+export default {
+  mixins: [detailedTimeFilter, currencyFilter, emptyImageFilter],
+  data() {
+    return {
+      order: {},
+      orderId: 0,
+      order_status: null,
+      orderItems: [],
+      checkoutPrice: 0,
+      shipping_fee: 0,
+      coupon_discount_fee: 0,
+      total_amount: 0,
+      payment: [],
+      payment_status: null,
+      payment_method: null,
+      shipping: [],
+      status: false,
+      isProcessing: false,
+      couponData: {}
+    }
+  },
+  created() {
+    this.fetchOrder()
+    this.fetchCoupon()
+  },
+  methods: {
+    async fetchOrder() {
+      try {
+        const vm = this
+
+        const { data, statusText } = await orderAPI.getOrder()
+
+        if (statusText !== 'OK') {
+          throw new Error(statusText)
+        }
+
+        // 訂單資訊
+        vm.order = data.order
+        // 訂單編號
+        vm.orderId = data.order.id
+        // 訂單狀態
+        vm.order_status = data.order.order_status
+        // 訂單商品資訊
+        vm.orderItems = data.order.items
+        vm.orderItems.map(d => d.id * d.id).reduce((a, b) => a + b)
+        // 商品總價
+        vm.checkoutPrice = data.order.checkoutPrice
+        // 運費金額
+        vm.shipping_fee = data.order.shipping_fee
+        // // 折扣金額
+        vm.coupon_discount_fee = data.order.discount_fee
+        // 結帳金額
+        vm.total_amount = data.order.total_amount
+
+        // 付款資訊
+        vm.payment = data.payment
+        vm.payment_status = data.payment.payment_status
+        vm.payment_method = data.payment.payment_method
+
+        // 運送資訊
+        vm.shipping = data.shipping
+
+        vm.$store.commit('setNavbarCartItemNumber', 0)
+      } catch (error) {
+        if (this.orderItems.length > 1) {
+          Toast.fire({
+            type: 'error',
+            title: '無法取得訂單資料，請稍後再試'
+          })
+        }
+      }
+    },
+    async fetchCoupon() {
+      try {
+        const vm = this
+
+        const { data, statusText } = await couponAPI.getCoupon()
+
+        // 若為 error 代表目前尚無 coupon 資訊，終止執行
+        if (data.status === 'error') {
+          return
+        }
+
+        if (statusText !== 'OK') {
+          throw new Error(statusText)
+        }
+
+        // 優惠券資訊
+        vm.couponData = data.couponData
+
+        document.querySelector('.cart-promotions').classList.remove('d-none')
+      } catch (error) {
+        Toast.fire({
+          type: 'error',
+          title: '無法取得優惠券資料，請稍後再試'
+        })
+      }
+    },
+    async collapseStatusChange() {
+      this.status = !this.status
+    }
+  }
+}
+</script>
 
 <style>
 .step {
@@ -360,77 +498,3 @@ section {
 }
 </style>
 
-<script>
-import orderAPI from '@/apis/order'
-import { detailedTimeFilter, currencyFilter, emptyImageFilter } from '@/utils/mixins'
-import { Toast } from '@/utils/helpers'
-
-export default {
-  mixins: [detailedTimeFilter, currencyFilter, emptyImageFilter],
-  data() {
-    return {
-      order: {},
-      orderId: 0,
-      order_status: null,
-      orderItems: [],
-      total_amount: 0,
-      payment: [],
-      payment_status: null,
-      payment_method: null,
-      shipping: [],
-      shipping_fee: 0,
-      status: false,
-      isProcessing: false
-    }
-  },
-  created() {
-    this.fetchOrder()
-  },
-  methods: {
-    async fetchOrder() {
-      try {
-        const vm = this
-
-        const { data, statusText } = await orderAPI.getOrder()
-
-        if (statusText !== 'OK') {
-          throw new Error(statusText)
-        }
-
-        // 訂單資訊
-        vm.order = data.order
-        // 訂單編號
-        vm.orderId = data.order.id
-        // 訂單狀態
-        vm.order_status = data.order.order_status
-        // 訂單商品資訊
-        vm.orderItems = data.order.items
-        vm.orderItems.map(d => d.id * d.id).reduce((a, b) => a + b)
-        // 商品總價
-        vm.total_amount = data.order.total_amount
-
-        // 付款資訊
-        vm.payment = data.payment
-        vm.payment_status = data.payment.payment_status
-        vm.payment_method = data.payment.payment_method
-
-        // 運送資訊
-        vm.shipping = data.shipping
-        vm.shipping_fee = data.shipping.shipping_fee
-
-        vm.$store.commit('setNavbarCartItemNumber', 0)
-      } catch (error) {
-        if (this.orderItems.length > 1) {
-          Toast.fire({
-            type: 'error',
-            title: '無法取得訂單資料，請稍後再試'
-          })
-        }
-      }
-    },
-    async collapseStatusChange() {
-      this.status = !this.status
-    }
-  }
-}
-</script>
