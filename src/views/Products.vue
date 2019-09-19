@@ -17,8 +17,9 @@
         @add-to-cart="handleAddToCart"
       />
     </div>
+    <Spinner v-if="isLoading" />
     <div class="text-center">
-      <div v-if="filterProducts.length === 0">喔！沒有此商品QAQ</div>
+      <div v-if="isNoProduct">喔！沒有此商品QAQ</div>
     </div>
 
     <!-- 分頁標籤  -->
@@ -35,6 +36,7 @@ import Pagination from '@/components/Pagination'
 import SideCartPreview from '@/components/SideCartPreview'
 import CategoryTab from '@/components/CategoryTab'
 import Searchbar from '@/components/Searchbar'
+import Spinner from '@/components/Spinner'
 
 export default {
   data() {
@@ -44,7 +46,9 @@ export default {
       products: [],
       filterProducts: [],
       cart: {},
-      showSideCart: false
+      showSideCart: false,
+      isLoading: true,
+      isNoProduct: false
       // totalPage: 0
     }
   },
@@ -61,6 +65,7 @@ export default {
       try {
         const vm = this
         const response = await productsAPI.getProducts()
+        vm.isNoProduct = false
 
         console.log('商品資料', response)
 
@@ -73,6 +78,11 @@ export default {
         vm.cart = response.data.cart
         vm.categories = response.data.categories
         vm.$store.commit('setNavbarCartItemNumber', response.data.cart.items.length)
+
+        vm.isLoading = false
+        if (vm.filterProducts.length === 0) {
+          vm.isNoProduct = true
+        }
       } catch (error) {
         Toast.fire({
           type: 'error',
@@ -99,8 +109,12 @@ export default {
       }
     },
     filterCategory(categoryId) {
+      this.isNoProduct = false
       if (categoryId === undefined) {
         this.filterProducts = this.products
+        if (this.filterProducts.length === 0) {
+          this.isNoProduct = true
+        }
         return
       }
       this.filterProducts = this.products.filter(product => {
@@ -108,10 +122,17 @@ export default {
           return product
         }
       })
+      if (this.filterProducts.length === 0) {
+        this.isNoProduct = true
+      }
     },
     filterSearch(inputText) {
+      this.isNoProduct = false
       if (inputText === '') {
         this.filterProducts = this.products
+        if (this.filterProducts.length === 0) {
+          this.isNoProduct = true
+        }
         return
       }
       this.filterProducts = this.products.filter(product => {
@@ -119,6 +140,9 @@ export default {
           return product
         }
       })
+      if (this.filterProducts.length === 0) {
+        this.isNoProduct = true
+      }
     },
     async handleAddToCart(productId, quantity) {
       try {
@@ -149,7 +173,8 @@ export default {
     Pagination,
     SideCartPreview,
     CategoryTab,
-    Searchbar
+    Searchbar,
+    Spinner
   }
 }
 </script>
