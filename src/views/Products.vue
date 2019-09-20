@@ -80,9 +80,7 @@ export default {
         vm.$store.commit('setNavbarCartItemNumber', response.data.cart.items.length)
 
         vm.isLoading = false
-        if (vm.filterProducts.length === 0) {
-          vm.isNoProduct = true
-        }
+        this.checkIsNoProduct()
       } catch (error) {
         Toast.fire({
           type: 'error',
@@ -122,9 +120,7 @@ export default {
           return product
         }
       })
-      if (this.filterProducts.length === 0) {
-        this.isNoProduct = true
-      }
+      this.checkIsNoProduct()
     },
     filterSearch(inputText) {
       this.isNoProduct = false
@@ -140,9 +136,7 @@ export default {
           return product
         }
       })
-      if (this.filterProducts.length === 0) {
-        this.isNoProduct = true
-      }
+      this.checkIsNoProduct()
     },
     async handleAddToCart(productId, quantity) {
       try {
@@ -165,6 +159,11 @@ export default {
           type: 'error',
           title: '無法加入購物車，請稍後再試'
         })
+      }
+    },
+    checkIsNoProduct() {
+      if (this.filterProducts.length === 0) {
+        this.isNoProduct = true
       }
     }
   },
