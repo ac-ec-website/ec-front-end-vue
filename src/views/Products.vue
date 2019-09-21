@@ -32,7 +32,7 @@ import { Toast } from '@/utils/helpers'
 import productsAPI from '@/apis/products'
 import cartAPI from '@/apis/cart'
 import ProductsCard from '@/components/ProductsCard'
-import Pagination from '@/components/Pagination'
+// import Pagination from '@/components/Pagination'
 import SideCartPreview from '@/components/SideCartPreview'
 import CategoryTab from '@/components/CategoryTab'
 import Searchbar from '@/components/Searchbar'
@@ -48,7 +48,9 @@ export default {
       cart: {},
       showSideCart: false,
       isLoading: true,
-      isNoProduct: false
+      isNoProduct: false,
+      filterInputText: '',
+      filterCategoryId: undefined
       // totalPage: 0
     }
   },
@@ -70,7 +72,7 @@ export default {
         console.log('商品資料', response)
 
         if (response.statusText !== 'OK') {
-          throw new Error(statusText)
+          throw new Error(response.statusText)
         }
 
         vm.products = response.data.products
@@ -107,35 +109,13 @@ export default {
       }
     },
     filterCategory(categoryId) {
-      this.isNoProduct = false
-      if (categoryId === undefined) {
-        this.filterProducts = this.products
-        if (this.filterProducts.length === 0) {
-          this.isNoProduct = true
-        }
-        return
-      }
-      this.filterProducts = this.products.filter(product => {
-        if (product.CategoryId === categoryId) {
-          return product
-        }
-      })
+      this.filterCategoryId = categoryId
+      this.handleFilterProducts()
       this.checkIsNoProduct()
     },
     filterSearch(inputText) {
-      this.isNoProduct = false
-      if (inputText === '') {
-        this.filterProducts = this.products
-        if (this.filterProducts.length === 0) {
-          this.isNoProduct = true
-        }
-        return
-      }
-      this.filterProducts = this.products.filter(product => {
-        if (product.name.indexOf(inputText) > 0 || product.Category.name.indexOf(inputText) > 0) {
-          return product
-        }
-      })
+      this.filterInputText = inputText
+      this.handleFilterProducts()
       this.checkIsNoProduct()
     },
     async handleAddToCart(productId, quantity) {
@@ -145,7 +125,7 @@ export default {
         const response = await cartAPI.addToCart(productId, quantity)
 
         if (response.statusText !== 'OK') {
-          throw new Error(statusText)
+          throw new Error(response.statusText)
         }
 
         Toast.fire({
@@ -161,6 +141,27 @@ export default {
         })
       }
     },
+    handleFilterProducts() {
+      const vm = this
+      vm.filterProducts = vm.products
+      vm.isNoProduct = false
+
+      if (vm.filterCategoryId !== undefined) {
+        vm.filterProducts = vm.filterProducts.filter(product => {
+          if (product.CategoryId === vm.filterCategoryId) {
+            return product
+          }
+        })
+      }
+
+      if (vm.filterInputText !== '') {
+        vm.filterProducts = vm.filterProducts.filter(product => {
+          if (product.name.indexOf(vm.filterInputText) > 0 || product.Category.name.indexOf(vm.filterInputText) > 0) {
+            return product
+          }
+        })
+      }
+    },
     checkIsNoProduct() {
       if (this.filterProducts.length === 0) {
         this.isNoProduct = true
@@ -169,7 +170,7 @@ export default {
   },
   components: {
     ProductsCard,
-    Pagination,
+    // Pagination,
     SideCartPreview,
     CategoryTab,
     Searchbar,
