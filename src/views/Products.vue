@@ -17,8 +17,9 @@
         @add-to-cart="handleAddToCart"
       />
     </div>
+    <Spinner v-if="isLoading" />
     <div class="text-center">
-      <div v-if="filterProducts.length === 0">喔！沒有此商品QAQ</div>
+      <div v-if="isNoProduct">喔！沒有此商品QAQ</div>
     </div>
 
     <!-- 分頁標籤  -->
@@ -31,10 +32,11 @@ import { Toast } from '@/utils/helpers'
 import productsAPI from '@/apis/products'
 import cartAPI from '@/apis/cart'
 import ProductsCard from '@/components/ProductsCard'
-import Pagination from '@/components/Pagination'
+// import Pagination from '@/components/Pagination'
 import SideCartPreview from '@/components/SideCartPreview'
 import CategoryTab from '@/components/CategoryTab'
 import Searchbar from '@/components/Searchbar'
+import Spinner from '@/components/Spinner'
 
 export default {
   data() {
@@ -44,7 +46,11 @@ export default {
       products: [],
       filterProducts: [],
       cart: {},
-      showSideCart: false
+      showSideCart: false,
+      isLoading: true,
+      isNoProduct: false,
+      filterInputText: '',
+      filterCategoryId: undefined
       // totalPage: 0
     }
   },
@@ -61,11 +67,12 @@ export default {
       try {
         const vm = this
         const response = await productsAPI.getProducts()
+        vm.isNoProduct = false
 
         console.log('商品資料', response)
 
         if (response.statusText !== 'OK') {
-          throw new Error(statusText)
+          throw new Error(response.statusText)
         }
 
         vm.products = response.data.products
@@ -73,6 +80,9 @@ export default {
         vm.cart = response.data.cart
         vm.categories = response.data.categories
         vm.$store.commit('setNavbarCartItemNumber', response.data.cart.items.length)
+
+        vm.isLoading = false
+        this.checkIsNoProduct()
       } catch (error) {
         Toast.fire({
           type: 'error',
@@ -99,26 +109,14 @@ export default {
       }
     },
     filterCategory(categoryId) {
-      if (categoryId === undefined) {
-        this.filterProducts = this.products
-        return
-      }
-      this.filterProducts = this.products.filter(product => {
-        if (product.CategoryId === categoryId) {
-          return product
-        }
-      })
+      this.filterCategoryId = categoryId
+      this.handleFilterProducts()
+      this.checkIsNoProduct()
     },
     filterSearch(inputText) {
-      if (inputText === '') {
-        this.filterProducts = this.products
-        return
-      }
-      this.filterProducts = this.products.filter(product => {
-        if (product.name.indexOf(inputText) > 0 || product.Category.name.indexOf(inputText) > 0) {
-          return product
-        }
-      })
+      this.filterInputText = inputText
+      this.handleFilterProducts()
+      this.checkIsNoProduct()
     },
     async handleAddToCart(productId, quantity) {
       try {
@@ -127,7 +125,7 @@ export default {
         const response = await cartAPI.addToCart(productId, quantity)
 
         if (response.statusText !== 'OK') {
-          throw new Error(statusText)
+          throw new Error(response.statusText)
         }
 
         Toast.fire({
@@ -142,14 +140,41 @@ export default {
           title: '無法加入購物車，請稍後再試'
         })
       }
+    },
+    handleFilterProducts() {
+      const vm = this
+      vm.filterProducts = vm.products
+      vm.isNoProduct = false
+
+      if (vm.filterCategoryId !== undefined) {
+        vm.filterProducts = vm.filterProducts.filter(product => {
+          if (product.CategoryId === vm.filterCategoryId) {
+            return product
+          }
+        })
+      }
+
+      if (vm.filterInputText !== '') {
+        vm.filterProducts = vm.filterProducts.filter(product => {
+          if (product.name.indexOf(vm.filterInputText) > 0 || product.Category.name.indexOf(vm.filterInputText) > 0) {
+            return product
+          }
+        })
+      }
+    },
+    checkIsNoProduct() {
+      if (this.filterProducts.length === 0) {
+        this.isNoProduct = true
+      }
     }
   },
   components: {
     ProductsCard,
-    Pagination,
+    // Pagination,
     SideCartPreview,
     CategoryTab,
-    Searchbar
+    Searchbar,
+    Spinner
   }
 }
 </script>
