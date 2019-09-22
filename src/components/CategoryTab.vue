@@ -1,12 +1,19 @@
 <template>
   <div class="mb-3">
     <ul class="nav justify-content-center">
-      <li class="nav-item mx-1">
-        <a href="#" class="btn btn-outline-dark" @click.stop.prevent="filterCategory()">所有商品</a>
-      </li>
-      <li class="nav-item mx-1" v-for="category in categories" :key="category.id">
-        <a href="#" class="btn btn-outline-dark" @click.stop.prevent="filterCategory(category.id)">{{category.name}}</a>
-      </li>
+      <label class="mx-1" @click.stop="filterCategory()">
+        <input type="radio" value="所有商品" v-model="picked" class="d-none" />
+        <div class="btn btn-outline-dark">所有商品</div>
+      </label>
+      <label
+        v-for="category in categories"
+        :key="category.id"
+        class="mx-1"
+        @click.stop="filterCategory(category.id)"
+      >
+        <input type="radio" :value="category.id" v-model="picked" class="d-none" />
+        <div class="btn btn-outline-dark">{{category.name}}</div>
+      </label>
     </ul>
   </div>
 </template>
@@ -19,6 +26,11 @@ export default {
       required: true
     }
   },
+  data() {
+    return {
+      picked: ''
+    }
+  },
   methods: {
     filterCategory(categoryId) {
       this.$emit('filter-category', categoryId)
@@ -29,6 +41,10 @@ export default {
 
 <style scoped>
 ul > li > a:focus {
+  background-color: #343a40;
+  color: #ffffff;
+}
+ul > label > input:checked + div {
   background-color: #343a40;
   color: #ffffff;
 }
