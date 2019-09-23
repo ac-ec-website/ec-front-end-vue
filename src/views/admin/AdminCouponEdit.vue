@@ -1,6 +1,9 @@
 <template>
   <div class="container py-5">
+    <Spinner v-if="isLoading" />
+
     <AdminCouponForm
+      v-else
       :initial-coupon="coupon"
       :is-processing="isProcessing"
       :edit-page="editPage"
@@ -12,18 +15,20 @@
 <script>
 import adminCouponAPI from '@/apis/admin/adminCoupon'
 import AdminCouponForm from '@/components/admin/AdminCouponForm.vue'
-
+import Spinner from '@/components/Spinner'
 import { Toast } from '@/utils/helpers'
 
 export default {
   components: {
-    AdminCouponForm
+    AdminCouponForm,
+    Spinner
   },
   data() {
     return {
       coupon: {},
       isProcessing: false,
-      editPage: true
+      editPage: true,
+      isLoading: false
     }
   },
   created() {
@@ -37,8 +42,9 @@ export default {
   },
   methods: {
     async fetchCoupon(couponId) {
+      const vm = this
       try {
-        const vm = this
+        vm.isLoading = true
         const { data, statusText } = await adminCouponAPI.getCoupon(couponId)
 
         if (statusText !== 'OK') {
@@ -49,6 +55,7 @@ export default {
           ...data.coupon,
           end_date: data.coupon.end_date.substring(0, 19)
         }
+        vm.isLoading = false
       } catch (error) {
         Toast.fire({
           type: 'error',

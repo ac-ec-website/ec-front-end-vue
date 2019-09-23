@@ -18,7 +18,9 @@
         </tr>
       </thead>
 
-      <tbody>
+      <Spinner v-if="isLoading" />
+
+      <tbody v-else>
         <tr v-for="discount in discounts" :key="discount.id">
           <th scope="row">{{ discount.id }}</th>
           <td>{{ discount.name }}</td>
@@ -65,16 +67,18 @@
 <script>
 import adminDiscountAPI from '@/apis/admin/adminDiscount'
 import AdminNav from '@/components/admin/AdminNav'
-
+import Spinner from '@/components/Spinner'
 import { Toast } from '@/utils/helpers'
 
 export default {
   components: {
-    AdminNav
+    AdminNav,
+    Spinner
   },
   data() {
     return {
-      discounts: []
+      discounts: [],
+      isLoading: false
     }
   },
   created() {
@@ -82,8 +86,9 @@ export default {
   },
   methods: {
     async fetchDiscounts() {
+      const vm = this
       try {
-        const vm = this
+        vm.isLoading = true
         const { data, statusText } = await adminDiscountAPI.getDiscounts()
 
         if (statusText !== 'OK') {
@@ -91,6 +96,7 @@ export default {
         }
 
         vm.discounts = data.discounts
+        vm.isLoading = false
       } catch (error) {
         Toast.fire({
           type: 'error',
@@ -99,16 +105,15 @@ export default {
       }
     },
     async deleteDiscount(discountId) {
+      const vm = this
       try {
-        const vm = this
-
         const { data, statusText } = await adminDiscountAPI.deleteDiscount(discountId)
 
         if (statusText !== 'OK' || data.status !== 'success') {
           throw new Error(statusText)
         }
 
-        vm.discounts = this.discounts.filter(discount => discount.id !== discountId)
+        vm.discounts = vm.discounts.filter(discount => discount.id !== discountId)
         Toast.fire({
           type: 'success',
           title: '刪除 discount 成功'

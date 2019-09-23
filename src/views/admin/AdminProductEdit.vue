@@ -1,6 +1,9 @@
 <template>
   <div class="container py-5">
+    <Spinner v-if="isLoading" />
+
     <AdminProductForm
+      v-else
       :initial-product="product"
       :is-processing="isProcessing"
       :edit-page="editPage"
@@ -12,17 +15,20 @@
 <script>
 import adminProductAPI from '@/apis/admin/adminProduct'
 import AdminProductForm from '@/components/admin/AdminProductForm.vue'
+import Spinner from '@/components/Spinner'
 import { Toast } from '@/utils/helpers'
 
 export default {
   components: {
-    AdminProductForm
+    AdminProductForm,
+    Spinner
   },
   data() {
     return {
       product: {},
       isProcessing: false,
-      editPage: true
+      editPage: true,
+      isLoading: false
     }
   },
   created() {
@@ -37,8 +43,9 @@ export default {
   },
   methods: {
     async fetchProduct(productId) {
+      const vm = this
       try {
-        const vm = this
+        vm.isLoading = true
         const { data, statusText } = await adminProductAPI.getProduct(productId)
 
         if (statusText !== 'OK') {
@@ -46,6 +53,7 @@ export default {
         }
 
         vm.product = data.product
+        vm.isLoading = false
       } catch (error) {
         Toast.fire({
           type: 'error',

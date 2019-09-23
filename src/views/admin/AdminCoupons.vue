@@ -18,7 +18,9 @@
         </tr>
       </thead>
 
-      <tbody>
+      <Spinner v-if="isLoading" />
+
+      <tbody v-else>
         <tr v-for="coupon in coupons" :key="coupon.id">
           <th scope="row">{{ coupon.id }}</th>
           <td>{{ coupon.name }}</td>
@@ -65,15 +67,18 @@
 <script>
 import adminCouponAPI from '@/apis/admin/adminCoupon'
 import AdminNav from '@/components/admin/AdminNav'
+import Spinner from '@/components/Spinner'
 import { Toast } from '@/utils/helpers'
 
 export default {
   components: {
-    AdminNav
+    AdminNav,
+    Spinner
   },
   data() {
     return {
-      coupons: []
+      coupons: [],
+      isLoading: false
     }
   },
   created() {
@@ -81,8 +86,9 @@ export default {
   },
   methods: {
     async fetchCoupons() {
+      const vm = this
       try {
-        const vm = this
+        vm.isLoading = true
         const { data, statusText } = await adminCouponAPI.getCoupons()
 
         if (statusText !== 'OK') {
@@ -90,6 +96,7 @@ export default {
         }
 
         vm.coupons = data.coupons
+        vm.isLoading = false
       } catch (error) {
         Toast.fire({
           type: 'error',
@@ -98,15 +105,15 @@ export default {
       }
     },
     async deleteCoupon(couponId) {
+      const vm = this
       try {
-        const vm = this
         const { data, statusText } = await adminCouponAPI.deleteCoupon(couponId)
 
         if (statusText !== 'OK' || data.status !== 'success') {
           throw new Error(statusText)
         }
 
-        vm.coupons = this.coupons.filter(coupon => coupon.id !== couponId)
+        vm.coupons = vm.coupons.filter(coupon => coupon.id !== couponId)
         Toast.fire({
           type: 'success',
           title: '刪除 Coupon 成功'

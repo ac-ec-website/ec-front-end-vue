@@ -1,6 +1,8 @@
 <template>
   <div class="container py-5">
-    <div class="row">
+    <Spinner v-if="isLoading" />
+
+    <div v-else class="row">
       <div class="col-md-12">
         <h2>{{ product.name }}</h2>
         <strong>[{{ product.categoryName }}]</strong>
@@ -47,14 +49,19 @@
 
 <script>
 import adminProductAPI from '@/apis/admin/adminProduct'
+import Spinner from '@/components/Spinner'
 import { emptyImageFilter } from '@/utils/mixins'
 import { Toast } from '@/utils/helpers'
 
 export default {
+  components: {
+    Spinner
+  },
   mixins: [emptyImageFilter],
   data() {
     return {
-      product: {}
+      product: {},
+      isLoading: false
     }
   },
   created() {
@@ -69,9 +76,9 @@ export default {
   },
   methods: {
     async fetchProduct(productId) {
+      const vm = this
       try {
-        const vm = this
-
+        vm.isLoading = true
         const { data, statusText } = await adminProductAPI.getProduct(productId)
 
         if (statusText !== 'OK') {
@@ -82,6 +89,7 @@ export default {
           ...data.product,
           categoryName: data.product.Category.name
         }
+        vm.isLoading = false
       } catch (error) {
         Toast.fire({
           type: 'error',

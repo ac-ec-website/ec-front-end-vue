@@ -15,7 +15,9 @@
         </tr>
       </thead>
 
-      <tbody>
+      <Spinner v-if="isLoading" />
+
+      <tbody v-else>
         <tr v-for="order in orders" :key="order.id">
           <th scope="row">{{ order.createdAt | dateTime }}</th>
           <td>{{ order.name }}</td>
@@ -29,7 +31,7 @@
             </ul>
           </td>
 
-          <td class="text-right">{{ order.total_amount | currency }}</td>
+          <td class="text-right">{{ order.checkoutPrice | currency }}</td>
 
           <td>
             <div v-show="!order.isEditing">
@@ -116,18 +118,20 @@
 <script>
 import adminOrderAPI from '@/apis/admin/adminOrder'
 import AdminNav from '@/components/admin/AdminNav'
-
+import Spinner from '@/components/Spinner'
 import { dateTimeFilter, currencyFilter } from '@/utils/mixins'
 import { Toast } from '@/utils/helpers'
 
 export default {
   components: {
-    AdminNav
+    AdminNav,
+    Spinner
   },
   mixins: [dateTimeFilter, currencyFilter],
   data() {
     return {
-      orders: []
+      orders: [],
+      isLoading: false
     }
   },
   created() {
@@ -135,8 +139,9 @@ export default {
   },
   methods: {
     async fetchOrders() {
+      const vm = this
       try {
-        const vm = this
+        vm.isLoading = true
         const { data, statusText } = await adminOrderAPI.getOrders()
 
         if (statusText !== 'OK') {
@@ -144,6 +149,7 @@ export default {
         }
 
         vm.orders = data.orders.map(order => ({ ...order, isEditing: false }))
+        vm.isLoading = false
       } catch (error) {
         Toast.fire({
           type: 'error',
@@ -152,9 +158,8 @@ export default {
       }
     },
     async updateOrder({ orderId, payment_status, shipping_status }) {
+      const vm = this
       try {
-        const vm = this
-
         const value = { payment_status, shipping_status }
         const { data, statusText } = await adminOrderAPI.putOrder(orderId, value)
 
@@ -162,7 +167,7 @@ export default {
           throw new Error(statusText)
         }
 
-        this.toggleIsEditing(orderId)
+        vm.toggleIsEditing(orderId)
       } catch (error) {
         Toast.fire({
           type: 'error',

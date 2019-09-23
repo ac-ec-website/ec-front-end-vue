@@ -8,7 +8,9 @@
       </tr>
     </thead>
 
-    <tbody>
+    <Spinner v-if="isLoading" />
+
+    <tbody v-else>
       <tr v-for="product in products" :key="product.id">
         <th scope="row">{{ product.id }}</th>
         <td>{{ product.name }}</td>
@@ -46,12 +48,17 @@
 
 <script>
 import adminProductAPI from '@/apis/admin/adminProduct'
+import Spinner from '@/components/Spinner'
 import { Toast } from '@/utils/helpers'
 
 export default {
+  components: {
+    Spinner
+  },
   data() {
     return {
-      products: []
+      products: [],
+      isLoading: false
     }
   },
   created() {
@@ -59,9 +66,9 @@ export default {
   },
   methods: {
     async fetchProducts() {
+      const vm = this
       try {
-        const vm = this
-
+        vm.isLoading = true
         const { data, statusText } = await adminProductAPI.getProducts()
 
         if (statusText !== 'OK') {
@@ -69,6 +76,7 @@ export default {
         }
 
         vm.products = data.products
+        vm.isLoading = false
       } catch (error) {
         Toast.fire({
           type: 'error',
@@ -77,16 +85,15 @@ export default {
       }
     },
     async deleteProduct(productId) {
+      const vm = this
       try {
-        const vm = this
-
         const { data, statusText } = await adminProductAPI.deleteProduct(productId)
 
         if (statusText !== 'OK' || data.status !== 'success') {
           throw new Error(statusText)
         }
 
-        vm.products = this.products.filter(product => product.id !== productId)
+        vm.products = vm.products.filter(product => product.id !== productId)
         Toast.fire({
           type: 'success',
           title: '刪除產品成功'

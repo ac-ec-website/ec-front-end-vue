@@ -1,13 +1,15 @@
 <template>
   <div class="container py-5">
-    <div class="row">
+    <Spinner v-if="isLoading" />
+
+    <div v-else class="row">
       <div class="col-md-4">
         <h5>訂單編號：{{ order.id }}</h5>
         <p>買者姓名：{{ order.name }}</p>
         <p>連絡電話：{{ order.phone }}</p>
         <p>聯絡地址：{{ order.address }}</p>
         <p>購買日期：{{ order.createdAt | dateTime }}</p>
-        <p>消費總額：{{ order.total_amount | currency }}</p>
+        <p>消費總額：{{ order.checkoutPrice | currency }}</p>
         <hr />
 
         <div class="mb-3">
@@ -49,14 +51,19 @@
 
 <script>
 import adminOrderAPI from '@/apis/admin/adminOrder'
+import Spinner from '@/components/Spinner'
 import { dateTimeFilter, currencyFilter, emptyImageFilter } from '@/utils/mixins'
 import { Toast } from '@/utils/helpers'
 
 export default {
+  components: {
+    Spinner
+  },
   mixins: [dateTimeFilter, currencyFilter, emptyImageFilter],
   data() {
     return {
-      order: {}
+      order: {},
+      isLoading: false
     }
   },
   created() {
@@ -70,8 +77,9 @@ export default {
   },
   methods: {
     async fetchOrder(orderId) {
+      const vm = this
       try {
-        const vm = this
+        vm.isLoading = true
         const { data, statusText } = await adminOrderAPI.getOrder(orderId)
 
         if (statusText !== 'OK') {
@@ -79,6 +87,7 @@ export default {
         }
 
         vm.order = data.order
+        vm.isLoading = false
       } catch (error) {
         Toast.fire({
           type: 'error',
