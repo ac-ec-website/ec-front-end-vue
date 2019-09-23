@@ -1,6 +1,9 @@
 <template>
   <div class="container py-5">
+    <Spinner v-if="isLoading" />
+
     <AdminDiscountForm
+      v-else
       :initial-discount="discount"
       :is-processing="isProcessing"
       :edit-page="editPage"
@@ -12,34 +15,36 @@
 <script>
 import adminDiscountAPI from '@/apis/admin/adminDiscount'
 import AdminDiscountForm from '@/components/admin/AdminDiscountForm.vue'
-
+import Spinner from '@/components/Spinner'
 import { Toast } from '@/utils/helpers'
 
 export default {
   components: {
-    AdminDiscountForm
+    AdminDiscountForm,
+    Spinner
   },
   data() {
     return {
       discount: {},
       isProcessing: false,
-      editPage: true
+      editPage: true,
+      isLoading: false
     }
   },
   created() {
     const { discountId } = this.$route.params
-    this.fetchdiscount(discountId)
+    this.fetchDiscount(discountId)
   },
   beforeRouteUpdate(to, from, next) {
     const { discountId } = to.params
-    this.fetchdiscount(discountId)
+    this.fetchDiscount(discountId)
     next()
   },
   methods: {
-    async fetchdiscount(discountId) {
+    async fetchDiscount(discountId) {
+      const vm = this
       try {
-        const vm = this
-
+        vm.isLoading = true
         const { data, statusText } = await adminDiscountAPI.getDiscount(discountId)
 
         if (statusText !== 'OK') {
@@ -51,6 +56,7 @@ export default {
           start_date: data.discount.start_date.substring(0, 19),
           end_date: data.discount.end_date.substring(0, 19)
         }
+        vm.isLoading = false
       } catch (error) {
         Toast.fire({
           type: 'error',

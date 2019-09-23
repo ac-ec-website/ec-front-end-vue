@@ -1,6 +1,8 @@
 <template>
   <div class="container py-5">
-    <div class="row">
+    <Spinner v-if="isLoading" />
+
+    <div v-else class="row">
       <div class="col-md-6">
         <h3>{{ coupon.name }}</h3>
         <p>{{coupon.description}}</p>
@@ -30,14 +32,19 @@
 
 <script>
 import adminCouponAPI from '@/apis/admin/adminCoupon'
+import Spinner from '@/components/Spinner'
 import { dateTimeFilter, currencyFilter } from '@/utils/mixins'
 import { Toast } from '@/utils/helpers'
 
 export default {
+  components: {
+    Spinner
+  },
   mixins: [dateTimeFilter, currencyFilter],
   data() {
     return {
-      coupon: {}
+      coupon: {},
+      isLoading: false
     }
   },
   created() {
@@ -51,8 +58,9 @@ export default {
   },
   methods: {
     async fetchCoupon(couponId) {
+      const vm = this
       try {
-        const vm = this
+        vm.isLoading = true
         const { data, statusText } = await adminCouponAPI.getCoupon(couponId)
 
         if (statusText !== 'OK') {
@@ -60,6 +68,7 @@ export default {
         }
 
         vm.coupon = data.coupon
+        vm.isLoading = false
       } catch (error) {
         Toast.fire({
           type: 'error',

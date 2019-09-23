@@ -36,7 +36,9 @@
         </tr>
       </thead>
 
-      <tbody>
+      <Spinner v-if="isLoading" />
+
+      <tbody v-else>
         <tr v-for="category in categories" :key="category.id">
           <th scope="row">{{ category.id }}</th>
 
@@ -91,17 +93,20 @@
 <script>
 import adminCategoryAPI from '@/apis/admin/adminCategory'
 import AdminNav from '@/components/admin/AdminNav'
+import Spinner from '@/components/Spinner'
 import { Toast } from '@/utils/helpers'
 
 export default {
   components: {
-    AdminNav
+    AdminNav,
+    Spinner
   },
   data() {
     return {
       newCategoryName: '',
       categories: [],
-      isProcessing: false
+      isProcessing: false,
+      isLoading: false
     }
   },
   created() {
@@ -109,18 +114,20 @@ export default {
   },
   methods: {
     async fetchCategories() {
+      const vm = this
       try {
-        const vm = this
+        vm.isLoading = true
         const { data, statusText } = await adminCategoryAPI.getCategories()
 
         if (statusText !== 'OK') {
           throw new Error(statusText)
         }
 
-        this.categories = data.categories.map(category => ({
+        vm.categories = data.categories.map(category => ({
           ...category,
           isEditing: false
         }))
+        vm.isLoading = false
       } catch (error) {
         Toast.fire({
           type: 'error',
@@ -129,8 +136,8 @@ export default {
       }
     },
     async createCategory() {
+      const vm = this
       try {
-        const vm = this
         vm.isProcessing = true
         const { data, statusText } = await adminCategoryAPI.postCategory({ name: vm.newCategoryName })
 
@@ -145,7 +152,7 @@ export default {
         vm.isProcessing = false
         vm.newCategoryName = ''
       } catch (error) {
-        this.isProcessing = false
+        vm.isProcessing = false
         Toast.fire({
           type: 'error',
           title: ' 無法新增產品類別，請稍後再試'
@@ -153,8 +160,8 @@ export default {
       }
     },
     async updateCategory({ categoryId, name }) {
+      const vm = this
       try {
-        const vm = this
         const { data, statusText } = await adminCategoryAPI.putCategory(categoryId, { name })
 
         if (statusText !== 'OK' || data.status !== 'success') {
@@ -170,8 +177,8 @@ export default {
       }
     },
     async deleteCategory(categoryId) {
+      const vm = this
       try {
-        const vm = this
         const { data, statusText } = await adminCategoryAPI.deleteCategory(categoryId)
 
         if (statusText !== 'OK' || data.status !== 'success') {
