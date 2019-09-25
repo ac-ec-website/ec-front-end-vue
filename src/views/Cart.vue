@@ -2,23 +2,23 @@
   <div class="container py-5">
     <!-- 購物流程 Navbar -->
     <div class="row justify-content-center mt-3">
-      <div class="col-md-7 col-12">
+      <div class="col-12 col-md-8">
         <div class="row step">
-          <div class="col text-center step-point-line step-point">
-            <span class="bg-dark px-4 py-2 rounded-pill text-light mb-3 d-inline-block">Step 1</span>
-            <p class="text-dark h6">購物車</p>
+          <div class="col-4 text-center step-point-line step-point">
+            <span class="step-by-step bg-dark rounded-pill text-light d-inline-block">Step 1</span>
+            <p class="step-text text-dark">購物車</p>
           </div>
-          <div class="col text-center step-point-line">
+          <div class="col-4 text-center step-point-line">
             <span
-              class="border bg-secondary px-4 py-2 rounded-pill text-dark mb-3 d-inline-block"
+              class="step-by-step border bg-secondary rounded-pill text-dark d-inline-block"
             >Step 2</span>
-            <p class="text-dark h6">填寫資料</p>
+            <p class="step-text text-dark">填寫資料</p>
           </div>
-          <div class="col text-center">
+          <div class="col-4 text-center">
             <span
-              class="border bg-secondary px-4 py-2 rounded-pill text-dark mb-3 d-inline-block"
+              class="step-by-step border bg-secondary rounded-pill text-dark d-inline-block"
             >Step 3</span>
-            <p class="text-dark h6">訂單確認與與付款</p>
+            <p class="step-text text-dark">訂單確認與與付款</p>
           </div>
         </div>
       </div>
@@ -42,48 +42,40 @@
       <div class="col-12">
         <div class="card">
           <div class="card-header">
-            <h3>
+            <b>
               購物車&nbsp;(
               <span class="sl-cart-count ng-isolate-scope">{{cartItems.length}}</span>&nbsp;件)
-            </h3>
+            </b>
           </div>
-          <div class="card-body">
-            <!-- Table Header -->
-            <div class="row hidden-In-Mobile">
-              <div class="col-sm-3">商品資料</div>
-              <div class="col-sm-1">優惠</div>
-              <div class="col-sm-2 text-center">單件價格</div>
-              <div class="col-sm-3 text-center">數量</div>
-              <div class="col-sm-2 text-center item-total">小計</div>
-              <div class="col-sm-1"></div>
+          <div class="card-body pt-3 pb-0 hidden-In-Mobile">
+            <div class="row">
+              <div class="col-md-3">商品資料</div>
+              <div class="col-md-3 text-center">單件價格</div>
+              <div class="col-md-3 text-center">數量</div>
+              <div class="col-md-2 text-center item-total">小計</div>
+              <div class="col-md-1"></div>
             </div>
+            <hr />
+          </div>
 
-            <hr class="hidden-In-Mobile" />
-            <!-- Table Body -->
-            <div
-              v-for="product in cartItems"
-              :key="product.id"
-              class="table-row row cart-item py-1"
-            >
+          <div class="card-body py-0">
+            <div v-for="product in cartItems" :key="product.id" class="row item-data">
               <!-- 商品資料欄位 -->
-              <div class="col-7 col-md-3 item-information">
+              <div class="col-6 col-md-3 my-auto">
                 <div class="row">
-                  <!-- 商品圖片 -->
-                  <div class="col-6 px-0">
+                  <div class="col-4 col-md-6">
+                    <!-- 商品圖片 -->
                     <router-link :to="{name:'product', params:{ productId: product.id }}">
-                      <img class="col-auto" :src="product.image | emptyImage" alt />
+                      <img class="w-100" :src="product.image | emptyImage" alt />
                     </router-link>
                   </div>
                   <!-- 商品名稱 -->
-                  <div class="col-6 pl-0 my-auto">
-                    <div>{{product.name}}</div>
-                  </div>
+                  <h6 class="col-8 col-md-6 item-name px-0">{{product.name}}</h6>
                 </div>
               </div>
-              <!-- 優惠欄位 -->
-              <div class="col-1 col-md-1 item-promotion"></div>
+
               <!-- 單件欄位 -->
-              <div class="col-4 col-md-2 text-center item-price my-auto">
+              <div class="col-6 col-md-3 item-price my-auto text-center">
                 <div class="row">
                   <span
                     class="col-12 col-md-12 sell_price font-weight-bold"
@@ -93,55 +85,60 @@
                   >NT {{product.origin_price | currency}}</span>
                 </div>
               </div>
+
               <!-- 數量欄位 -->
-              <div class="col-4 col-md-3 text-center item-quantity my-auto">
+              <div class="col-6 col-md-3 item-quantity text-center">
                 <div class="input-group">
-                  <span class="input-group-btn">
-                    <div
-                      class="btn btn-default btn-quantity-decrease"
+                  <div class="input-group-prepend">
+                    <button
+                      type="button"
+                      class="btn btn-secondary btn-quantity-decrease"
                       @click.stop.prevent="subItemFromCart(cartId,product.CartItem.id)"
                     >
                       <i class="fa fa-minus"></i>
-                    </div>
-                  </span>
-                  <span class="form-control text-center">{{product.CartItem.quantity}}</span>
-                  <span class="input-group-btn">
-                    <div
-                      class="btn btn-default btn-quantity-increase"
+                    </button>
+                  </div>
+                  <div class="form-control text-center">{{product.CartItem.quantity}}</div>
+                  <div class="input-group-append">
+                    <button
+                      type="button"
+                      class="btn btn-secondary btn-quantity-increase"
                       @click.stop.prevent="addItemToCart(cartId,product.CartItem.id)"
                     >
                       <i class="fa fa-plus"></i>
-                    </div>
-                  </span>
+                    </button>
+                  </div>
                 </div>
               </div>
 
               <!-- 小計欄位 -->
-              <div class="col-4 col-md-2 text-center item-total my-auto">
+              <div class="col-6 col-md-2 item-total text-center">
                 <span
                   class="total-count"
                 >NT {{product.sell_price * product.CartItem.quantity | currency}}</span>
               </div>
 
               <!-- 刪除按鈕 -->
-              <div class="col-4 col-md-1 text-center item-action my-auto">
+              <div class="col-1 col-md-1 item-action my-auto text-center hover-effect">
                 <a
                   class="btn btn-link btn-remove-cart-item"
                   @click.stop.prevent="deleteItemFromCart(cartId,product.CartItem.id)"
                 >
-                  <i class="fa fa-times" aria-hidden="true"></i>
+                  <i class="fa fa-times text-secondary" aria-hidden="true"></i>
                 </a>
               </div>
+              <hr />
             </div>
+          </div>
 
-            <hr class="cart-promotions-hr d-none" />
-
-            <div class="row cart-promotions d-none">
-              <h5 class="col-12">已享用之優惠</h5>
+          <div v-if="showCoupon" class="card-body cart-promotions pt-0">
+            <hr />
+            <div class="row">
+              <b class="col-12">已享用之優惠</b>
               <div class="col-12 promotion-coupon">
                 <div class="row text-center p-3">
                   <span
-                    class="col-4 col-md-2 ccoupon-name bg-success text-light my-auto py-2"
+                    class="col-4 col-md-2 coupon-name bg-success text-light my-auto py-2"
                   >{{couponData.name}}</span>
                   <span
                     class="col-4 col-md-3 my-auto py-2 coupon-description"
@@ -149,7 +146,10 @@
                   <span class="col-4 col-md-7 my-auto py-2 text-right discount">
                     <div class="row">
                       <span class="col-12">- NT {{coupon_discount_fee | currency}}</span>
-                      <a class="col-12 text-right text-danger" @click.stop.prevent="deleteCoupon">刪除</a>
+                      <a
+                        class="col-12 text-right text-danger hover-effect"
+                        @click.stop.prevent="deleteCoupon"
+                      >刪除</a>
                     </div>
                   </span>
                 </div>
@@ -160,12 +160,12 @@
       </div>
 
       <!-- 配送選擇與訂單資訊 -->
-      <div class="col-12 mt-5">
+      <div class="col-12 mt-3">
         <div class="row">
-          <div class="col-sm-7 col-md-8">
+          <div class="col-12 col-md-7">
             <div class="card">
               <div class="card-header">
-                <h3>選擇配送方式</h3>
+                <b>選擇配送方式</b>
               </div>
               <div class="card-body">
                 <form name="cartForm">
@@ -192,34 +192,37 @@
             </div>
           </div>
 
-          <div class="col-sm-5 col-md-4">
+          <div class="col-12 col-md-5">
             <div class="card text-right">
               <div class="card-header">
-                <h3>訂單資訊</h3>
+                <b>訂單資訊</b>
               </div>
 
               <div class="card-body">
                 <div class="row subtotal">
-                  <span class="col-8 col-md-6 text-left">小計:</span>
-                  <span class="col-4 col-md-6 text-right">NT {{total_amount | currency}}</span>
+                  <span class="col-7 col-md-6 text-left">小計:</span>
+                  <span class="col-5 col-md-6 text-right">NT {{total_amount | currency}}</span>
                 </div>
 
                 <div class="row discount-fee">
-                  <span class="col-8 col-md-6 text-left">折扣:</span>
-                  <span class="col-4 col-md-6 text-right">- NT {{coupon_discount_fee | currency}}</span>
+                  <span class="col-7 col-md-6 text-left">折扣:</span>
+                  <span class="col-5 col-md-6 text-right">- NT {{coupon_discount_fee | currency}}</span>
                 </div>
 
                 <div class="row delivery-fee">
-                  <span class="col-8 col-md-6 text-left">運費:</span>
-                  <span class="col-4 col-md-6 text-right">NT {{shipping_fee | currency}}</span>
+                  <span class="col-7 col-md-6 text-left">運費:</span>
+                  <span class="col-5 col-md-6 text-right">NT {{shipping_fee | currency}}</span>
                 </div>
 
                 <div class="row cart-coupon mt-3">
-                  <div
-                    v-if="!isCounponActivated"
-                    class="col-12 btn btn-link use-coupon text-left"
-                    @click.stop.prevent="activatedCounpon"
-                  >使用促銷代碼</div>
+                  <div v-if="!isCounponActivated" class="text-left">
+                    <span
+                      class="col-12 btn btn-link text-left hover-effect"
+                      @click.stop.prevent="activatedCounpon"
+                    >使用促銷代碼</span>
+                    <div class="col-12 text-secondary">歡迎輸入 1111 優惠碼，取得消費折扣</div>
+                  </div>
+
                   <div v-else class="col-12 text-left">
                     <div class="form-group">
                       <label for="couponCode">促銷代碼</label>
@@ -243,17 +246,18 @@
                         </div>
                       </div>
                     </div>
+                    <div class="text-secondary">歡迎輸入 1111 優惠碼，取得消費折扣</div>
                   </div>
                 </div>
 
                 <hr class="ng-scope" />
                 <div class="row total ng-scope">
-                  <span class="col-8 col-md-6 text-left">
+                  <span class="col-6 col-md-6 text-left">
                     合計
                     <span class="hidden-sm hidden-md hidden-lg">({{cartItems.length}} 件)</span>:
                   </span>
                   <span
-                    class="col-4 col-md-6 text-right font-weight-bold"
+                    class="col-6 col-md-6 text-right font-weight-bold"
                   >NT {{total_amount + shipping_fee - coupon_discount_fee | currency}}</span>
                 </div>
               </div>
@@ -273,98 +277,6 @@
   </div>
 </template>
 
-<style>
-.step {
-  position: relative;
-  z-index: 3;
-}
-
-.step .step-point-line {
-  position: relative;
-}
-
-.step .step-point-line::after {
-  content: '';
-  display: block;
-  position: absolute;
-  z-index: -1;
-  right: -80px;
-  top: 20px;
-  width: 180px;
-  height: 2px;
-  border-bottom: 2px solid #343a40;
-}
-
-.step .step-point {
-  position: relative;
-}
-
-.step .step-point::before {
-  content: '';
-  display: block;
-  position: absolute;
-  z-index: 0;
-  right: 50px;
-  top: 16px;
-  width: 10px;
-  height: 10px;
-  background-color: #343a40;
-  border-radius: 500px;
-  animation-name: point;
-  animation-duration: 2s;
-  animation-timing-function: ease;
-  animation-iteration-count: infinite;
-}
-
-@media (max-width: 769px) {
-  .step-point {
-    position: relative;
-  }
-
-  .step-point::before {
-    content: '';
-    display: none;
-  }
-
-  .hidden-In-Mobile {
-    content: '';
-    display: none;
-  }
-}
-
-@keyframes point {
-  0% {
-    transform: translateX(0rem);
-    opacity: 0;
-  }
-  1% {
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateX(9rem);
-    opacity: 1;
-  }
-}
-
-.fa-shopping-cart {
-  font-size: 120px;
-  color: #cccccc;
-  display: block;
-  text-align: center;
-  padding: 10px 0;
-}
-
-.original-price {
-  text-decoration: line-through;
-}
-</style>
-
 <script>
 import cartAPI from '@/apis/cart'
 import couponAPI from '@/apis/coupons'
@@ -381,6 +293,7 @@ export default {
       shipping_fee: 60,
       shipping_method: '住家宅配',
       isCounponActivated: false,
+      showCoupon: false,
       couponData: {},
       couponCode: '',
       coupon_discount_fee: 0,
@@ -389,7 +302,6 @@ export default {
   },
   created() {
     this.fetchCart()
-    this.fetchCoupon()
   },
   methods: {
     async fetchCart() {
@@ -420,6 +332,7 @@ export default {
         vm.cartItems.map(d => d.id * d.id).reduce((a, b) => a + b)
         // 購物車總價
         vm.total_amount = data.total_amount
+        this.fetchCoupon()
       } catch (error) {
         Toast.fire({
           type: 'error',
@@ -531,6 +444,7 @@ export default {
     async postCoupon(e) {
       const vm = this
       try {
+        vm.showCoupon = false
         if (!vm.couponCode) {
           Toast.fire({
             type: 'warning',
@@ -567,8 +481,6 @@ export default {
           throw new Error(statusText)
         }
 
-        console.log('優惠券 data', data)
-
         const couponData = data.couponData
 
         // 運費相關
@@ -597,11 +509,11 @@ export default {
           title: '優惠券可成功使用，請確認'
         })
 
+        vm.showCoupon = true
         // 限訂單次使用
         vm.isBlocking = true
-        document.querySelector('.cart-promotions-hr').classList.remove('d-none')
-        document.querySelector('.cart-promotions').classList.remove('d-none')
       } catch (error) {
+        vm.showCoupon = false
         vm.isBlocking = false
         Toast.fire({
           type: 'error',
@@ -614,13 +526,14 @@ export default {
       try {
         const { data, statusText } = await couponAPI.deleteCoupon()
 
-        console.log('優惠券 data', data)
-
-        document.querySelector('.cart-promotions-hr').classList.add('d-none')
-        document.querySelector('.cart-promotions').classList.add('d-none')
-
         vm.isCounponActivated = false
+        vm.showCoupon = false
         vm.isBlocking = false
+
+        Toast.fire({
+          type: 'success',
+          title: '優惠券已取消使用，請確認'
+        })
 
         // 清空 coupon 資料
         vm.couponData = {}
@@ -628,6 +541,7 @@ export default {
         vm.coupon_discount_fee = 0
       } catch (error) {
         vm.isCounponActivated = true
+        vm.showCoupon = false
         vm.isBlocking = true
         console.log('error', error)
       }
@@ -638,14 +552,14 @@ export default {
 
         const { data, statusText } = await couponAPI.getCoupon()
 
-        console.log('優惠券資料', data)
-
         // 若為 error 代表目前尚無 coupon 資訊，終止執行
         if (data.status === 'error') {
+          vm.showCoupon = false
           return
         }
 
         if (statusText !== 'OK') {
+          vm.showCoupon = false
           throw new Error(statusText)
         }
 
@@ -676,13 +590,12 @@ export default {
           title: '取得優惠券資訊，請確認'
         })
 
-        document.querySelector('.cart-promotions-hr').classList.remove('d-none')
-        document.querySelector('.cart-promotions').classList.remove('d-none')
-
         vm.isCounponActivated = true
         vm.couponCode = data.couponData.coupon_code
+        vm.showCoupon = true
         vm.isBlocking = true
       } catch (error) {
+        vm.showCoupon = false
         Toast.fire({
           type: 'error',
           title: '無法取得優惠券資料，請稍後再試'
@@ -692,3 +605,169 @@ export default {
   }
 }
 </script>
+
+<style>
+template {
+  min-width: 375px;
+  width: 100%;
+}
+
+.step {
+  position: relative;
+  z-index: 3;
+}
+
+.step .step-point-line {
+  position: relative;
+}
+
+.step .step-point-line::after {
+  content: '';
+  display: block;
+  position: absolute;
+  z-index: -1;
+  height: 2px;
+  border-bottom: 2px solid #343a40;
+}
+
+.step .step-point {
+  position: relative;
+}
+
+.hover-effect:hover {
+  cursor: pointer;
+}
+
+@media screen and (min-width: 768px) {
+  .step .step-point-line::after {
+    right: -100px;
+    top: 24px;
+    width: 200px;
+  }
+
+  .step .step-point::before {
+    content: '';
+    display: block;
+    position: absolute;
+    z-index: 0;
+    right: 80px;
+    top: 20px;
+    width: 10px;
+    height: 10px;
+    background-color: #343a40;
+    border-radius: 500px;
+    animation-name: point;
+    animation-duration: 2s;
+    animation-timing-function: ease;
+    animation-iteration-count: infinite;
+  }
+
+  .step-by-step {
+    padding: 12px 18px;
+    margin-bottom: 18px;
+  }
+
+  .item-data {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .item-quantity,
+  .item-total {
+    margin: auto;
+  }
+}
+
+@media screen and (max-width: 767.98px) {
+  .step .step-point-line::after {
+    right: -60px;
+    top: 24px;
+    width: 120px;
+  }
+
+  .step .step-text {
+    font-size: 14px;
+    font-weight: normal;
+  }
+
+  .step-by-step {
+    padding: 12px;
+    margin-bottom: 12px;
+    font-size: 14px;
+  }
+
+  .hidden-In-Mobile {
+    content: '';
+    display: none;
+  }
+
+  .cart-promotions {
+    font-size: 14px;
+  }
+
+  .item-data {
+    position: relative;
+    padding-top: 30px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .item-name {
+    font-size: 14px;
+  }
+
+  .item-price .original-price {
+    font-size: 12px;
+  }
+
+  .item-quantity,
+  .item-total {
+    margin-top: 16px;
+  }
+
+  .item-total {
+    line-height: 38px;
+  }
+
+  .item-action {
+    position: absolute;
+    top: -10px;
+    right: 20px;
+  }
+  .item-action .fa-times {
+    font-size: 20px;
+  }
+}
+
+@keyframes point {
+  0% {
+    transform: translateX(0rem);
+    opacity: 0;
+  }
+  1% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(12rem);
+    opacity: 1;
+  }
+}
+
+.fa-shopping-cart {
+  font-size: 120px;
+  color: #cccccc;
+  display: block;
+  text-align: center;
+  padding: 10px 0;
+}
+
+.original-price {
+  text-decoration: line-through;
+}
+</style>
