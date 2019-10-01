@@ -46,7 +46,6 @@ export default new Vuex.Store({
   actions: {
     async fetchCurrentUser({ commit }) {
       try {
-        Vue.axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token')
         const { data, statusText } = await adminUserAPI.getCurrentUser()
 
         console.log('fetchCurrentUser', data)
