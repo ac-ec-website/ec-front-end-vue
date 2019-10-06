@@ -1,13 +1,15 @@
 <template>
-  <div class="container py-5">
-    <AdminNav />
+  <div class="row">
+    <AdminNav class="sidebar col-md-2 d-none d-md-block bg-light" />
 
-    <router-link to="/admin/products/new" class="btn btn-primary btn-block mb-4">
-      New Products
-      <i class="fas fa-plus-square"></i>
-    </router-link>
+    <div class="container col-md-9 ml-sm-auto col-lg-10 px-4">
+      <router-link to="/admin/products/new" class="btn btn-primary btn-block mb-4">
+        New Products
+        <i class="fas fa-plus-square"></i>
+      </router-link>
 
-    <AdminProductsTable />
+      <AdminProductsTable />
+    </div>
   </div>
 </template>
 
@@ -21,4 +23,10 @@ export default {
     AdminProductsTable
   }
 }
-</script> 
+</script>
+
+<style scoped>
+.container {
+  margin: 50px;
+}
+</style>

@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import Navbar from './components/Navbar'
+import Navbar from '@/components/Navbar'
 const device = mobileAndTabletCheck() ? 'mobile' : 'desktop'
 let userPageView = parseInt(sessionStorage.getItem('userPageView'))
 
@@ -58,12 +58,12 @@ function mobileAndTabletCheck() {
 
 .footer-content {
   height: 50px;
-  background-color: black;
+  /* background-color: black; */
 }
 
 .state {
   font-size: 1.4em;
-  color: white;
+  color: rgb(12, 12, 12);
   text-align: right;
   line-height: 45px;
 }
