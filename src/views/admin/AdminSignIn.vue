@@ -94,7 +94,6 @@ export default {
           title: '登入成功！'
         })
         localStorage.setItem('token', data.token)
-        vm.axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token')
         vm.$store.commit('setCurrentUser', data.user)
 
         vm.$router.push('/admin')
