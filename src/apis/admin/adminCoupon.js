@@ -1,7 +1,4 @@
-import {
-  apiHelper
-}
-from '@/utils/helpers'
+import { apiHelper } from '@/utils/helpers'
 
 export default {
   getCoupons() {
@@ -18,5 +15,5 @@ export default {
   },
   deleteCoupon(couponId) {
     return apiHelper.delete(`/admin/coupons/${couponId}`)
-  },
+  }
 }

@@ -1,7 +1,4 @@
-import {
-  apiHelper
-}
-from '@/utils/helpers'
+import { apiHelper } from '@/utils/helpers'
 
 export default {
   getProducts() {
@@ -18,5 +15,5 @@ export default {
   },
   deleteProduct(productId) {
     return apiHelper.delete(`/admin/products/${productId}`)
-  },
+  }
 }

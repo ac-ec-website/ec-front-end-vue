@@ -1,7 +1,4 @@
-import {
-  apiHelper
-}
-from '@/utils/helpers'
+import { apiHelper } from '@/utils/helpers'
 
 export default {
   signIn(profile) {
@@ -9,5 +6,5 @@ export default {
   },
   signUp(profile) {
     return apiHelper.post(`/admin/signup`, profile)
-  },
+  }
 }

@@ -1,6 +1,4 @@
-import {
-  apiHelper
-} from './../utils/helpers'
+import { apiHelper } from './../utils/helpers'
 
 export default {
   getProducts() {
@@ -9,9 +7,7 @@ export default {
   getProduct(productId) {
     return apiHelper.get(`/products/${productId}`)
   },
-  deleteItem(
-    cartId, cartItemId
-  ) {
+  deleteItem(cartId, cartItemId) {
     return apiHelper.delete(`/cart/${cartId}/cartItem/${cartItemId}`)
-  },
+  }
 }

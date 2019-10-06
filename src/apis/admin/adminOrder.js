@@ -1,7 +1,4 @@
-import {
-  apiHelper
-}
-from '@/utils/helpers'
+import { apiHelper } from '@/utils/helpers'
 
 export default {
   getOrders() {
@@ -12,5 +9,5 @@ export default {
   },
   putOrder(orderId, value) {
     return apiHelper.put(`/admin/orders/${orderId}`, value)
-  },
+  }
 }

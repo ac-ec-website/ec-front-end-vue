@@ -200,16 +200,15 @@ export default {
   },
   methods: {
     async fetchCategories() {
+      const vm = this
       try {
-        const vm = this
-
         const { data, statusText } = await adminCategoryAPI.getCategories()
 
         if (statusText !== 'OK') {
           throw new Error(statusText)
         }
 
-        this.categories = data.categories
+        vm.categories = data.categories
       } catch (error) {
         Toast.fire({
           type: 'error',

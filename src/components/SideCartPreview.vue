@@ -1,19 +1,22 @@
 <template>
   <div id="sideCart">
     <div class="container py-5">
-      <h4 class="mt-5">購物車</h4>
+      <h4 class="mt-4">Shopping Cart</h4>
       <hr />
       <div class="w-100" v-for="item in initialCart.items" :key="item.id">
         <router-link
+          class="items"
           :to="{ name: 'product', params: { productId: item.id }}"
         >{{item.name}} X {{item.CartItem.quantity}}</router-link>
-        <div class="w-100 text-right">
+
+        <div class="mt-1 text-right">
           <button class="btn btn-danger" @click.stop.prevent="deleteItem(item.CartItem.id)">刪除</button>
         </div>
 
         <hr />
       </div>
-      <router-link to="/cart" class="w-100 btn btn-danger">訂單結帳</router-link>
+
+      <router-link to="/cart" class="btn btn-info btn-block">訂單結帳</router-link>
     </div>
   </div>
 </template>
@@ -53,5 +56,9 @@ export default {
   background-color: #f7f7f7;
   z-index: 100;
   overflow: auto;
+}
+
+.items {
+  color: rgb(158, 30, 243);
 }
 </style>

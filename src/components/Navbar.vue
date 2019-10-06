@@ -1,10 +1,12 @@
 <template>
-  <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark justify-content-between">
-    <router-link to="/" class="text-white mr-auto">品牌 LOGO</router-link>
+  <nav class="navbar fixed-top navbar-expand-lg navbar-dark">
+    <router-link to="/" class="logo mr-auto">品牌 LOGO</router-link>
 
-    <li class="mr-5" style="list-style-type: none">
-      <span id="navbarCartItemNumber" class="badge badge-danger mx-1" style="display: none;"></span>
-      <span class="text-white" style="cursor: pointer" @click.stop.prevent="toggleSideCart">購物車</span>
+    <li class="cart-content">
+      <span id="navbarCartItemNumber" class="badge badge-warning"></span>
+      <span class="cart-text text-white" @click.stop.prevent="toggleSideCart">
+        <i class="fas fa-shopping-cart"></i>
+      </span>
     </li>
 
     <button
@@ -94,6 +96,29 @@ export default {
 </script>
 
 <style scoped>
+.navbar {
+  background-color: black;
+}
+
+.logo {
+  font-size: 1.7em;
+  color: whitesmoke;
+}
+
+.cart-content {
+  margin-right: 3em;
+  list-style-type: none;
+}
+
+.badge {
+  display: none;
+  margin-right: 10px;
+}
+
+.cart-text {
+  font-size: 1.2em;
+  cursor: pointer;
+}
 .navbar-collapse {
   flex-grow: 0;
 }
