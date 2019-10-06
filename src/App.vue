@@ -27,7 +27,7 @@ if (isNaN(userPageView)) {
 
 userPageView = parseInt(sessionStorage.getItem('userPageView'))
 if (device === 'mobile' && userPageView === 1) {
-  window.location = 'http://localhost:3000/redirect-back'
+  window.location = 'https://ec-website-api.herokuapp.com/redirect-back'
 }
 
 export default {
