@@ -40,7 +40,6 @@ export default new Vuex.Store({
       state.isLogin = false
       state.token = ''
       localStorage.removeItem('token')
-      Vue.axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token')
     }
   },
   actions: {
