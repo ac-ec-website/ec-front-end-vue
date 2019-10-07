@@ -1,6 +1,4 @@
-import {
-  apiHelper
-} from './../utils/helpers'
+import { apiHelper } from './../utils/helpers'
 
 export default {
   postCoupon(couponCode) {
@@ -11,5 +9,5 @@ export default {
   },
   deleteCoupon(couponCode) {
     return apiHelper.delete('/coupon', couponCode)
-  },
+  }
 }

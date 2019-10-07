@@ -1,6 +1,4 @@
-import {
-  apiHelper
-} from './../utils/helpers'
+import { apiHelper } from './../utils/helpers'
 
 export default {
   postOrder(formData) {
@@ -8,5 +6,5 @@ export default {
   },
   getOrder() {
     return apiHelper.get('/order')
-  },
+  }
 }

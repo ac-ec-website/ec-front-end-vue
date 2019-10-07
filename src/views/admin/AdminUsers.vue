@@ -1,47 +1,50 @@
 <template>
-  <div class="container py-5">
-    <AdminNav />
-    <table class="table">
-      <thead class="thead-dark">
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Email</th>
-          <th scope="col">Role</th>
-          <th scope="col">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="user in users" :key="user.id">
-          <th scope="row">{{user.id}}</th>
-          <td>{{user.email}}</td>
-          <td>
-            <div v-show="user.isEditing">
-              <div class="input-group">
-                <select class="custom-select" v-model="user.role">
-                  <option>admin</option>
-                  <option>user</option>
-                </select>
-              </div>
-            </div>
-            <div v-show="!user.isEditing">{{user.role}}</div>
-          </td>
-          <td>
-            <div v-if="user.isSelf"></div>
-            <div v-else>
+  <div class="row">
+    <AdminNav class="sidebar col-md-2 d-none d-md-block bg-light" />
+
+    <div class="container col-md-9 ml-sm-auto col-lg-10 px-4">
+      <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Email</th>
+            <th scope="col">Role</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="user in users" :key="user.id">
+            <th scope="row">{{user.id}}</th>
+            <td>{{user.email}}</td>
+            <td>
               <div v-show="user.isEditing">
-                <button class="btn btn-outline-dark btn-sm" @click="updateUserRole(user.id)">Done</button>
+                <div class="input-group">
+                  <select class="custom-select" v-model="user.role">
+                    <option>admin</option>
+                    <option>user</option>
+                  </select>
+                </div>
               </div>
-              <div v-show="!user.isEditing">
-                <button
-                  class="btn btn-outline-dark btn-sm"
-                  @click.stop.prevent="editUserRole(user.id)"
-                >Edit</button>
+              <div v-show="!user.isEditing">{{user.role}}</div>
+            </td>
+            <td>
+              <div v-if="user.isSelf"></div>
+              <div v-else>
+                <div v-show="user.isEditing">
+                  <button class="btn btn-outline-dark btn-sm" @click="updateUserRole(user.id)">Done</button>
+                </div>
+                <div v-show="!user.isEditing">
+                  <button
+                    class="btn btn-outline-dark btn-sm"
+                    @click.stop.prevent="editUserRole(user.id)"
+                  >Edit</button>
+                </div>
               </div>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
@@ -124,4 +127,10 @@ export default {
     }
   }
 }
-</script> 
+</script>
+
+<style scoped>
+.container {
+  margin: 50px;
+}
+</style>
