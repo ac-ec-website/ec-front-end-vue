@@ -18,7 +18,8 @@ const checkIsAdmin = (to, from, next) => {
 const router = new Router({
   linkExactActiveClass: 'active',
 
-  routes: [{
+  routes: [
+    {
       path: '/',
       name: 'root',
       redirect: '/products'

@@ -1,7 +1,4 @@
-import {
-  apiHelper
-}
-from '@/utils/helpers'
+import { apiHelper } from '@/utils/helpers'
 
 export default {
   getCategories() {
@@ -15,5 +12,5 @@ export default {
   },
   deleteCategory(categoryId) {
     return apiHelper.delete(`/admin/categories/${categoryId}`)
-  },
+  }
 }
