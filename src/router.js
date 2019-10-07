@@ -170,6 +170,12 @@ const router = new Router({
       beforeEnter: checkIsAdmin
     },
     {
+      path: '/admin/dashboard',
+      name: 'admin-dashboard',
+      component: () => import('./views/admin/AdminDashboard.vue'),
+      beforeEnter: checkIsAdmin
+    },
+    {
       path: '/admin/users',
       name: 'admin-users',
       component: () => import('./views/admin/AdminUsers.vue'),

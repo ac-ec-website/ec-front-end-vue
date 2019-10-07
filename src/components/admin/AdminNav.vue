@@ -39,36 +39,16 @@
       </div>
 
       <div class>
+        <router-link class="btn btn-link" to="/admin/dashboard">
+          <i class="fas fa-chart-line"></i>
+          銷售報表
+        </router-link>
+      </div>
+
+      <div class>
         <router-link class="btn btn-link" to="/admin/users">
           <i class="fas fa-users-cog"></i>
           會員管理
-        </router-link>
-      </div>
-    </div>
-
-    <hr />
-    <div class="data">
-      <h5>數據分析</h5>
-
-      <!-- 我把可能會用到的 icon 都先放上去，看情況使用 -->
-      <div class>
-        <router-link class="btn btn-link" to="#">
-          <i class="fas fa-chart-pie"></i>
-          圓餅圖
-        </router-link>
-      </div>
-
-      <div class>
-        <router-link class="btn btn-link" to="#">
-          <i class="fas fa-chart-line"></i>
-          折線圖
-        </router-link>
-      </div>
-
-      <div class>
-        <router-link class="btn btn-link" to="#">
-          <i class="fas fa-chart-bar"></i>
-          長條圖
         </router-link>
       </div>
     </div>
