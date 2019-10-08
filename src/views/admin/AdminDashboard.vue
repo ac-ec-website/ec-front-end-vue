@@ -2,7 +2,7 @@
   <div class="row">
     <AdminNav class="sidebar col-md-2 d-none d-md-block bg-light" />
 
-    <div class="col-md-9 ml-sm-auto col-lg-10 px-4">
+    <div class="col-md-10 ml-sm-auto col-lg-10">
       <div class="container">
         <div class="row py-5 text-center">
           <div class="col-lg-3 col-md-6">
@@ -36,8 +36,30 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-6">熱賣商品</div>
-          <div class="col-md-6">優惠券使用情形</div>
+          <div class="col-lg-6">
+            <div class="card-body">
+              <h4>熱賣商品</h4>
+              <table class="table text-light">
+                <thead>
+                  <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="product in topSellingArray" :key="product.id">
+                    <th scope="row">{{product.name}}</th>
+                    <td>{{product.price}}</td>
+                    <td>{{product.quantity}}</td>
+                    <td>{{product.amount}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-lg-6">優惠券使用情形</div>
         </div>
       </div>
     </div>
@@ -63,6 +85,8 @@ export default {
       orderCount: 0,
       revenue: 0,
       netSales: 0,
+      topSelling: {},
+      topSellingArray: [],
       chartOptions: {
         chart: {
           type: 'column'
@@ -129,6 +153,7 @@ export default {
             order.items.reduce((acc, cur) => {
               return cur.cost_price * cur.OrderItem.quantity + acc
             }, 0)
+
           const orderMonth = parseInt(order.createdAt.slice(5, 7))
           monthlyRevenue[orderMonth - 1] += order.checkoutPrice
           monthlyNetSales[orderMonth - 1] +=
@@ -136,7 +161,28 @@ export default {
             order.items.reduce((acc, cur) => {
               return cur.cost_price * cur.OrderItem.quantity + acc
             }, 0)
+
+          order.items.map(item => {
+            if (!vm.topSelling[item.id]) {
+              vm.topSelling[item.id] = {
+                id: item.id,
+                name: item.name,
+                price: item.sell_price,
+                quantity: item.OrderItem.quantity,
+                amount: item.sell_price * item.OrderItem.quantity
+              }
+              return
+            }
+
+            vm.topSelling[item.id].quantity += item.OrderItem.quantity
+            vm.topSelling[item.id].amount += item.sell_price * item.OrderItem.quantity
+          })
         })
+        Object.keys(vm.topSelling).forEach(function(key) {
+          vm.topSellingArray.push(vm.topSelling[key])
+        })
+        vm.topSellingArray.sort((a, b) => b.amount - a.amount)
+        console.log(vm.topSellingArray)
 
         let chart = this.$refs.highcharts.chart
         chart.addSeries({
