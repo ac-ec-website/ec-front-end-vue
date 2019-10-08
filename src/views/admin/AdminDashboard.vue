@@ -38,7 +38,7 @@
         <div class="row">
           <div class="col-lg-6">
             <div class="card-body">
-              <h4>熱賣商品</h4>
+              <h4 class="text-center">熱賣商品</h4>
               <table class="table text-light">
                 <thead>
                   <tr>
@@ -59,7 +59,33 @@
               </table>
             </div>
           </div>
-          <div class="col-lg-6">優惠券使用情形</div>
+          <div class="col-lg-6">
+            <div class="card-body">
+              <h4 class="text-center">優惠使用</h4>
+              <table class="table text-light">
+                <thead>
+                  <tr>
+                    <th scope="col">Category</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Quantity</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="offer in offerArray" :key="offer.id">
+                    <th scope="row">{{offer.category}}</th>
+                    <td>{{offer.name}}</td>
+                    <td>
+                      <span v-if="offer.type === 0">免運費</span>
+                      <span v-else-if="offer.type === 1">扣款</span>
+                      <span v-else-if="offer.type === 2">打折</span>
+                    </td>
+                    <td>{{offer.quantity}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -70,8 +96,11 @@
 import AdminNav from '@/components/admin/AdminNav'
 import { currencyFilter } from '@/utils/mixins'
 import adminOrderAPI from '@/apis/admin/adminOrder'
+import adminCouponAPI from '@/apis/admin/adminCoupon'
+import adminDiscountAPI from '@/apis/admin/adminDiscount'
 import { Toast } from '@/utils/helpers'
 import { Chart } from 'highcharts-vue'
+import uuidv4 from 'uuid/v4'
 
 export default {
   components: {
@@ -87,6 +116,11 @@ export default {
       netSales: 0,
       topSelling: {},
       topSellingArray: [],
+      offer: {
+        CouponId: {},
+        DiscountId: {}
+      },
+      offerArray: [],
       chartOptions: {
         chart: {
           type: 'column'
@@ -143,6 +177,7 @@ export default {
         vm.setOverallData(data.orders)
         vm.setChart(data.orders)
         vm.setTopSell(data.orders)
+        vm.setOffer(data.orders)
       } catch (error) {
         Toast.fire({
           type: 'error',
@@ -152,8 +187,12 @@ export default {
     },
     async setOverallData(orders) {
       try {
-        vm.orderCount = orders.length
+        const vm = this
+
         orders.map(order => {
+          if (order.payment_status === '0') return
+
+          vm.orderCount++
           vm.productCount += order.items.reduce((acc, cur) => {
             return cur.OrderItem.quantity + acc
           }, 0)
@@ -176,6 +215,7 @@ export default {
         const monthlyRevenue = [...Array(12)].map(_ => 0)
         const monthlyNetSales = [...Array(12)].map(_ => 0)
         orders.map(order => {
+          if (order.payment_status === '0') return
           const orderMonth = parseInt(order.createdAt.slice(5, 7))
           monthlyRevenue[orderMonth - 1] += order.checkoutPrice
           monthlyNetSales[orderMonth - 1] +=
@@ -203,7 +243,9 @@ export default {
     },
     async setTopSell(orders) {
       try {
+        const vm = this
         orders.map(order => {
+          if (order.payment_status === '0') return
           order.items.map(item => {
             if (!vm.topSelling[item.id]) {
               vm.topSelling[item.id] = {
@@ -231,8 +273,46 @@ export default {
         })
       }
     },
-    async setCoupon(orders) {
+    async setOffer(orders) {
       try {
+        const vm = this
+        orders.map(order => {
+          if (order.payment_status === '0') return
+          if (order.CouponId) {
+            vm.offer['CouponId'][order.CouponId] ? vm.offer['CouponId'][order.CouponId]++ : (vm.offer['CouponId'][order.CouponId] = 1)
+          }
+
+          if (order.DiscountId) {
+            vm.offer['DiscountId'][order.DiscountId]
+              ? vm.offer['DiscountId'][order.DiscountId]++
+              : (vm.offer['DiscountId'][order.DiscountId] = 1)
+          }
+        })
+
+        await Object.keys(vm.offer['CouponId']).forEach(async function(key) {
+          const { data } = await adminCouponAPI.getCoupon(key)
+
+          vm.offerArray.push({
+            id: uuidv4(),
+            category: '優惠券',
+            name: data.coupon.name,
+            type: data.coupon.type,
+            quantity: vm.offer['CouponId'][key]
+          })
+        })
+
+        await Object.keys(vm.offer['DiscountId']).forEach(async function(key) {
+          const { data } = await adminDiscountAPI.getDiscount(key)
+
+          vm.offerArray.push({
+            category: '特價優惠',
+            name: data.discount.name,
+            type: data.discount.type,
+            quantity: vm.offer['DiscountId'][key]
+          })
+        })
+
+        vm.offerArray.sort((a, b) => b.quantity - a.quantity)
       } catch (error) {
         Toast.fire({
           type: 'error',
