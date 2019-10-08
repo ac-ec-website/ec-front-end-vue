@@ -127,10 +127,10 @@ export default {
     }
   },
   created() {
-    this.fetchOverallData()
+    this.fetchOrders()
   },
   methods: {
-    async fetchOverallData() {
+    async fetchOrders() {
       try {
         const vm = this
         const { data, statusText } = await adminOrderAPI.getOrders()
@@ -139,11 +139,21 @@ export default {
           throw new Error(statusText)
         }
         console.log(data)
-        vm.orderCount = data.orders.length
 
-        const monthlyRevenue = [...Array(12)].map(_ => 0)
-        const monthlyNetSales = [...Array(12)].map(_ => 0)
-        data.orders.map(order => {
+        vm.setOverallData(data.orders)
+        vm.setChart(data.orders)
+        vm.setTopSell(data.orders)
+      } catch (error) {
+        Toast.fire({
+          type: 'error',
+          title: '無法取得 Orders 資料，請稍後再試'
+        })
+      }
+    },
+    async setOverallData(orders) {
+      try {
+        vm.orderCount = orders.length
+        orders.map(order => {
           vm.productCount += order.items.reduce((acc, cur) => {
             return cur.OrderItem.quantity + acc
           }, 0)
@@ -153,7 +163,19 @@ export default {
             order.items.reduce((acc, cur) => {
               return cur.cost_price * cur.OrderItem.quantity + acc
             }, 0)
-
+        })
+      } catch (error) {
+        Toast.fire({
+          type: 'error',
+          title: '無法取得 Overall data 資料，請稍後再試'
+        })
+      }
+    },
+    async setChart(orders) {
+      try {
+        const monthlyRevenue = [...Array(12)].map(_ => 0)
+        const monthlyNetSales = [...Array(12)].map(_ => 0)
+        orders.map(order => {
           const orderMonth = parseInt(order.createdAt.slice(5, 7))
           monthlyRevenue[orderMonth - 1] += order.checkoutPrice
           monthlyNetSales[orderMonth - 1] +=
@@ -161,7 +183,27 @@ export default {
             order.items.reduce((acc, cur) => {
               return cur.cost_price * cur.OrderItem.quantity + acc
             }, 0)
+        })
 
+        let chart = this.$refs.highcharts.chart
+        chart.addSeries({
+          name: '銷售額',
+          data: monthlyRevenue
+        })
+        chart.addSeries({
+          name: '淨利',
+          data: monthlyNetSales
+        })
+      } catch (error) {
+        Toast.fire({
+          type: 'error',
+          title: '無法取得 chart 資料，請稍後再試'
+        })
+      }
+    },
+    async setTopSell(orders) {
+      try {
+        orders.map(order => {
           order.items.map(item => {
             if (!vm.topSelling[item.id]) {
               vm.topSelling[item.id] = {
@@ -182,22 +224,19 @@ export default {
           vm.topSellingArray.push(vm.topSelling[key])
         })
         vm.topSellingArray.sort((a, b) => b.amount - a.amount)
-        console.log(vm.topSellingArray)
-
-        let chart = this.$refs.highcharts.chart
-        chart.addSeries({
-          name: '銷售額',
-          data: monthlyRevenue
-        })
-        chart.addSeries({
-          name: '淨利',
-          data: monthlyNetSales
-        })
       } catch (error) {
-        console.log(error)
         Toast.fire({
           type: 'error',
-          title: '無法取得 Overall 資料，請稍後再試'
+          title: '無法取得 Top Sell 資料，請稍後再試'
+        })
+      }
+    },
+    async setCoupon(orders) {
+      try {
+      } catch (error) {
+        Toast.fire({
+          type: 'error',
+          title: '無法取得 Coupon 資料，請稍後再試'
         })
       }
     }
