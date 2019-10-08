@@ -30,10 +30,14 @@
             </div>
           </div>
         </div>
-        <div class="row">【長條圖】每月營收、淨利</div>
+        <div class="row revenue-chart">
+          <div class="col-12">
+            <highcharts :options="chartOptions" ref="highcharts"></highcharts>
+          </div>
+        </div>
         <div class="row">
-          <div class="col-sm-6">熱賣商品</div>
-          <div class="col-sm-6">優惠券使用情形</div>
+          <div class="col-md-6">熱賣商品</div>
+          <div class="col-md-6">優惠券使用情形</div>
         </div>
       </div>
     </div>
@@ -44,10 +48,13 @@
 import AdminNav from '@/components/admin/AdminNav'
 import { currencyFilter } from '@/utils/mixins'
 import adminOrderAPI from '@/apis/admin/adminOrder'
+import { Toast } from '@/utils/helpers'
+import { Chart } from 'highcharts-vue'
 
 export default {
   components: {
-    AdminNav
+    AdminNav,
+    highcharts: Chart
   },
   mixins: [currencyFilter],
   data() {
@@ -55,7 +62,44 @@ export default {
       productCount: 0,
       orderCount: 0,
       revenue: 0,
-      netSales: 0
+      netSales: 0,
+      chartOptions: {
+        chart: {
+          type: 'column'
+        },
+        title: {
+          text: '每月銷售額、淨利'
+        },
+        subtitle: {
+          text: ''
+        },
+        xAxis: {
+          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+          crosshair: true
+        },
+        yAxis: {
+          min: 0,
+          title: {
+            text: '金額 (NT$)'
+          }
+        },
+        tooltip: {
+          headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+          pointFormat:
+            '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+            '<td style="padding:0"><b>$ {point.y:,.0f}</b></td></tr>',
+          footerFormat: '</table>',
+          shared: true,
+          useHTML: true
+        },
+        plotOptions: {
+          column: {
+            pointPadding: 0.2,
+            borderWidth: 0
+          }
+        },
+        series: []
+      }
     }
   },
   created() {
@@ -72,6 +116,9 @@ export default {
         }
         console.log(data)
         vm.orderCount = data.orders.length
+
+        const monthlyRevenue = [...Array(12)].map(_ => 0)
+        const monthlyNetSales = [...Array(12)].map(_ => 0)
         data.orders.map(order => {
           vm.productCount += order.items.reduce((acc, cur) => {
             return cur.OrderItem.quantity + acc
@@ -82,8 +129,26 @@ export default {
             order.items.reduce((acc, cur) => {
               return cur.cost_price * cur.OrderItem.quantity + acc
             }, 0)
+          const orderMonth = parseInt(order.createdAt.slice(5, 7))
+          monthlyRevenue[orderMonth - 1] += order.checkoutPrice
+          monthlyNetSales[orderMonth - 1] +=
+            order.checkoutPrice -
+            order.items.reduce((acc, cur) => {
+              return cur.cost_price * cur.OrderItem.quantity + acc
+            }, 0)
+        })
+
+        let chart = this.$refs.highcharts.chart
+        chart.addSeries({
+          name: '銷售額',
+          data: monthlyRevenue
+        })
+        chart.addSeries({
+          name: '淨利',
+          data: monthlyNetSales
         })
       } catch (error) {
+        console.log(error)
         Toast.fire({
           type: 'error',
           title: '無法取得 Overall 資料，請稍後再試'
