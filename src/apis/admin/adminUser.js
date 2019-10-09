@@ -1,13 +1,13 @@
 import { apiHelper } from '@/utils/helpers'
 
 export default {
-  getUsers() {
+  getUsers () {
     return apiHelper.get(`/admin/users`)
   },
-  putUser(profile) {
+  putUser (profile) {
     return apiHelper.put(`/admin/user`, profile)
   },
-  getCurrentUser() {
+  getCurrentUser () {
     return apiHelper.get(`/get_current_user`)
   }
 }

@@ -1,13 +1,13 @@
 import { apiHelper } from './../utils/helpers'
 
 export default {
-  postCoupon(couponCode) {
+  postCoupon (couponCode) {
     return apiHelper.post('/coupon', couponCode)
   },
-  getCoupon() {
+  getCoupon () {
     return apiHelper.get('/coupon')
   },
-  deleteCoupon(couponCode) {
+  deleteCoupon (couponCode) {
     return apiHelper.delete('/coupon', couponCode)
   }
 }

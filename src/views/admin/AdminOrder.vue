@@ -60,23 +60,23 @@ export default {
     Spinner
   },
   mixins: [dateTimeFilter, currencyFilter, emptyImageFilter],
-  data() {
+  data () {
     return {
       order: {},
       isLoading: false
     }
   },
-  created() {
+  created () {
     const { orderId } = this.$route.params
     this.fetchOrder(orderId)
   },
-  beforeRouteUpdate(to, from, next) {
+  beforeRouteUpdate (to, from, next) {
     const { orderId } = to.params
     this.fetchOrder(orderId)
     next()
   },
   methods: {
-    async fetchOrder(orderId) {
+    async fetchOrder (orderId) {
       const vm = this
       try {
         vm.isLoading = true

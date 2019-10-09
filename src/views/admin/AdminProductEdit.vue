@@ -23,7 +23,7 @@ export default {
     AdminProductForm,
     Spinner
   },
-  data() {
+  data () {
     return {
       product: {},
       isProcessing: false,
@@ -31,18 +31,18 @@ export default {
       isLoading: false
     }
   },
-  created() {
+  created () {
     const { productId } = this.$route.params
     this.fetchProduct(productId)
   },
-  beforeRouteUpdate(to, from, next) {
+  beforeRouteUpdate (to, from, next) {
     // 路由改變時重新抓取資料
     const { productId } = to.params
     this.fetchProduct(productId)
     next()
   },
   methods: {
-    async fetchProduct(productId) {
+    async fetchProduct (productId) {
       const vm = this
       try {
         vm.isLoading = true
@@ -61,7 +61,7 @@ export default {
         })
       }
     },
-    async handleAfterSubmit(formData) {
+    async handleAfterSubmit (formData) {
       try {
         const vm = this
 
@@ -84,4 +84,4 @@ export default {
     }
   }
 }
-</script> 
+</script>

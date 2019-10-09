@@ -48,14 +48,14 @@
 <script>
 export default {
   name: 'SignIn',
-  data() {
+  data () {
     return {
       email: '',
       password: ''
     }
   },
   methods: {
-    handleSubmit(e) {
+    handleSubmit (e) {
       const data = JSON.stringify({
         email: this.email,
         password: this.password
@@ -65,4 +65,4 @@ export default {
     }
   }
 }
-</script> 
+</script>

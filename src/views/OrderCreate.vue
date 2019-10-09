@@ -360,7 +360,9 @@
               <div class="row py-2">
                 <!-- 左側 -->
                 <div class="col-6 col-md-6 px-1">
-                  <a href="#" class="btn btn-link" @click="$router.back()"><返回購物車</a>
+                  <a href="#" class="btn btn-link" @click="$router.back()">
+                    <i class="fas fa-arrow-left"></i>&ensp;返回購物車
+                  </a>
                 </div>
                 <!-- 右側 -->
                 <div class="col-6 col-md-6 px-1">
@@ -392,7 +394,7 @@ export default {
   components: {
     Spinner
   },
-  data() {
+  data () {
     return {
       cartId: 0,
       cartItems: [],
@@ -415,12 +417,12 @@ export default {
       showCoupon: false
     }
   },
-  created() {
+  created () {
     this.fetchCart()
     this.fetchCoupon()
   },
   methods: {
-    async fetchCart() {
+    async fetchCart () {
       const vm = this
       try {
         vm.isLoading = true
@@ -458,7 +460,7 @@ export default {
         })
       }
     },
-    async postOrder(e) {
+    async postOrder (e) {
       try {
         const vm = this
 
@@ -490,7 +492,7 @@ export default {
         })
       }
     },
-    async fetchCoupon() {
+    async fetchCoupon () {
       const vm = this
       try {
         vm.isLoading = true
@@ -540,10 +542,10 @@ export default {
         })
       }
     },
-    async collapseStatusChange() {
+    async collapseStatusChange () {
       this.status = !this.status
     },
-    async automaticFillIn() {
+    async automaticFillIn () {
       const vm = this
       if (vm.shippingFormStatus) {
         vm.tempName = vm.customerName
@@ -558,7 +560,6 @@ export default {
   }
 }
 </script>
-
 
 <style>
 template {

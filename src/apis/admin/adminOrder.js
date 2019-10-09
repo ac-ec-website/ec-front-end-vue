@@ -1,13 +1,13 @@
 import { apiHelper } from '@/utils/helpers'
 
 export default {
-  getOrders() {
+  getOrders () {
     return apiHelper.get(`/admin/orders`)
   },
-  getOrder(orderId) {
+  getOrder (orderId) {
     return apiHelper.get(`/admin/orders/${orderId}`)
   },
-  putOrder(orderId, value) {
+  putOrder (orderId, value) {
     return apiHelper.put(`/admin/orders/${orderId}`, value)
   }
 }

@@ -103,7 +103,7 @@ export default {
     AdminNav,
     Spinner
   },
-  data() {
+  data () {
     return {
       newCategoryName: '',
       categories: [],
@@ -111,11 +111,11 @@ export default {
       isLoading: false
     }
   },
-  created() {
+  created () {
     this.fetchCategories()
   },
   methods: {
-    async fetchCategories() {
+    async fetchCategories () {
       const vm = this
       try {
         vm.isLoading = true
@@ -137,7 +137,7 @@ export default {
         })
       }
     },
-    async createCategory() {
+    async createCategory () {
       const vm = this
       try {
         vm.isProcessing = true
@@ -161,7 +161,7 @@ export default {
         })
       }
     },
-    async updateCategory({ categoryId, name }) {
+    async updateCategory ({ categoryId, name }) {
       const vm = this
       try {
         const { data, statusText } = await adminCategoryAPI.putCategory(categoryId, { name })
@@ -170,7 +170,7 @@ export default {
           throw new Error(statusText)
         }
 
-        this.toggleIsEditing(categoryId)
+        vm.toggleIsEditing(categoryId)
       } catch (error) {
         Toast.fire({
           type: 'error',
@@ -178,7 +178,7 @@ export default {
         })
       }
     },
-    async deleteCategory(categoryId) {
+    async deleteCategory (categoryId) {
       const vm = this
       try {
         const { data, statusText } = await adminCategoryAPI.deleteCategory(categoryId)
@@ -199,7 +199,7 @@ export default {
         })
       }
     },
-    toggleIsEditing(categoryId) {
+    toggleIsEditing (categoryId) {
       const vm = this
 
       vm.categories = vm.categories.map(category => {
@@ -212,7 +212,7 @@ export default {
         }
       })
     },
-    handleCancel(categoryId) {
+    handleCancel (categoryId) {
       const vm = this
 
       vm.categories = vm.categories.map(category => {

@@ -306,7 +306,6 @@
   </div>
 </template>
 
-
 <script>
 import orderAPI from '@/apis/order'
 import couponAPI from '@/apis/coupons'
@@ -319,7 +318,7 @@ export default {
   components: {
     Spinner
   },
-  data() {
+  data () {
     return {
       order: {},
       orderId: 0,
@@ -340,12 +339,12 @@ export default {
       showCoupon: false
     }
   },
-  created() {
+  created () {
     this.fetchOrder()
     this.fetchCoupon()
   },
   methods: {
-    async fetchOrder() {
+    async fetchOrder () {
       const vm = this
       try {
         vm.isLoading = true
@@ -394,7 +393,7 @@ export default {
         }
       }
     },
-    async fetchCoupon() {
+    async fetchCoupon () {
       const vm = this
       try {
         vm.isLoading = true
@@ -426,7 +425,7 @@ export default {
         })
       }
     },
-    async collapseStatusChange() {
+    async collapseStatusChange () {
       this.status = !this.status
     }
   }
@@ -663,4 +662,3 @@ section {
   height: 60px;
 }
 </style>
-

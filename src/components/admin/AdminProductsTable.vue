@@ -55,17 +55,17 @@ export default {
   components: {
     Spinner
   },
-  data() {
+  data () {
     return {
       products: [],
       isLoading: false
     }
   },
-  created() {
+  created () {
     this.fetchProducts()
   },
   methods: {
-    async fetchProducts() {
+    async fetchProducts () {
       const vm = this
       try {
         vm.isLoading = true
@@ -84,7 +84,7 @@ export default {
         })
       }
     },
-    async deleteProduct(productId) {
+    async deleteProduct (productId) {
       const vm = this
       try {
         const { data, statusText } = await adminProductAPI.deleteProduct(productId)
@@ -107,7 +107,7 @@ export default {
     }
   }
 }
-</script> 
+</script>
 
 <style scoped>
 .btn-link {

@@ -166,7 +166,7 @@ export default {
       default: false
     }
   },
-  data() {
+  data () {
     return {
       product: {
         name: '',
@@ -184,14 +184,14 @@ export default {
     }
   },
   watch: {
-    initialProduct(product) {
+    initialProduct (product) {
       this.product = {
         ...this.product,
         ...product
       }
     }
   },
-  created() {
+  created () {
     this.fetchCategories()
     this.product = {
       ...this.product,
@@ -199,7 +199,7 @@ export default {
     }
   },
   methods: {
-    async fetchCategories() {
+    async fetchCategories () {
       const vm = this
       try {
         const { data, statusText } = await adminCategoryAPI.getCategories()
@@ -216,14 +216,14 @@ export default {
         })
       }
     },
-    handleFileChange(e) {
+    handleFileChange (e) {
       const files = e.target.files
       if (!files.length) return // 如果沒有檔案則離開此函式
       // 否則產生預覽圖...
       const imageURL = window.URL.createObjectURL(files[0])
       this.product.image = imageURL
     },
-    handleSubmit(e) {
+    handleSubmit (e) {
       if (!this.product.name) {
         Toast.fire({
           type: 'warning',
@@ -244,4 +244,4 @@ export default {
     }
   }
 }
-</script> 
+</script>

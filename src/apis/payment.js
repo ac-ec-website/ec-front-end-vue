@@ -1,7 +1,7 @@
 import { apiHelper } from './../utils/helpers'
 
 export default {
-  getPayment() {
+  getPayment () {
     return apiHelper.get(`/payment`)
   }
 }

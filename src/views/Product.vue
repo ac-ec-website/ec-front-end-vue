@@ -15,14 +15,13 @@ import productsAPI from '@/apis/products'
 import cartAPI from '@/apis/cart'
 import ProductDetail from '../components/ProductDetail'
 import SideCartPreview from '../components/SideCartPreview'
-import { constants } from 'crypto'
 
 export default {
   components: {
     ProductDetail,
     SideCartPreview
   },
-  data() {
+  data () {
     return {
       product: {},
       cart: {},
@@ -30,27 +29,27 @@ export default {
     }
   },
   watch: {
-    '$route.params.productId': function(productId) {
+    '$route.params.productId': function (productId) {
       this.fetchProduct(productId)
     }
   },
-  created() {
+  created () {
     const productId = this.$route.params.productId
     this.fetchProduct(productId)
   },
-  mounted() {
+  mounted () {
     this.$root.$on('toggleSideCart', () => {
       this.showSideCart = !this.showSideCart
     })
   },
   methods: {
-    async fetchProduct(productId) {
+    async fetchProduct (productId) {
       try {
         const vm = this
         const response = await productsAPI.getProduct(productId)
 
         if (response.statusText !== 'OK') {
-          throw new Error(statusText)
+          throw new Error(response.statusText)
         }
 
         vm.product = response.data.product
@@ -63,14 +62,14 @@ export default {
         })
       }
     },
-    async handleAddToCart(productId, quantity) {
+    async handleAddToCart (productId, quantity) {
       try {
         const vm = this
 
         const response = await cartAPI.addToCart(productId, quantity)
 
         if (response.statusText !== 'OK') {
-          throw new Error(statusText)
+          throw new Error(response.statusText)
         }
 
         Toast.fire({
@@ -86,7 +85,7 @@ export default {
         })
       }
     },
-    async handleDeleteItem(cartId, cartItemId) {
+    async handleDeleteItem (cartId, cartItemId) {
       try {
         const vm = this
         const productId = vm.$route.params.productId

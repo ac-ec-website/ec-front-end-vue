@@ -41,23 +41,23 @@ export default {
     Spinner
   },
   mixins: [dateTimeFilter, currencyFilter],
-  data() {
+  data () {
     return {
       discount: {},
       isLoading: false
     }
   },
-  created() {
+  created () {
     const { discountId } = this.$route.params
     this.fetchDiscount(discountId)
   },
-  beforeRouteUpdate(to, from, next) {
+  beforeRouteUpdate (to, from, next) {
     const { discountId } = to.params
     this.fetchDiscount(discountId)
     next()
   },
   methods: {
-    async fetchDiscount(discountId) {
+    async fetchDiscount (discountId) {
       const vm = this
       try {
         vm.isLoading = true

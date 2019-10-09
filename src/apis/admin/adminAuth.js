@@ -1,10 +1,10 @@
 import { apiHelper } from '@/utils/helpers'
 
 export default {
-  signIn(profile) {
+  signIn (profile) {
     return apiHelper.post(`/admin/signin`, profile)
   },
-  signUp(profile) {
+  signUp (profile) {
     return apiHelper.post(`/admin/signup`, profile)
   }
 }
