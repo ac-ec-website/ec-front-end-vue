@@ -23,7 +23,7 @@ export default {
     AdminDiscountForm,
     Spinner
   },
-  data() {
+  data () {
     return {
       discount: {},
       isProcessing: false,
@@ -31,17 +31,17 @@ export default {
       isLoading: false
     }
   },
-  created() {
+  created () {
     const { discountId } = this.$route.params
     this.fetchDiscount(discountId)
   },
-  beforeRouteUpdate(to, from, next) {
+  beforeRouteUpdate (to, from, next) {
     const { discountId } = to.params
     this.fetchDiscount(discountId)
     next()
   },
   methods: {
-    async fetchDiscount(discountId) {
+    async fetchDiscount (discountId) {
       const vm = this
       try {
         vm.isLoading = true
@@ -64,7 +64,7 @@ export default {
         })
       }
     },
-    async handleAfterSubmit(formData) {
+    async handleAfterSubmit (formData) {
       const vm = this
       try {
         vm.isProcessing = true
@@ -85,4 +85,4 @@ export default {
     }
   }
 }
-</script> 
+</script>

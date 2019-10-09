@@ -54,7 +54,7 @@ import adminAuthAPI from '@/apis/admin/adminAuth'
 const { Toast } = require('../../utils/helpers')
 
 export default {
-  data() {
+  data () {
     return {
       email: '',
       password: '',
@@ -62,10 +62,10 @@ export default {
     }
   },
   methods: {
-    async handleSubmit(e) {
+    async handleSubmit (e) {
       const vm = this
       try {
-        if (!this.email || !this.password) {
+        if (!vm.email || !vm.password) {
           Toast.fire({
             type: 'warning',
             title: '所有欄位都要填寫'
@@ -73,10 +73,10 @@ export default {
           return
         }
 
-        this.isProcessing = true
-        const { data, statusText } = await adminAuthAPI.signIn({
-          email: this.email,
-          password: this.password
+        vm.isProcessing = true
+        const { data } = await adminAuthAPI.signIn({
+          email: vm.email,
+          password: vm.password
         })
 
         if (data.status !== 'success') {
@@ -84,8 +84,8 @@ export default {
             type: 'warning',
             title: data.message
           })
-          this.password = ''
-          this.isProcessing = false
+          vm.password = ''
+          vm.isProcessing = false
           return
         }
 
@@ -104,4 +104,4 @@ export default {
     }
   }
 }
-</script> 
+</script>

@@ -80,7 +80,7 @@ import adminAuthAPI from '@/apis/admin/adminAuth'
 const { Toast } = require('../../utils/helpers')
 
 export default {
-  data() {
+  data () {
     return {
       name: '',
       email: '',
@@ -90,7 +90,7 @@ export default {
     }
   },
   methods: {
-    async handleSubmit(e) {
+    async handleSubmit (e) {
       const vm = this
       try {
         if (!vm.name || !vm.email || !vm.password || !vm.passwordCheck) {
@@ -112,7 +112,7 @@ export default {
         }
 
         vm.isProcessing = true
-        const { data, statusText } = await adminAuthAPI.signUp({
+        const { data } = await adminAuthAPI.signUp({
           name: vm.name,
           email: vm.email,
           password: vm.password,
@@ -144,4 +144,4 @@ export default {
     }
   }
 }
-</script> 
+</script>

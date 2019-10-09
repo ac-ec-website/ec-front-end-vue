@@ -23,24 +23,23 @@
 
 <script>
 import paymentAPI from '@/apis/payment'
-import { emptyImageFilter, currencyFilter } from '@/utils/mixins'
 import { Toast } from '@/utils/helpers'
 
 export default {
-  data() {
+  data () {
     return {
       order: {},
       tradeInfo: {}
     }
   },
-  created() {
+  created () {
     this.fetchPayment()
   },
-  updated() {
+  updated () {
     this.handlePaymentSubmit()
   },
   methods: {
-    async fetchPayment() {
+    async fetchPayment () {
       try {
         const vm = this
         const { data, statusText } = await paymentAPI.getPayment()
@@ -58,7 +57,7 @@ export default {
         })
       }
     },
-    handlePaymentSubmit() {
+    handlePaymentSubmit () {
       document.getElementById('postPayment').click()
     }
   }

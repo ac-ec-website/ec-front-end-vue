@@ -23,7 +23,7 @@ export default {
     AdminCouponForm,
     Spinner
   },
-  data() {
+  data () {
     return {
       coupon: {},
       isProcessing: false,
@@ -31,17 +31,17 @@ export default {
       isLoading: false
     }
   },
-  created() {
+  created () {
     const { couponId } = this.$route.params
     this.fetchCoupon(couponId)
   },
-  beforeRouteUpdate(to, from, next) {
+  beforeRouteUpdate (to, from, next) {
     const { couponId } = to.params
     this.fetchCoupon(couponId)
     next()
   },
   methods: {
-    async fetchCoupon(couponId) {
+    async fetchCoupon (couponId) {
       const vm = this
       try {
         vm.isLoading = true
@@ -63,7 +63,7 @@ export default {
         })
       }
     },
-    async handleAfterSubmit(formData) {
+    async handleAfterSubmit (formData) {
       const vm = this
       try {
         vm.isProcessing = true
@@ -84,4 +84,4 @@ export default {
     }
   }
 }
-</script> 
+</script>

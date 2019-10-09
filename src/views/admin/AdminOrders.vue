@@ -93,7 +93,7 @@
                 v-show="order.isEditing"
                 type="button"
                 class="btn btn-link"
-                @click.stop.prevent="updateOrder({ 
+                @click.stop.prevent="updateOrder({
                 orderId: order.id,
                 payment_status: order.payment_status,
                 shipping_status: order.shipping_status })"
@@ -130,17 +130,17 @@ export default {
     Spinner
   },
   mixins: [dateTimeFilter, currencyFilter],
-  data() {
+  data () {
     return {
       orders: [],
       isLoading: false
     }
   },
-  created() {
+  created () {
     this.fetchOrders()
   },
   methods: {
-    async fetchOrders() {
+    async fetchOrders () {
       const vm = this
       try {
         vm.isLoading = true
@@ -159,7 +159,7 @@ export default {
         })
       }
     },
-    async updateOrder({ orderId, payment_status, shipping_status }) {
+    async updateOrder ({ orderId, payment_status, shipping_status }) {
       const vm = this
       try {
         const value = { payment_status, shipping_status }
@@ -177,7 +177,7 @@ export default {
         })
       }
     },
-    toggleIsEditing(orderId) {
+    toggleIsEditing (orderId) {
       const vm = this
 
       vm.orders = vm.orders.map(order => {
@@ -188,7 +188,7 @@ export default {
     }
   }
 }
-</script> 
+</script>
 
 <style scoped>
 .container {

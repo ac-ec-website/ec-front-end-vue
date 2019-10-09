@@ -108,7 +108,7 @@ export default {
     highcharts: Chart
   },
   mixins: [currencyFilter],
-  data() {
+  data () {
     return {
       productCount: 0,
       orderCount: 0,
@@ -160,11 +160,11 @@ export default {
       }
     }
   },
-  created() {
+  created () {
     this.fetchOrders()
   },
   methods: {
-    async fetchOrders() {
+    async fetchOrders () {
       try {
         const vm = this
         const { data, statusText } = await adminOrderAPI.getOrders()
@@ -185,7 +185,7 @@ export default {
         })
       }
     },
-    async setOverallData(orders) {
+    async setOverallData (orders) {
       try {
         const vm = this
 
@@ -210,7 +210,7 @@ export default {
         })
       }
     },
-    async setChart(orders) {
+    async setChart (orders) {
       try {
         const monthlyRevenue = [...Array(12)].map(_ => 0)
         const monthlyNetSales = [...Array(12)].map(_ => 0)
@@ -241,7 +241,7 @@ export default {
         })
       }
     },
-    async setTopSell(orders) {
+    async setTopSell (orders) {
       try {
         const vm = this
         orders.map(order => {
@@ -262,7 +262,7 @@ export default {
             vm.topSelling[item.id].amount += item.sell_price * item.OrderItem.quantity
           })
         })
-        Object.keys(vm.topSelling).forEach(function(key) {
+        Object.keys(vm.topSelling).forEach(function (key) {
           vm.topSellingArray.push(vm.topSelling[key])
         })
         vm.topSellingArray.sort((a, b) => b.amount - a.amount)
@@ -273,7 +273,7 @@ export default {
         })
       }
     },
-    async setOffer(orders) {
+    async setOffer (orders) {
       try {
         const vm = this
         orders.map(order => {
@@ -289,7 +289,7 @@ export default {
           }
         })
 
-        await Object.keys(vm.offer['CouponId']).forEach(async function(key) {
+        await Object.keys(vm.offer['CouponId']).forEach(async function (key) {
           const { data } = await adminCouponAPI.getCoupon(key)
 
           vm.offerArray.push({
@@ -301,7 +301,7 @@ export default {
           })
         })
 
-        await Object.keys(vm.offer['DiscountId']).forEach(async function(key) {
+        await Object.keys(vm.offer['DiscountId']).forEach(async function (key) {
           const { data } = await adminDiscountAPI.getDiscount(key)
 
           vm.offerArray.push({

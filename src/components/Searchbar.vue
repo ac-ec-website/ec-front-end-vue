@@ -11,13 +11,13 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       inputText: ''
     }
   },
   methods: {
-    filterSearch() {
+    filterSearch () {
       this.$emit('filter-search', this.inputText)
     }
   }

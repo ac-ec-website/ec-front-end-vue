@@ -2,7 +2,7 @@ import moment from 'moment'
 
 export const fromNowFilter = {
   filters: {
-    fromNow(datetime) {
+    fromNow (datetime) {
       return datetime ? moment(datetime).fromNow() : '-'
     }
   }
@@ -10,7 +10,7 @@ export const fromNowFilter = {
 
 export const dateTimeFilter = {
   filters: {
-    dateTime(time) {
+    dateTime (time) {
       return time ? moment(time).format('YYYY-MM-DD') : '-'
     }
   }
@@ -18,15 +18,15 @@ export const dateTimeFilter = {
 
 export const detailedTimeFilter = {
   filters: {
-    detailedTime(time) {
-      return time ? moment(time).format('YYYY-MM-DD HH:MM:SS') : '-';
+    detailedTime (time) {
+      return time ? moment(time).format('YYYY-MM-DD HH:MM:SS') : '-'
     }
   }
 }
 
 export const currencyFilter = {
   filters: {
-    currency(num) {
+    currency (num) {
       const n = Number(num)
       return `$${n.toFixed(0).replace(/./g, (c, i, a) => {
         const currency = i && c !== '.' && (a.length - i) % 3 === 0 ? `, ${c}`.replace(/\s/g, '') : c
@@ -38,7 +38,7 @@ export const currencyFilter = {
 
 export const emptyImageFilter = {
   filters: {
-    emptyImage(src) {
+    emptyImage (src) {
       return src || 'http://via.placeholder.com/300x300?text=No+Image'
     }
   }

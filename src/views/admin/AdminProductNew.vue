@@ -13,13 +13,13 @@ export default {
   components: {
     AdminProductForm
   },
-  data() {
+  data () {
     return {
       isProcessing: false
     }
   },
   methods: {
-    async handleAfterSubmit(formData) {
+    async handleAfterSubmit (formData) {
       try {
         const vm = this
         const { data, statusText } = await adminProductAPI.postProduct(formData)
@@ -39,4 +39,4 @@ export default {
     }
   }
 }
-</script> 
+</script>

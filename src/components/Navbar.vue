@@ -66,7 +66,7 @@ let $ = JQuery
 
 export default {
   computed: {
-    cartItemNumber() {
+    cartItemNumber () {
       const newCount = this.$store.state.cartItemNumber
       console.log('computed cartItemNumber', newCount)
 
@@ -81,13 +81,13 @@ export default {
     ...mapState(['currentUser', 'isLogin'])
   },
   watch: {
-    cartItemNumber() {}
+    cartItemNumber () {}
   },
   methods: {
-    toggleSideCart() {
+    toggleSideCart () {
       this.$root.$emit('toggleSideCart')
     },
-    logout() {
+    logout () {
       this.$store.commit('logout')
       this.$router.push('/admin/signin')
     }

@@ -1,13 +1,13 @@
 import { apiHelper } from './../utils/helpers'
 
 export default {
-  getProducts() {
+  getProducts () {
     return apiHelper.get(`/products`)
   },
-  getProduct(productId) {
+  getProduct (productId) {
     return apiHelper.get(`/products/${productId}`)
   },
-  deleteItem(cartId, cartItemId) {
+  deleteItem (cartId, cartItemId) {
     return apiHelper.delete(`/cart/${cartId}/cartItem/${cartItemId}`)
   }
 }

@@ -22,8 +22,6 @@
 </template>
 
 <script>
-import axios from 'axios'
-
 export default {
   props: {
     initialCart: {
@@ -31,13 +29,13 @@ export default {
       required: true
     }
   },
-  data() {
+  data () {
     return {
       cart: {}
     }
   },
   methods: {
-    deleteItem(cartItemId) {
+    deleteItem (cartItemId) {
       this.$emit('clickDeleteItem', this.initialCart.id, cartItemId)
     }
   }

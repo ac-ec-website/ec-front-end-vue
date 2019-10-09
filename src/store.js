@@ -18,11 +18,11 @@ export default new Vuex.Store({
     cartItemNumber: 0
   },
   mutations: {
-    setNavbarCartItemNumber(state, number) {
+    setNavbarCartItemNumber (state, number) {
       console.log('setNavbarCartItemNumber', number)
       state.cartItemNumber = number
     },
-    setCurrentUser(state, currentUser) {
+    setCurrentUser (state, currentUser) {
       console.log('setCurrentUser')
       state.currentUser = {
         id: currentUser.id,
@@ -34,7 +34,7 @@ export default new Vuex.Store({
       state.isLogin = true
       state.token = localStorage.getItem('token')
     },
-    logout(state) {
+    logout (state) {
       console.log('vuex-logout')
       state.currentUser = {}
       state.isLogin = false
@@ -43,7 +43,7 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    async fetchCurrentUser({ commit }) {
+    async fetchCurrentUser ({ commit }) {
       try {
         const { data, statusText } = await adminUserAPI.getCurrentUser()
 

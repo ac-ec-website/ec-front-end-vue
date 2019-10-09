@@ -57,21 +57,21 @@ export default {
   components: {
     AdminNav
   },
-  data() {
+  data () {
     return {
       users: {}
     }
   },
-  created() {
+  created () {
     this.fetchUser()
   },
   methods: {
-    async fetchUser() {
+    async fetchUser () {
       const vm = this
-      const { data, statusText } = await adminUserAPI.getUsers()
+      const { data } = await adminUserAPI.getUsers()
 
-      this.users = data.user.map(user => {
-        if (user.id === this.$store.state.currentUser.id) {
+      vm.users = data.user.map(user => {
+        if (user.id === vm.$store.state.currentUser.id) {
           return {
             ...user,
             isEditing: false,
@@ -85,8 +85,9 @@ export default {
         }
       })
     },
-    editUserRole(userId) {
-      this.users = this.users.map(user => {
+    editUserRole (userId) {
+      const vm = this
+      vm.users = vm.users.map(user => {
         if (user.id === userId) {
           return {
             ...user,
@@ -96,11 +97,11 @@ export default {
         return user
       })
     },
-    async updateUserRole(userId) {
+    async updateUserRole (userId) {
       const vm = this
       let userRole = ''
 
-      this.users = this.users.map(user => {
+      vm.users = vm.users.map(user => {
         if (user.id === userId) {
           userRole = user.role
           return {
@@ -111,7 +112,7 @@ export default {
         return user
       })
 
-      const { data, statusText } = await adminUserAPI.putUser({
+      const { statusText } = await adminUserAPI.putUser({
         id: userId,
         role: userRole
       })

@@ -155,7 +155,7 @@ export default {
       default: false
     }
   },
-  data() {
+  data () {
     return {
       discount: {
         name: '',
@@ -172,21 +172,21 @@ export default {
     }
   },
   watch: {
-    initialDiscount(discount) {
+    initialDiscount (discount) {
       this.discount = {
         ...this.discount,
         ...discount
       }
     }
   },
-  created() {
+  created () {
     this.discount = {
       ...this.discount,
       ...this.initialDiscount
     }
   },
   methods: {
-    handleChange(e) {
+    handleChange (e) {
       const value = e.target.value
       if (value === '0') {
         this.discount.percent = -1
@@ -201,7 +201,7 @@ export default {
         this.discount.shipping_free = 0
       }
     },
-    handleSubmit(e) {
+    handleSubmit (e) {
       if (!this.discount.name) {
         Toast.fire({
           type: 'warning',

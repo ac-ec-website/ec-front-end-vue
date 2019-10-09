@@ -77,17 +77,17 @@ export default {
     AdminNav,
     Spinner
   },
-  data() {
+  data () {
     return {
       discounts: [],
       isLoading: false
     }
   },
-  created() {
+  created () {
     this.fetchDiscounts()
   },
   methods: {
-    async fetchDiscounts() {
+    async fetchDiscounts () {
       const vm = this
       try {
         vm.isLoading = true
@@ -106,7 +106,7 @@ export default {
         })
       }
     },
-    async deleteDiscount(discountId) {
+    async deleteDiscount (discountId) {
       const vm = this
       try {
         const { data, statusText } = await adminDiscountAPI.deleteDiscount(discountId)

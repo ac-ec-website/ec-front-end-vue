@@ -1,19 +1,19 @@
 import { apiHelper } from '@/utils/helpers'
 
 export default {
-  getCoupons() {
+  getCoupons () {
     return apiHelper.get(`/admin/coupons`)
   },
-  getCoupon(couponId) {
+  getCoupon (couponId) {
     return apiHelper.get(`/admin/coupons/${couponId}`)
   },
-  postCoupon(formData) {
+  postCoupon (formData) {
     return apiHelper.post(`/admin/coupons`, formData)
   },
-  putCoupon(couponId, formData) {
+  putCoupon (couponId, formData) {
     return apiHelper.put(`/admin/coupons/${couponId}`, formData)
   },
-  deleteCoupon(couponId) {
+  deleteCoupon (couponId) {
     return apiHelper.delete(`/admin/coupons/${couponId}`)
   }
 }

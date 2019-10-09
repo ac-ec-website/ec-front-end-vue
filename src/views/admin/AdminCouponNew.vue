@@ -14,13 +14,13 @@ export default {
   components: {
     AdminCouponForm
   },
-  data() {
+  data () {
     return {
       isProcessing: false
     }
   },
   methods: {
-    async handleAfterSubmit(formData) {
+    async handleAfterSubmit (formData) {
       const vm = this
       try {
         vm.isProcessing = true

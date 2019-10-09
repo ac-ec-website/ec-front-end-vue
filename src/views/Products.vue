@@ -39,7 +39,7 @@ import Searchbar from '@/components/Searchbar'
 import Spinner from '@/components/Spinner'
 
 export default {
-  data() {
+  data () {
     return {
       categories: [],
       // currentPage: 1,
@@ -54,16 +54,16 @@ export default {
       // totalPage: 0
     }
   },
-  created() {
+  created () {
     this.fetchProducts()
   },
-  mounted() {
+  mounted () {
     this.$root.$on('toggleSideCart', () => {
       this.showSideCart = !this.showSideCart
     })
   },
   methods: {
-    async fetchProducts() {
+    async fetchProducts () {
       try {
         const vm = this
         const response = await productsAPI.getProducts()
@@ -90,7 +90,7 @@ export default {
         })
       }
     },
-    async handleDeleteItem(cartId, cartItemId) {
+    async handleDeleteItem (cartId, cartItemId) {
       try {
         const vm = this
 
@@ -108,17 +108,17 @@ export default {
         })
       }
     },
-    filterCategory(categoryId) {
+    filterCategory (categoryId) {
       this.filterCategoryId = categoryId
       this.handleFilterProducts()
       this.checkIsNoProduct()
     },
-    filterSearch(inputText) {
+    filterSearch (inputText) {
       this.filterInputText = inputText
       this.handleFilterProducts()
       this.checkIsNoProduct()
     },
-    async handleAddToCart(productId, quantity) {
+    async handleAddToCart (productId, quantity) {
       try {
         const vm = this
 
@@ -141,7 +141,7 @@ export default {
         })
       }
     },
-    handleFilterProducts() {
+    handleFilterProducts () {
       const vm = this
       vm.filterProducts = vm.products
       vm.isNoProduct = false
@@ -162,7 +162,7 @@ export default {
         })
       }
     },
-    checkIsNoProduct() {
+    checkIsNoProduct () {
       if (this.filterProducts.length === 0) {
         this.isNoProduct = true
       }

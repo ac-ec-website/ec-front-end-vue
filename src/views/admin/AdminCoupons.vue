@@ -77,17 +77,17 @@ export default {
     AdminNav,
     Spinner
   },
-  data() {
+  data () {
     return {
       coupons: [],
       isLoading: false
     }
   },
-  created() {
+  created () {
     this.fetchCoupons()
   },
   methods: {
-    async fetchCoupons() {
+    async fetchCoupons () {
       const vm = this
       try {
         vm.isLoading = true
@@ -106,7 +106,7 @@ export default {
         })
       }
     },
-    async deleteCoupon(couponId) {
+    async deleteCoupon (couponId) {
       const vm = this
       try {
         const { data, statusText } = await adminCouponAPI.deleteCoupon(couponId)

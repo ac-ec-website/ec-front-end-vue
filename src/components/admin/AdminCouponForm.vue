@@ -155,7 +155,7 @@ export default {
       default: false
     }
   },
-  data() {
+  data () {
     return {
       coupon: {
         name: '',
@@ -172,21 +172,21 @@ export default {
     }
   },
   watch: {
-    initialCoupon(coupon) {
+    initialCoupon (coupon) {
       this.coupon = {
         ...this.coupon,
         ...coupon
       }
     }
   },
-  created() {
+  created () {
     this.coupon = {
       ...this.coupon,
       ...this.initialCoupon
     }
   },
   methods: {
-    handleChange(e) {
+    handleChange (e) {
       const value = e.target.value
       if (value === '0') {
         this.coupon.percent = -1
@@ -203,7 +203,7 @@ export default {
         this.coupon.shipping_free = 0
       }
     },
-    handleSubmit(e) {
+    handleSubmit (e) {
       if (!this.coupon.name) {
         Toast.fire({
           type: 'warning',
@@ -224,4 +224,4 @@ export default {
     }
   }
 }
-</script> 
+</script>

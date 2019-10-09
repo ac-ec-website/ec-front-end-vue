@@ -1,10 +1,10 @@
 import { apiHelper } from './../utils/helpers'
 
 export default {
-  postOrder(formData) {
+  postOrder (formData) {
     return apiHelper.post('/order', formData)
   },
-  getOrder() {
+  getOrder () {
     return apiHelper.get('/order')
   }
 }

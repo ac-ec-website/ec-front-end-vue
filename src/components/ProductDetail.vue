@@ -49,19 +49,19 @@ export default {
       required: true
     }
   },
-  data() {
+  data () {
     return {
       productQuantity: 1,
       product: this.initialProduct
     }
   },
   watch: {
-    initialProduct: function() {
+    initialProduct: function () {
       this.product = this.initialProduct
     }
   },
   methods: {
-    handleAddToCart() {
+    handleAddToCart () {
       this.$emit('clickAddToCart', this.product.id, parseInt(this.productQuantity))
     }
   }

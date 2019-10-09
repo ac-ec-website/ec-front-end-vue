@@ -285,7 +285,7 @@ import { Toast } from '@/utils/helpers'
 
 export default {
   mixins: [currencyFilter, emptyImageFilter],
-  data() {
+  data () {
     return {
       cartId: null,
       cartItems: [],
@@ -300,11 +300,11 @@ export default {
       isBlocking: false
     }
   },
-  created() {
+  created () {
     this.fetchCart()
   },
   methods: {
-    async fetchCart() {
+    async fetchCart () {
       try {
         const vm = this
 
@@ -340,7 +340,7 @@ export default {
         })
       }
     },
-    async TrackShippingMethod() {
+    async TrackShippingMethod () {
       const vm = this
 
       if (vm.shipping_method === '住家宅配') {
@@ -351,11 +351,11 @@ export default {
         vm.shipping_fee = 100
       }
     },
-    async addItemToCart(cartId, cartItemId) {
+    async addItemToCart (cartId, cartItemId) {
       try {
         const vm = this
 
-        const { data, statusText } = await cartAPI.addItemToCart(cartId, cartItemId)
+        const { statusText } = await cartAPI.addItemToCart(cartId, cartItemId)
 
         if (statusText !== 'OK') {
           throw new Error(statusText)
@@ -369,7 +369,7 @@ export default {
         })
       }
     },
-    async subItemFromCart(cartId, cartItemId) {
+    async subItemFromCart (cartId, cartItemId) {
       try {
         const vm = this
 
@@ -392,11 +392,11 @@ export default {
         })
       }
     },
-    async deleteItemFromCart(cartId, cartItemId) {
+    async deleteItemFromCart (cartId, cartItemId) {
       try {
         const vm = this
 
-        const { data, statusText } = await cartAPI.deleteItemFromCart(cartId, cartItemId)
+        const { statusText } = await cartAPI.deleteItemFromCart(cartId, cartItemId)
 
         if (statusText !== 'OK') {
           throw new Error(statusText)
@@ -410,7 +410,7 @@ export default {
         })
       }
     },
-    async putCart() {
+    async putCart () {
       try {
         const vm = this
 
@@ -437,11 +437,11 @@ export default {
         })
       }
     },
-    activatedCounpon() {
+    activatedCounpon () {
       const vm = this
       vm.isCounponActivated = true
     },
-    async postCoupon(e) {
+    async postCoupon (e) {
       const vm = this
       try {
         vm.showCoupon = false
@@ -521,10 +521,14 @@ export default {
         })
       }
     },
-    async deleteCoupon() {
+    async deleteCoupon () {
       const vm = this
       try {
-        const { data, statusText } = await couponAPI.deleteCoupon()
+        const { statusText } = await couponAPI.deleteCoupon()
+
+        if (statusText !== 'OK') {
+          throw new Error(statusText)
+        }
 
         vm.isCounponActivated = false
         vm.showCoupon = false
@@ -546,10 +550,9 @@ export default {
         console.log('error', error)
       }
     },
-    async fetchCoupon() {
+    async fetchCoupon () {
+      const vm = this
       try {
-        const vm = this
-
         const { data, statusText } = await couponAPI.getCoupon()
 
         // 若為 error 代表目前尚無 coupon 資訊，終止執行

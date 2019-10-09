@@ -74,7 +74,7 @@
 <script>
 export default {
   name: 'SignUp',
-  data() {
+  data () {
     return {
       name: '',
       email: '',
@@ -83,7 +83,7 @@ export default {
     }
   },
   methods: {
-    handleSubmit(e) {
+    handleSubmit (e) {
       const data = JSON.stringify({
         name: this.name,
         email: this.email,
@@ -95,4 +95,4 @@ export default {
     }
   }
 }
-</script> 
+</script>

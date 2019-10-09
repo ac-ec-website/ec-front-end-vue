@@ -26,13 +26,13 @@ export default {
       required: true
     }
   },
-  data() {
+  data () {
     return {
       picked: ''
     }
   },
   methods: {
-    filterCategory(categoryId) {
+    filterCategory (categoryId) {
       this.$emit('filter-category', categoryId)
     }
   }

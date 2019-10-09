@@ -58,24 +58,24 @@ export default {
     Spinner
   },
   mixins: [emptyImageFilter],
-  data() {
+  data () {
     return {
       product: {},
       isLoading: false
     }
   },
-  created() {
+  created () {
     const { productId } = this.$route.params
     this.fetchProduct(productId)
   },
-  beforeRouteUpdate(to, from, next) {
+  beforeRouteUpdate (to, from, next) {
     // 路由改變時重新抓取資料
     const { productId } = to.params
     this.fetchProduct(productId)
     next()
   },
   methods: {
-    async fetchProduct(productId) {
+    async fetchProduct (productId) {
       const vm = this
       try {
         vm.isLoading = true

@@ -56,13 +56,13 @@ export default {
       required: true
     }
   },
-  data() {
+  data () {
     return {
       product: this.initialProduct
     }
   },
   methods: {
-    handleAddToCart(productId, quantity) {
+    handleAddToCart (productId, quantity) {
       const vm = this
       vm.$emit('add-to-cart', productId, quantity)
     }
