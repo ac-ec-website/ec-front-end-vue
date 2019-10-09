@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans+TC:300,400,700|Roboto+Slab:300,400,700&display=swap&subset=chinese-traditional');
+
+/*Sidebar*/
+* {
+  font-family: 'Roboto Slab', 'Noto Sans TC', sans-serif;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 140px;
+  padding: 60px 0 0;
+  z-index: 10;
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.1);
+}
