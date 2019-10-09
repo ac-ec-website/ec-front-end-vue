@@ -2,89 +2,89 @@
   <div class="row">
     <AdminNav class="sidebar col-md-2 d-none d-md-block bg-light" />
 
-    <div class="col-md-10 ml-sm-auto col-lg-10">
-      <div class="container">
-        <div class="row py-5 text-center">
-          <div class="col-lg-3 col-md-6">
-            <div class="card-body">
-              <h6>銷售商品總數</h6>
-              <h2>{{productCount}}</h2>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-6">
-            <div class="card-body">
-              <h6>銷售訂單總數</h6>
-              <h2>{{orderCount}}</h2>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-6">
-            <div class="card-body">
-              <h6>總營收</h6>
-              <h2>{{revenue | currency}}</h2>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-6">
-            <div class="card-body">
-              <h6>總淨利</h6>
-              <h2>{{netSales| currency}}</h2>
-            </div>
+    <div class="container col-md-10 ml-sm-auto col-lg-10">
+      <div class="row text-center">
+        <div class="col-lg-3 col-md-6">
+          <div class="card-body">
+            <h6>銷售商品總數</h6>
+            <h2>{{productCount}}</h2>
           </div>
         </div>
-        <div class="row revenue-chart">
-          <div class="col-12">
-            <highcharts :options="chartOptions" ref="highcharts"></highcharts>
+        <div class="col-lg-3 col-md-6">
+          <div class="card-body">
+            <h6>銷售訂單總數</h6>
+            <h2>{{orderCount}}</h2>
           </div>
         </div>
-        <div class="row">
-          <div class="col-lg-6">
-            <div class="card-body">
-              <h4 class="text-center">熱賣商品</h4>
-              <table class="table text-light">
-                <thead>
-                  <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Quantity</th>
-                    <th scope="col">Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="product in topSellingArray" :key="product.id">
-                    <th scope="row">{{product.name}}</th>
-                    <td>{{product.price}}</td>
-                    <td>{{product.quantity}}</td>
-                    <td>{{product.amount}}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+        <div class="col-lg-3 col-md-6">
+          <div class="card-body">
+            <h6>總營收</h6>
+            <h2>{{revenue | currency}}</h2>
           </div>
-          <div class="col-lg-6">
-            <div class="card-body">
-              <h4 class="text-center">優惠使用</h4>
-              <table class="table text-light">
-                <thead>
-                  <tr>
-                    <th scope="col">Category</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Type</th>
-                    <th scope="col">Quantity</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="offer in offerArray" :key="offer.id">
-                    <th scope="row">{{offer.category}}</th>
-                    <td>{{offer.name}}</td>
-                    <td>
-                      <span v-if="offer.type === 0">免運費</span>
-                      <span v-else-if="offer.type === 1">扣款</span>
-                      <span v-else-if="offer.type === 2">打折</span>
-                    </td>
-                    <td>{{offer.quantity}}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <div class="card-body">
+            <h6>總淨利</h6>
+            <h2>{{netSales | currency}}</h2>
+          </div>
+        </div>
+      </div>
+
+      <div class="row revenue-chart">
+        <div class="col-12">
+          <highcharts :options="chartOptions" ref="highcharts"></highcharts>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card-body">
+            <h4 class="text-center">熱賣商品</h4>
+            <table class="table text-light">
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="product in topSellingArray" :key="product.id">
+                  <th scope="row">{{product.name}}</th>
+                  <td>{{product.price}}</td>
+                  <td>{{product.quantity}}</td>
+                  <td>{{product.amount}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="card-body">
+            <h4 class="text-center">優惠使用</h4>
+            <table class="table text-light">
+              <thead>
+                <tr>
+                  <th scope="col">Category</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Type</th>
+                  <th scope="col">Quantity</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="offer in offerArray" :key="offer.id">
+                  <th scope="row">{{offer.category}}</th>
+                  <td>{{offer.name}}</td>
+                  <td>
+                    <span v-if="offer.type === 0">免運費</span>
+                    <span v-else-if="offer.type === 1">扣款</span>
+                    <span v-else-if="offer.type === 2">打折</span>
+                  </td>
+                  <td>{{offer.quantity}}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -325,6 +325,10 @@ export default {
 </script>
 
 <style scoped>
+.container {
+  margin: 50px;
+}
+
 .card-body {
   background-color: #343a40;
   color: #f8f9fa;

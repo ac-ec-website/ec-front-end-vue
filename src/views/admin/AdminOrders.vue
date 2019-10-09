@@ -2,7 +2,7 @@
   <div class="row">
     <AdminNav class="sidebar col-md-2 d-none d-md-block bg-light" />
 
-    <div class="container col-md-9 ml-sm-auto col-lg-10 px-4">
+    <div class="container col-md-9 ml-sm-auto col-lg-10">
       <table class="table mt-4">
         <thead>
           <tr>
