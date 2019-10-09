@@ -2,7 +2,7 @@
   <div class="row">
     <AdminNav class="sidebar col-md-2 d-none d-md-block bg-light" />
 
-    <div class="container col-md-9 ml-sm-auto col-lg-10 px-4">
+    <div class="container col-md-9 ml-sm-auto col-lg-10">
       <router-link to="/admin/discounts/new" class="btn btn-primary btn-block mb-4">
         New Discounts
         <i class="fas fa-plus-square"></i>
