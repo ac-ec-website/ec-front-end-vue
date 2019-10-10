@@ -2,11 +2,28 @@
   <img src="https://github.com/ac-ec-website/ec-front-end-vue/blob/master/src/assets/ec-front-end-vue-logo.png" alt="ec-front-end-vue-logo"/>
 </p>
 
+<p align="center">
+  <a href="https://standardjs.com/"><img src="https://img.shields.io/badge/code_style-standard-brightgreen.svg" alt="Standard - JavaScript Style Guide"></a>
+</p>
+
 # EC-Front-End-Vue
 
 EC-Front-End-Vue 是一個使用 Vue 建立的電子商務前端專案，平台使用者主要是下列兩種身份，分別為一般消費者（Visitor）、商家管理員（Admin），搭配 [EC-Back-End-Node](https://github.com/ac-ec-website/ec-back-end-node) 後端專案，打造一個全方位的電商網站。
 
 ![首頁截圖頁面]()
+
+## 目錄
+
+- [Demo](#Demo)
+- [Initial - 專案緣起](#Initial---專案緣起)
+- [Features - 專案功能](#Features---專案功能)
+- [使用哪些技術實作專案](#使用哪些技術實作專案)
+- [專案內容（先上架構，圖片＆文字整理中）](#專案內容（先上架構，圖片＆文字整理中）)
+- [內容 & 圖片來源](#內容--圖片來源)
+- [聲明](#聲明)
+- [Environment SetUp - 環境建置](#Environment-SetUp---環境建置)
+- [Installing - 專案安裝流程](#Installing---專案安裝流程)
+- [Contributor and Responsibility - 開發人員與職責分工](#Contributor-and-Responsibility---開發人員與職責分工)
 
 ## Demo
 
@@ -24,7 +41,7 @@ EC-Front-End-Vue 是一個使用 Vue 建立的電子商務前端專案，平台�
 
 PS:請不要隨意刪除資料呦，避免影響他人的使用體驗 3Q :D
 
-## 專案緣起
+## Initial - 專案緣起
 
 專案緣起於 Alpha Camp 畢業專題發想，由團隊共同決議要選擇「電商平台」為主題，打造一個前後端分離的作品，期望透過技術解決傳統店家要拓展線上通路進入門檻過高的問題，包含網站開發、金流串接...等等。
 
@@ -36,7 +53,7 @@ PS:請不要隨意刪除資料呦，避免影響他人的使用體驗 3Q :D
 
 2. 對店家的價值：大幅減低網路開店的成本，輕鬆轉型電商，省去自行開發、另找金流物流服務、行銷等事情，讓商家專注在本業商品的研發與生產。
 
-## 專案功能
+## Features - 專案功能
 
 - 前台:
 
@@ -70,6 +87,7 @@ PS:請不要隨意刪除資料呦，避免影響他人的使用體驗 3Q :D
 - Vue-Axios - 對接伺服器 API 操作資料
 - Sweetalert2 - 優化前端使用者體驗
 - Moment - 資料時間格式轉換
+- Curler - 實踐網站自動化警示提醒，提升團隊回應速度
 
 ## 專案內容（先上架構，圖片＆文字整理中）
 
