@@ -111,14 +111,21 @@ export default {
 }
 
 .badge {
-  display: none;
+  font-size: 110%;
   margin-right: 10px;
+  display: inline-block;
+  display: none;
 }
 
 .cart-text {
-  font-size: 1.2em;
   cursor: pointer;
 }
+
+.fa-shopping-cart {
+  font-size: 25px;
+  display: inline-block;
+}
+
 .navbar-collapse {
   flex-grow: 0;
 }

@@ -13,6 +13,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 import Navbar from '@/components/Navbar'
 const device = mobileAndTabletCheck() ? 'mobile' : 'desktop'
 let userPageView = parseInt(sessionStorage.getItem('userPageView'))
