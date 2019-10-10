@@ -1,4 +1,13 @@
 import moment from 'moment'
+import numeral from 'numeral'
+
+export const percentage = {
+  filters: {
+    percentage (num) {
+      return num ? numeral(num).format('0%') : '-'
+    }
+  }
+}
 
 export const fromNowFilter = {
   filters: {
