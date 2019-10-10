@@ -6,14 +6,8 @@
       <div class="row text-center">
         <div class="col-lg-3 col-md-6">
           <div class="card-body">
-            <h6>銷售商品總數</h6>
-            <h2>{{productCount}}</h2>
-          </div>
-        </div>
-        <div class="col-lg-3 col-md-6">
-          <div class="card-body">
-            <h6>銷售訂單總數</h6>
-            <h2>{{orderCount}}</h2>
+            <h6>毛利率</h6>
+            <h2>{{profit | percentage}}</h2>
           </div>
         </div>
         <div class="col-lg-3 col-md-6">
@@ -28,6 +22,12 @@
             <h2>{{netSales | currency}}</h2>
           </div>
         </div>
+        <div class="col-lg-3 col-md-6">
+          <div class="card-body">
+            <h6>銷售訂單總數</h6>
+            <h2>{{orderCount}}</h2>
+          </div>
+        </div>
       </div>
 
       <div class="row revenue-chart">
@@ -37,7 +37,7 @@
       </div>
 
       <div class="row">
-        <div class="col-lg-6">
+        <div class="col-12">
           <div class="card-body">
             <h4 class="text-center">熱賣商品</h4>
             <table class="table text-light">
@@ -46,21 +46,23 @@
                   <th scope="col">Name</th>
                   <th scope="col">Price</th>
                   <th scope="col">Quantity</th>
+                  <th scope="col">Stock</th>
                   <th scope="col">Amount</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="product in topSellingArray" :key="product.id">
                   <th scope="row">{{product.name}}</th>
-                  <td>{{product.price}}</td>
+                  <td>{{product.price | currency}}</td>
                   <td>{{product.quantity}}</td>
-                  <td>{{product.amount}}</td>
+                  <td>{{product.stock}}</td>
+                  <td>{{product.amount | currency}}</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
-        <div class="col-lg-6">
+        <div class="col-12">
           <div class="card-body">
             <h4 class="text-center">優惠使用</h4>
             <table class="table text-light">
@@ -94,7 +96,7 @@
 
 <script>
 import AdminNav from '@/components/admin/AdminNav'
-import { currencyFilter } from '@/utils/mixins'
+import { currencyFilter, percentage } from '@/utils/mixins'
 import adminOrderAPI from '@/apis/admin/adminOrder'
 import adminCouponAPI from '@/apis/admin/adminCoupon'
 import adminDiscountAPI from '@/apis/admin/adminDiscount'
@@ -107,13 +109,13 @@ export default {
     AdminNav,
     highcharts: Chart
   },
-  mixins: [currencyFilter],
+  mixins: [currencyFilter, percentage],
   data () {
     return {
-      productCount: 0,
-      orderCount: 0,
+      profit: 0,
       revenue: 0,
       netSales: 0,
+      orderCount: 0,
       topSelling: {},
       topSellingArray: [],
       offer: {
@@ -191,18 +193,16 @@ export default {
 
         orders.map(order => {
           if (order.payment_status === '0') return
-
           vm.orderCount++
-          vm.productCount += order.items.reduce((acc, cur) => {
-            return cur.OrderItem.quantity + acc
-          }, 0)
+
           vm.revenue += order.checkoutPrice
           vm.netSales +=
-            order.checkoutPrice -
+            order.total_amount -
             order.items.reduce((acc, cur) => {
               return cur.cost_price * cur.OrderItem.quantity + acc
             }, 0)
         })
+        vm.profit = vm.netSales / vm.revenue
       } catch (error) {
         Toast.fire({
           type: 'error',
@@ -219,7 +219,7 @@ export default {
           const orderMonth = parseInt(order.createdAt.slice(5, 7))
           monthlyRevenue[orderMonth - 1] += order.checkoutPrice
           monthlyNetSales[orderMonth - 1] +=
-            order.checkoutPrice -
+            order.total_amount -
             order.items.reduce((acc, cur) => {
               return cur.cost_price * cur.OrderItem.quantity + acc
             }, 0)
@@ -253,12 +253,14 @@ export default {
                 name: item.name,
                 price: item.sell_price,
                 quantity: item.OrderItem.quantity,
+                stock: item.stock_quantity - item.OrderItem.quantity,
                 amount: item.sell_price * item.OrderItem.quantity
               }
               return
             }
 
             vm.topSelling[item.id].quantity += item.OrderItem.quantity
+            vm.topSelling[item.id].stock -= item.OrderItem.quantity
             vm.topSelling[item.id].amount += item.sell_price * item.OrderItem.quantity
           })
         })
