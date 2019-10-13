@@ -91,7 +91,7 @@ PS:請不要隨意刪除資料呦，避免影響他人的使用體驗 3Q :D
 
 ## Content - 專案內容
 
-#前台
+# 前台
 
 ![所有商品頁面](https://github.com/ac-ec-website/ec-front-end-vue/blob/master/src/assets/homePage.png)
 
@@ -105,7 +105,7 @@ PS:請不要隨意刪除資料呦，避免影響他人的使用體驗 3Q :D
 
 ![訂單確認頁面-付款後](https://github.com/ac-ec-website/ec-front-end-vue/blob/master/src/assets/orderPagePaid.png)
 
-#後台
+# 後台
 
 ![管理員-業績面板頁面](https://github.com/ac-ec-website/ec-front-end-vue/blob/master/src/assets/adminDashboardPage.png)
 
