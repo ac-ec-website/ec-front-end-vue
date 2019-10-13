@@ -10,22 +10,22 @@
 
 EC-Front-End-Vue 是一個使用 Vue 建立的電子商務前端專案，平台使用者主要是下列兩種身份，分別為一般消費者（Visitor）、商家管理員（Admin），搭配 [EC-Back-End-Node](https://github.com/ac-ec-website/ec-back-end-node) 後端專案，打造一個全方位的電商網站。
 
-![首頁截圖頁面]()
+![首頁截圖頁面](https://github.com/ac-ec-website/ec-front-end-vue/blob/master/src/assets/homePage.png)
 
-## 目錄
+## Menu - 目錄
 
-- [Demo](#Demo)
+- [Demo - 專案展示](#Demo---專案展示)
 - [Initial - 專案緣起](#Initial---專案緣起)
 - [Features - 專案功能](#Features---專案功能)
-- [使用哪些技術實作專案](#使用哪些技術實作專案)
-- [專案內容（先上架構，圖片＆文字整理中）](#專案內容先上架構圖片文字整理中)
-- [內容 & 圖片來源](#內容--圖片來源)
-- [聲明](#聲明)
+- [Technical Skills - 使用哪些技術實作專案](#Technical-Skills---使用哪些技術實作專案)
+- [Content - 專案內容](#Content---專案內容)
+- [Resource - 資料引用來源](#Resource---資料引用來源)
+- [Declaration - 聲明](#Declaration---聲明)
 - [Environment SetUp - 環境建置](#Environment-SetUp---環境建置)
 - [Installing - 專案安裝流程](#Installing---專案安裝流程)
 - [Contributor and Responsibility - 開發人員與職責分工](#Contributor-and-Responsibility---開發人員與職責分工)
 
-## Demo
+## Demo - 專案展示
 
 [Demo Website - 前台消費者（無須登入）](https://ac-ec-website.github.io/ec-front-end-vue/dist/#/products)
 
@@ -74,7 +74,7 @@ PS:請不要隨意刪除資料呦，避免影響他人的使用體驗 3Q :D
 
 - 延伸閱讀：[專案使用者故事](https://docs.google.com/spreadsheets/d/1nHfa21Cn-y_5VNikL2dbra9c-sItiD9ej7YfaObTWOU/edit#gid=987765644)
 
-## 使用哪些技術實作專案
+## Technical Skills - 使用哪些技術實作專案
 
 - Vue CLI 3 - 快速建立專案項目環境
 - Vue Components - 使用 props / emit 實踐組件間資料傳遞
@@ -89,45 +89,47 @@ PS:請不要隨意刪除資料呦，避免影響他人的使用體驗 3Q :D
 - Moment - 資料時間格式轉換
 - Curler - 實踐網站自動化警示提醒，提升團隊回應速度
 
-## 專案內容（先上架構，圖片＆文字整理中）
+## Content - 專案內容
 
-#前台
+# 前台
 
-![所有商品頁面]()
+![所有商品頁面](https://github.com/ac-ec-website/ec-front-end-vue/blob/master/src/assets/homePage.png)
 
-![個別商品頁面]()
+![個別商品頁面](https://github.com/ac-ec-website/ec-front-end-vue/blob/master/src/assets/singleProduct.png)
 
-![購物車頁面]()
+![購物車頁面](https://github.com/ac-ec-website/ec-front-end-vue/blob/master/src/assets/cartPage.png)
 
-![訂單創建頁面]()
+![訂單創建頁面](https://github.com/ac-ec-website/ec-front-end-vue/blob/master/src/assets/orderCreatePage.png)
 
-![訂單確認頁面-付款前]()
+![訂單確認頁面-付款前](https://github.com/ac-ec-website/ec-front-end-vue/blob/master/src/assets/orderPageUnPaid.png)
 
-![訂單確認頁面-付款後]()
+![訂單確認頁面-付款後](https://github.com/ac-ec-website/ec-front-end-vue/blob/master/src/assets/orderPagePaid.png)
 
-#後台
+# 後台
 
-![管理員註冊頁面]()
+![管理員-業績面板頁面](https://github.com/ac-ec-website/ec-front-end-vue/blob/master/src/assets/adminDashboardPage.png)
 
-![管理員登入頁面]()
+![管理員-訂單管理頁面](https://github.com/ac-ec-website/ec-front-end-vue/blob/master/src/assets/adminOrdersPage.png)
 
-![管理員商品列表頁面]()
+![管理員-商品管理頁面](https://github.com/ac-ec-website/ec-front-end-vue/blob/master/src/assets/adminProductsPage.png)
 
-![管理員商品分類頁面]()
+![管理員-商品分類管理頁面](https://github.com/ac-ec-website/ec-front-end-vue/blob/master/src/assets/adminCategoriesPage.png)
 
-![管理員優惠券頁面]()
+![管理員-優惠券管理頁面](https://github.com/ac-ec-website/ec-front-end-vue/blob/master/src/assets/adminCouponsPage.png)
 
-![管理員特價活動頁面]()
+![管理員-特價活動管理頁面](https://github.com/ac-ec-website/ec-front-end-vue/blob/master/src/assets/adminDiscountsPage.png)
 
-![管理員訂單頁面]()
+![管理員-帳號權限管理頁面](https://github.com/ac-ec-website/ec-front-end-vue/blob/master/src/assets/adminUersPage.png)
 
-![管理員權限設定頁面]()
+![管理員-帳號註冊頁面](https://github.com/ac-ec-website/ec-front-end-vue/blob/master/src/assets/adminSignUpPage.png)
 
-## 內容 & 圖片來源
+![管理員-帳號登入頁面](https://github.com/ac-ec-website/ec-front-end-vue/blob/master/src/assets/adminSignInPage.png)
+
+## Resource - 資料引用來源
 
 - [毛起來](https://shop.maoup.com.tw)
 
-## 聲明
+## Declaration - 聲明
 
 - 本作品內圖片、內容等，純粹為個人練習前端使用，不做任何商業用途。
 
