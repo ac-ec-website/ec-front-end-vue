@@ -444,7 +444,7 @@ export default {
 
         vm.cartItems.map(d => d.id * d.id).reduce((a, b) => a + b)
         // 購物車總價
-        vm.total_amount = data.total_amount
+        vm.total_amount = data.totalAmount
 
         // 運送方式
         vm.shipping_method = data.cart.shipping_method
