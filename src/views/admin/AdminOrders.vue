@@ -95,8 +95,8 @@
                 class="btn btn-link"
                 @click.stop.prevent="updateOrder({
                 orderId: order.id,
-                payment_status: order.payment_status,
-                shipping_status: order.shipping_status })"
+                paymentStatus: order.payment_status,
+                shippingStatus: order.shipping_status })"
               >
                 Check
                 <i class="fas fa-check"></i>
@@ -141,7 +141,8 @@ export default {
   },
   computed: {
     sortedOrders () {
-      return this.orders.sort((a, b) => (b.createdAt > a.createdAt ? 1 : -1))
+      const vm = this
+      return vm.orders.sort((a, b) => (b.createdAt > a.createdAt ? 1 : -1))
     }
   },
   methods: {
@@ -164,10 +165,10 @@ export default {
         })
       }
     },
-    async updateOrder ({ orderId, payment_status, shipping_status }) {
+    async updateOrder ({ orderId, paymentStatus, shippingStatus }) {
       const vm = this
       try {
-        const value = { payment_status, shipping_status }
+        const value = { paymentStatus, shippingStatus }
         const { data, statusText } = await adminOrderAPI.putOrder(orderId, value)
 
         if (statusText !== 'OK' || data.status !== 'success') {
