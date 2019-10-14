@@ -19,7 +19,7 @@
         <Spinner v-if="isLoading" />
 
         <tbody v-else>
-          <tr v-for="order in orders" :key="order.id">
+          <tr v-for="order in sortedOrders" :key="order.id">
             <th scope="row">{{ order.createdAt | dateTime }}</th>
             <td>{{ order.name }}</td>
 
@@ -28,7 +28,7 @@
                 <li
                   v-for="product in order.items"
                   :key="product.id"
-                >{{ product.name }} QT：{{ product.OrderItem.quantity }}</li>
+                >{{ product.name }}【數量：{{ product.OrderItem.quantity }}】</li>
               </ul>
             </td>
 
@@ -138,6 +138,11 @@ export default {
   },
   created () {
     this.fetchOrders()
+  },
+  computed: {
+    sortedOrders () {
+      return this.orders.sort((a, b) => (b.createdAt > a.createdAt ? 1 : -1))
+    }
   },
   methods: {
     async fetchOrders () {

@@ -48,7 +48,7 @@
       <div class>
         <router-link class="btn btn-link" to="/admin/users">
           <i class="fas fa-users-cog"></i>
-          會員管理
+          權限管理
         </router-link>
       </div>
     </div>
