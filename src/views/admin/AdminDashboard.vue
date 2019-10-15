@@ -57,7 +57,7 @@
                     <th scope="row">{{product.name}}</th>
                     <td>{{product.price | currency}}</td>
                     <td>{{product.quantity}}</td>
-                    <td>{{product.stock}}</td>
+                    <td class="stock">{{product.stock}}</td>
                     <td>{{product.profit | percentage}}</td>
                     <td>{{product.amount | currency}}</td>
                   </tr>
@@ -269,10 +269,12 @@ export default {
             vm.topSelling[item.id].amount += item.sell_price * item.OrderItem.quantity
           })
         })
-        Object.keys(vm.topSelling).forEach(function (key) {
+        await Object.keys(vm.topSelling).forEach(function (key) {
           vm.topSellingArray.push(vm.topSelling[key])
         })
-        vm.topSellingArray = vm.topSellingArray.sort((a, b) => b.amount - a.amount)
+        vm.topSellingArray = await vm.topSellingArray.sort((a, b) => b.amount - a.amount)
+
+        vm.checkStock()
       } catch (error) {
         Toast.fire({
           type: 'error',
@@ -326,6 +328,14 @@ export default {
           title: '無法取得 Coupon 資料，請稍後再試'
         })
       }
+    },
+    checkStock () {
+      const stockColumn = document.querySelectorAll('.stock')
+      stockColumn.forEach(element => {
+        if (parseInt(element.innerHTML) < 10) {
+          element.classList.add('text-danger')
+        }
+      })
     }
   }
 }
