@@ -40,26 +40,30 @@
         <div class="col-12">
           <div class="card-body">
             <h4 class="text-center">熱賣商品</h4>
-            <table class="table text-light">
-              <thead>
-                <tr>
-                  <th scope="col">Name</th>
-                  <th scope="col">Price</th>
-                  <th scope="col">Quantity</th>
-                  <th scope="col">Stock</th>
-                  <th scope="col">Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="product in topSellingArray" :key="product.id">
-                  <th scope="row">{{product.name}}</th>
-                  <td>{{product.price | currency}}</td>
-                  <td>{{product.quantity}}</td>
-                  <td>{{product.stock}}</td>
-                  <td>{{product.amount | currency}}</td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="table-responsive">
+              <table class="table text-light">
+                <thead>
+                  <tr>
+                    <th scope="col" style="min-width: 400px">Name</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Stock</th>
+                    <th scope="col">Profit</th>
+                    <th scope="col">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="product in topSellingArray" :key="product.id">
+                    <th scope="row">{{product.name}}</th>
+                    <td>{{product.price | currency}}</td>
+                    <td>{{product.quantity}}</td>
+                    <td class="stock">{{product.stock}}</td>
+                    <td>{{product.profit | percentage}}</td>
+                    <td>{{product.amount | currency}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
         <div class="col-12">
@@ -254,6 +258,7 @@ export default {
                 price: item.sell_price,
                 quantity: item.OrderItem.quantity,
                 stock: item.stock_quantity - item.OrderItem.quantity,
+                profit: (item.sell_price - item.cost_price) / item.sell_price,
                 amount: item.sell_price * item.OrderItem.quantity
               }
               return
@@ -264,10 +269,12 @@ export default {
             vm.topSelling[item.id].amount += item.sell_price * item.OrderItem.quantity
           })
         })
-        Object.keys(vm.topSelling).forEach(function (key) {
+        await Object.keys(vm.topSelling).forEach(function (key) {
           vm.topSellingArray.push(vm.topSelling[key])
         })
-        vm.topSellingArray.sort((a, b) => b.amount - a.amount)
+        vm.topSellingArray = await vm.topSellingArray.sort((a, b) => b.amount - a.amount)
+
+        vm.checkStock()
       } catch (error) {
         Toast.fire({
           type: 'error',
@@ -314,13 +321,21 @@ export default {
           })
         })
 
-        vm.offerArray.sort((a, b) => b.quantity - a.quantity)
+        vm.offerArray = vm.offerArray.sort((a, b) => b.quantity - a.quantity)
       } catch (error) {
         Toast.fire({
           type: 'error',
           title: '無法取得 Coupon 資料，請稍後再試'
         })
       }
+    },
+    checkStock () {
+      const stockColumn = document.querySelectorAll('.stock')
+      stockColumn.forEach(element => {
+        if (parseInt(element.innerHTML) < 10) {
+          element.classList.add('text-danger')
+        }
+      })
     }
   }
 }
