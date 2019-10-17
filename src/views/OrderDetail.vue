@@ -107,10 +107,32 @@
                 </div>
               </div>
 
-              <div v-if="showCoupon" class="card-body cart-promotions pt-0">
+              <div v-if="showCoupon || showDiscount" class="card-body cart-promotions pt-0">
                 <div class="row mt-3">
                   <b class="col-12">已享用之優惠</b>
-                  <div class="col-12 promotion-coupon">
+                  <!-- 特價活動 -->
+                  <div v-if="discountData.id" class="col-12 promotion-discount">
+                    <div class="row text-center p-3">
+                      <span
+                        class="col-7 col-md-4 discount-name bg-warning my-auto py-2"
+                      >特價活動 - {{discountData.name}}</span>
+                      <span
+                        class="col-5 col-md-3 my-auto py-2 bg-light discount-description"
+                      >{{discountData.description}}</span>
+                      <span
+                        class="col-12 col-md-5 my-auto py-2 text-right discount bg-light font-weight-bold"
+                      >
+                        <div class="row">
+                          <span class="col-12">- NT {{coupon_discount_fee | currency}}</span>
+                        </div>
+                      </span>
+                    </div>
+                  </div>
+                  <!-- 優惠券 -->
+                  <div
+                    v-if="!discountData.id && couponData.length !== null"
+                    class="col-12 promotion-coupon"
+                  >
                     <div class="row text-center p-3">
                       <span
                         class="col-4 col-md-2 coupon-name bg-success text-light my-auto py-2"
@@ -174,11 +196,15 @@
                 </div>
 
                 <div class="col-9 col-md-7 text-left pl-3">
-                  <h5 v-if="payment_status === '0' || payment_status === '2' ">謝謝您！您的訂單已經成立！</h5>
-                  <h5 v-else-if="payment_status === '1' ">謝謝您！您的訂單完成付款囉！</h5>
-                  <span>訂單號碼 {{orderId}}</span>
-                  <p>訂單確認電郵已經發送到您的電子郵箱</p>
-                  <h5>{{order.email}}</h5>
+                  <h5
+                    v-if="payment_status === '0' || payment_status === '2' "
+                    class="text-primary"
+                  >訂單成立 Email 已寄出給您 :D</h5>
+                  <h5 v-else-if="payment_status === '1' " class="text-danger">訂單成功付款 Email 已寄出給您 :D</h5>
+                  <h6
+                    v-if="payment_status === '0' || payment_status === '2' "
+                  >您的訂單編號為 {{orderId}}，請確認下方資訊！</h6>
+                  <h6 v-else-if="payment_status === '1' ">您的訂單編號為 {{orderId}}，請確認下方資訊！</h6>
                 </div>
               </div>
             </div>
@@ -309,6 +335,7 @@
 <script>
 import orderAPI from '@/apis/order'
 import couponAPI from '@/apis/coupons'
+import discountAPI from '@/apis/discounts'
 import Spinner from '@/components/Spinner'
 import { detailedTimeFilter, currencyFilter, emptyImageFilter } from '@/utils/mixins'
 import { Toast } from '@/utils/helpers'
@@ -336,12 +363,13 @@ export default {
       isProcessing: false,
       couponData: {},
       isLoading: false,
-      showCoupon: false
+      showCoupon: false,
+      discountData: {},
+      showDiscount: false
     }
   },
   created () {
     this.fetchOrder()
-    this.fetchCoupon()
   },
   methods: {
     async fetchOrder () {
@@ -368,7 +396,7 @@ export default {
         vm.checkoutPrice = data.order.checkoutPrice
         // 運費金額
         vm.shipping_fee = data.order.shipping_fee
-        // // 折扣金額
+        // 折扣金額
         vm.coupon_discount_fee = data.order.discount_fee
         // 結帳金額
         vm.total_amount = data.order.total_amount
@@ -380,6 +408,13 @@ export default {
 
         // 運送資訊
         vm.shipping = data.shipping
+
+        // 取出特價活動或優惠券資訊
+        if (data.order.DiscountId) {
+          vm.fetchDiscount()
+        } else {
+          vm.fetchCoupon()
+        }
 
         vm.$store.commit('setNavbarCartItemNumber', 0)
         vm.isLoading = false
@@ -418,6 +453,39 @@ export default {
         vm.isLoading = false
       } catch (error) {
         vm.showCoupon = false
+        vm.isLoading = false
+        Toast.fire({
+          type: 'error',
+          title: '無法取得優惠券資料，請稍後再試'
+        })
+      }
+    },
+    async fetchDiscount () {
+      const vm = this
+      try {
+        vm.isLoading = true
+        vm.showCoupon = false
+
+        const { data, statusText } = await discountAPI.getDiscount()
+
+        // 若為 error 代表目前尚無 discount 資訊，終止執行
+        if (data.status === 'error') {
+          vm.showDiscount = false
+          return
+        }
+
+        if (statusText !== 'OK') {
+          vm.showDiscount = false
+          throw new Error(statusText)
+        }
+
+        // 優惠券資訊
+        vm.discountData = data.discountData
+
+        vm.showDiscount = true
+        vm.isLoading = false
+      } catch (error) {
+        vm.showDiscount = false
         vm.isLoading = false
         Toast.fire({
           type: 'error',
