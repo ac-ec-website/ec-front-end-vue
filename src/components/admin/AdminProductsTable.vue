@@ -111,6 +111,6 @@ export default {
 
 <style scoped>
 .btn-link {
-  color: rgba(13, 170, 243, 0.815);
+  color: rgba(12, 61, 167, 0.815);
 }
 </style>

@@ -162,8 +162,8 @@ export default {
         type: '',
         description: '',
         target_price: 0,
-        percent: -1,
-        product_reduce: -1,
+        percent: 0,
+        product_reduce: 0,
         shipping_free: 0,
         start_date: '',
         end_date: ''
@@ -189,15 +189,17 @@ export default {
     handleChange (e) {
       const value = e.target.value
       if (value === '0') {
-        this.discount.percent = -1
-        this.discount.product_reduce = -1
+        this.discount.percent = 0
+        this.discount.product_reduce = 0
       }
+
       if (value === '1') {
-        this.discount.percent = -1
+        this.discount.percent = 0
         this.discount.shipping_free = 0
       }
+
       if (value === '2') {
-        this.discount.product_reduce = -1
+        this.discount.product_reduce = 0
         this.discount.shipping_free = 0
       }
     },

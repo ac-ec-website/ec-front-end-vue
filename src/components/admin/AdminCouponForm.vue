@@ -162,8 +162,8 @@ export default {
         type: '',
         coupon_code: '',
         description: '',
-        percent: -1,
-        product_reduce: -1,
+        percent: 0,
+        product_reduce: 0,
         limited_num: 0,
         shipping_free: 0,
         end_date: ''
@@ -189,17 +189,17 @@ export default {
     handleChange (e) {
       const value = e.target.value
       if (value === '0') {
-        this.coupon.percent = -1
-        this.coupon.product_reduce = -1
+        this.coupon.percent = 0
+        this.coupon.product_reduce = 0
       }
 
       if (value === '1') {
-        this.coupon.percent = -1
+        this.coupon.percent = 0
         this.coupon.shipping_free = 0
       }
 
       if (value === '2') {
-        this.coupon.product_reduce = -1
+        this.coupon.product_reduce = 0
         this.coupon.shipping_free = 0
       }
     },
