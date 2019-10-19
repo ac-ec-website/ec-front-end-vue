@@ -131,19 +131,41 @@
             </div>
           </div>
 
-          <div v-if="showCoupon" class="card-body cart-promotions pt-0">
+          <div v-if="showCoupon || showDiscount" class="card-body cart-promotions pt-0">
             <hr />
             <div class="row">
               <b class="col-12">已享用之優惠</b>
-              <div class="col-12 promotion-coupon">
+              <!-- 特價活動 -->
+              <div v-if="discountData.id" class="col-12 promotion-discount">
                 <div class="row text-center p-3">
                   <span
-                    class="col-4 col-md-2 coupon-name bg-success text-light my-auto py-2"
-                  >{{couponData.name}}</span>
+                    class="col-7 col-md-4 discount-name bg-warning my-auto py-2"
+                  >特價活動 - {{discountData.name}}</span>
                   <span
-                    class="col-4 col-md-3 my-auto py-2 coupon-description"
+                    class="col-5 col-md-3 my-auto py-2 bg-light discount-description"
+                  >{{discountData.description}}</span>
+                  <span
+                    class="col-12 col-md-5 my-auto py-2 text-right discount bg-light font-weight-bold"
+                  >
+                    <div class="row">
+                      <span class="col-12">- NT {{coupon_discount_fee | currency}}</span>
+                    </div>
+                  </span>
+                </div>
+              </div>
+              <!-- 優惠券 -->
+              <div
+                v-if="!discountData.id && couponData.length !== null"
+                class="col-12 promotion-coupon"
+              >
+                <div class="row text-center p-3">
+                  <span
+                    class="col-7 col-md-4 coupon-name bg-success text-light my-auto py-2"
+                  >優惠券 - {{couponData.name}}</span>
+                  <span
+                    class="col-5 col-md-3 my-auto py-2 coupon-description bg-light"
                   >{{couponData.description}}</span>
-                  <span class="col-4 col-md-7 my-auto py-2 text-right discount">
+                  <span class="col-12 col-md-5 my-auto py-2 text-right discount">
                     <div class="row">
                       <span class="col-12">- NT {{coupon_discount_fee | currency}}</span>
                       <a
@@ -228,7 +250,13 @@
                       <label for="couponCode">促銷代碼</label>
                       <div>
                         <div class="input-group">
+                          <button
+                            v-if="discountData.id"
+                            class="btn btn-primary"
+                            :disabled="isBlocking"
+                          >訂單已套用特價活動優惠</button>
                           <input
+                            v-if="!discountData.id && couponData.length !== null"
                             type="text"
                             v-model="couponCode"
                             id="couponCode"
@@ -238,6 +266,7 @@
                           />
                           <div class="input-group-append">
                             <button
+                              v-if="!discountData.id && couponData.length !== null"
                               class="btn btn-primary"
                               :disabled="isBlocking"
                               @click.stop.prevent="postCoupon"
@@ -297,7 +326,9 @@ export default {
       couponData: {},
       couponCode: '',
       coupon_discount_fee: 0,
-      isBlocking: false
+      isBlocking: false,
+      discountData: {},
+      showDiscount: false
     }
   },
   created () {
@@ -332,7 +363,17 @@ export default {
         vm.cartItems.map(d => d.id * d.id).reduce((a, b) => a + b)
         // 購物車總價
         vm.total_amount = data.totalAmount
-        this.fetchCoupon()
+
+        if (data.discountData.id) {
+          // 特價活動資訊
+          vm.discountData = data.discountData
+          vm.showDiscount = true
+          vm.activatedDiscount()
+        } else {
+          vm.disActivatedDiscount()
+          // 取得優惠券資訊
+          vm.fetchCoupon()
+        }
       } catch (error) {
         Toast.fire({
           type: 'error',
@@ -350,6 +391,7 @@ export default {
       if (vm.shipping_method === '其他') {
         vm.shipping_fee = 100
       }
+      this.fetchCart()
     },
     async addItemToCart (cartId, cartItemId) {
       try {
@@ -459,8 +501,6 @@ export default {
 
         const { data, statusText } = await couponAPI.postCoupon(couponCode)
 
-        console.log('優惠券 data', data)
-
         if (data.status === 'error-notFound') {
           Toast.fire({
             type: 'warning',
@@ -486,20 +526,17 @@ export default {
         // 運費相關
         if (couponData.type === 0 && couponData.shipping_free === 1) {
           vm.coupon_discount_fee = vm.shipping_fee
-          console.log('運費', vm.coupon_discount_fee)
         }
 
         // 折價相關
         if (couponData.type === 1 && couponData.product_reduce !== null) {
           vm.coupon_discount_fee = couponData.product_reduce
-          console.log('折價', vm.coupon_discount_fee)
         }
 
         // 打折相關
         if (couponData.type === 2 && couponData.percent !== null) {
           const discount = 1 - couponData.percent / 100
           vm.coupon_discount_fee = Math.round(vm.total_amount * discount)
-          console.log('打折', vm.coupon_discount_fee)
         }
 
         vm.couponData = couponData
@@ -588,10 +625,10 @@ export default {
           console.log('打折', vm.coupon_discount_fee)
         }
 
-        Toast.fire({
-          type: 'success',
-          title: '取得優惠券資訊，請確認'
-        })
+        // Toast.fire({
+        //   type: 'success',
+        //   title: '取得優惠券資訊，請確認'
+        // })
 
         vm.isCounponActivated = true
         vm.couponCode = data.couponData.coupon_code
@@ -604,6 +641,38 @@ export default {
           title: '無法取得優惠券資料，請稍後再試'
         })
       }
+    },
+    activatedDiscount () {
+      const vm = this
+      vm.coupon_discount_fee = 0
+
+      // 運費相關
+      if (vm.discountData.type === 0 && vm.discountData.shipping_free === 1) {
+        vm.coupon_discount_fee = vm.shipping_fee
+      }
+
+      // 折價相關
+      if (vm.discountData.type === 1 && vm.discountData.product_reduce !== null) {
+        vm.coupon_discount_fee = vm.discountData.product_reduce
+      }
+
+      // 打折相關
+      if (vm.discountData.type === 2 && vm.discountData.percent !== null) {
+        const discount = 1 - vm.discountData.percent / 100
+        vm.coupon_discount_fee = Math.round(vm.total_amount * discount)
+      }
+
+      vm.isCounponActivated = true
+      vm.showCoupon = false
+      vm.isBlocking = true
+    },
+    disActivatedDiscount () {
+      const vm = this
+      vm.isBlocking = false
+      // 清空特價活動資訊
+      vm.showDiscount = false
+      vm.discountData = {}
+      vm.coupon_discount_fee = 0
     }
   }
 }
