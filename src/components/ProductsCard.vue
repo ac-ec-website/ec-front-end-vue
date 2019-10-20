@@ -37,6 +37,13 @@
           </div>
           <div class="col">
             <button
+              v-if="product.stock_quantity === 0"
+              type="button"
+              class="btn btn-secondary btn-block"
+              disabled
+            >商品已無庫存</button>
+            <button
+              v-else
               type="button"
               class="btn btn-danger btn-block"
               @click.stop.prevent="handleAddToCart(product.id,1)"

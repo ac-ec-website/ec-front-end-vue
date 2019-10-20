@@ -101,6 +101,7 @@
                   <div class="form-control text-center">{{product.CartItem.quantity}}</div>
                   <div class="input-group-append">
                     <button
+                      :disabled="!productSQIsEnough"
                       type="button"
                       class="btn btn-secondary btn-quantity-increase"
                       @click.stop.prevent="addItemToCart(cartId,product.CartItem.id)"
@@ -328,7 +329,8 @@ export default {
       coupon_discount_fee: 0,
       isBlocking: false,
       discountData: {},
-      showDiscount: false
+      showDiscount: false,
+      productSQIsEnough: true
     }
   },
   created () {
@@ -397,7 +399,15 @@ export default {
       try {
         const vm = this
 
-        const { statusText } = await cartAPI.addItemToCart(cartId, cartItemId)
+        const { data, statusText } = await cartAPI.addItemToCart(cartId, cartItemId)
+
+        if (data.product === undefined) {
+          vm.productSQIsEnough = false
+          Toast.fire({
+            type: 'warning',
+            title: '商品已無額外庫存囉！'
+          })
+        }
 
         if (statusText !== 'OK') {
           throw new Error(statusText)
@@ -416,6 +426,8 @@ export default {
         const vm = this
 
         const { data, statusText } = await cartAPI.subItemFromCart(cartId, cartItemId)
+
+        vm.productSQIsEnough = true
 
         // 若是使用者讓商品數量歸 0，則呼叫刪除功能
         if (data.cartItem[0].quantity === 0) {
