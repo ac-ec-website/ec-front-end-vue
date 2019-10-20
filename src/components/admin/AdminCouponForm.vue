@@ -9,7 +9,6 @@
         class="form-control"
         name="name"
         placeholder="Enter name"
-        required
       />
     </div>
 
@@ -96,7 +95,8 @@
       />
     </div>
 
-    <div v-show="coupon.type === 0" class="form-group">
+    <!-- 進行隱藏 -->
+    <div v-show="coupon.type === 'hide'" class="form-group">
       <div class="form-check form-check-inline">
         <input
           class="form-check-input"
@@ -189,6 +189,7 @@ export default {
     handleChange (e) {
       const value = e.target.value
       if (value === '0') {
+        this.coupon.shipping_free = 1
         this.coupon.percent = 0
         this.coupon.product_reduce = 0
       }
@@ -207,13 +208,39 @@ export default {
       if (!this.coupon.name) {
         Toast.fire({
           type: 'warning',
-          title: '請填寫 coupon 名稱'
+          title: '請填寫優惠券名稱'
         })
         return
-      } else if (!this.coupon.coupon_code) {
+      }
+
+      if (!this.coupon.coupon_code) {
         Toast.fire({
           type: 'warning',
           title: '請填寫優惠碼'
+        })
+        return
+      }
+
+      if (this.coupon.limited_num < 0) {
+        Toast.fire({
+          type: 'warning',
+          title: '請填寫大於 0 的數量'
+        })
+        return
+      }
+
+      if (!this.coupon.end_date) {
+        Toast.fire({
+          type: 'warning',
+          title: '請填寫日期'
+        })
+        return
+      }
+
+      if (this.coupon.percent < 0 || this.coupon.product_reduce < 0) {
+        Toast.fire({
+          type: 'warning',
+          title: '請填寫大於 0 的數字'
         })
         return
       }

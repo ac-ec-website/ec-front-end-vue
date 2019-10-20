@@ -20,8 +20,9 @@ export default {
   },
   methods: {
     async handleAfterSubmit (formData) {
+      const vm = this
       try {
-        const vm = this
+        vm.isProcessing = true
         const { data, statusText } = await adminProductAPI.postProduct(formData)
 
         if (statusText !== 'OK' || data.status !== 'success') {
@@ -30,7 +31,7 @@ export default {
 
         vm.$router.push({ name: 'admin-products' })
       } catch (error) {
-        this.isProcessing = false
+        vm.isProcessing = false
         Toast.fire({
           type: 'error',
           title: '無法上架產品，請稍後再試'
