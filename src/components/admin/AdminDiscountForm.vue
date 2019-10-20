@@ -96,7 +96,8 @@
       />
     </div>
 
-    <div v-show="discount.type === 0" class="form-group">
+    <!-- 進行隱藏 -->
+    <div v-show="discount.type === 'hide'" class="form-group">
       <div class="form-check form-check-inline">
         <input
           class="form-check-input"
@@ -189,6 +190,7 @@ export default {
     handleChange (e) {
       const value = e.target.value
       if (value === '0') {
+        this.discount.shipping_free = 1
         this.discount.percent = 0
         this.discount.product_reduce = 0
       }
