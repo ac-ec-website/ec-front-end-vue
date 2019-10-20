@@ -9,7 +9,6 @@
         class="form-control"
         name="name"
         placeholder="Enter name"
-        required
       />
     </div>
 
@@ -209,13 +208,39 @@ export default {
       if (!this.coupon.name) {
         Toast.fire({
           type: 'warning',
-          title: '請填寫 coupon 名稱'
+          title: '請填寫優惠券名稱'
         })
         return
-      } else if (!this.coupon.coupon_code) {
+      }
+
+      if (!this.coupon.coupon_code) {
         Toast.fire({
           type: 'warning',
           title: '請填寫優惠碼'
+        })
+        return
+      }
+
+      if (this.coupon.limited_num < 0) {
+        Toast.fire({
+          type: 'warning',
+          title: '請填寫大於 0 的數量'
+        })
+        return
+      }
+
+      if (!this.coupon.end_date) {
+        Toast.fire({
+          type: 'warning',
+          title: '請填寫日期'
+        })
+        return
+      }
+
+      if (this.coupon.percent < 0 || this.coupon.product_reduce < 0) {
+        Toast.fire({
+          type: 'warning',
+          title: '請填寫大於 0 的數字'
         })
         return
       }

@@ -9,19 +9,12 @@
         class="form-control"
         name="name"
         placeholder="Enter name"
-        required
       />
     </div>
 
     <div class="form-group">
       <label for="categoryId">Category</label>
-      <select
-        id="categoryId"
-        v-model="product.categoryId"
-        class="form-control"
-        name="categoryId"
-        required
-      >
+      <select id="categoryId" v-model="product.categoryId" class="form-control" name="categoryId">
         <option value selected disabled>-- 請選擇 --</option>
         <option
           v-for="category in categories"
@@ -230,10 +223,28 @@ export default {
           title: '請填寫產品名稱'
         })
         return
-      } else if (!this.product.categoryId) {
+      }
+
+      if (!this.product.categoryId) {
         Toast.fire({
           type: 'warning',
-          title: ' 請選擇產品類別'
+          title: '請選擇產品類別'
+        })
+        return
+      }
+
+      if (this.product.cost_price < 0 || this.product.origin_price < 0 || this.product.sell_price < 0) {
+        Toast.fire({
+          type: 'warning',
+          title: '請填寫大於 0 的價格'
+        })
+        return
+      }
+
+      if (this.product.stock_quantity < 0) {
+        Toast.fire({
+          type: 'warning',
+          title: '請填寫大於 0 的庫存'
         })
         return
       }

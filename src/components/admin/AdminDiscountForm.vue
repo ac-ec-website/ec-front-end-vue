@@ -9,7 +9,6 @@
         class="form-control"
         name="name"
         placeholder="Enter name"
-        required
       />
     </div>
 
@@ -209,13 +208,31 @@ export default {
       if (!this.discount.name) {
         Toast.fire({
           type: 'warning',
-          title: '請填寫 discount 名稱'
+          title: '請填寫特價活動名稱'
         })
         return
-      } else if (!this.discount.target_price) {
+      }
+
+      if (this.discount.target_price < 0) {
         Toast.fire({
           type: 'warning',
-          title: '請填寫消費額度'
+          title: '請填寫大於 0 的消費額度'
+        })
+        return
+      }
+
+      if (!this.discount.start_date || !this.discount.end_date) {
+        Toast.fire({
+          type: 'warning',
+          title: '請填寫日期'
+        })
+        return
+      }
+
+      if (this.discount.percent < 0 || this.discount.product_reduce < 0) {
+        Toast.fire({
+          type: 'warning',
+          title: '請填寫大於 0 的數字'
         })
         return
       }
