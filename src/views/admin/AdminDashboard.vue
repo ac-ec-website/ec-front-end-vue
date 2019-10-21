@@ -257,7 +257,7 @@ export default {
                 name: item.name,
                 price: item.sell_price,
                 quantity: item.OrderItem.quantity,
-                stock: item.stock_quantity - item.OrderItem.quantity,
+                stock: item.stock_quantity,
                 profit: (item.sell_price - item.cost_price) / item.sell_price,
                 amount: item.sell_price * item.OrderItem.quantity
               }
@@ -265,7 +265,6 @@ export default {
             }
 
             vm.topSelling[item.id].quantity += item.OrderItem.quantity
-            vm.topSelling[item.id].stock -= item.OrderItem.quantity
             vm.topSelling[item.id].amount += item.sell_price * item.OrderItem.quantity
           })
         })
@@ -314,7 +313,7 @@ export default {
           const { data } = await adminDiscountAPI.getDiscount(key)
 
           vm.offerArray.push({
-            category: '特價優惠',
+            category: '特價活動',
             name: data.discount.name,
             type: data.discount.type,
             quantity: vm.offer['DiscountId'][key]
