@@ -25,7 +25,17 @@ export default {
   },
   data () {
     return {
-      product: {},
+      product: {
+        name: '',
+        description: '',
+        stock_quantity: 0,
+        cost_price: 0,
+        origin_price: 0,
+        sell_price: 0,
+        product_status: false,
+        image: '',
+        categoryId: ''
+      },
       isProcessing: false,
       editPage: true,
       isLoading: false
@@ -52,7 +62,10 @@ export default {
           throw new Error(statusText)
         }
 
-        vm.product = data.product
+        vm.product = {
+          ...data.product,
+          categoryId: data.product.CategoryId
+        }
         vm.isLoading = false
       } catch (error) {
         Toast.fire({
