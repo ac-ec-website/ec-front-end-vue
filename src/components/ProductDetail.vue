@@ -19,9 +19,14 @@
         <h5
           class="card-text text-truncate font-weight-bold text-success"
         >NT$ {{ product.sell_price }} 元</h5>
+
         <div class="addToCart text-right py-5">
           <form @submit.stop.prevent="handleAddToCart">
-            <div class="input-group">
+            <div v-if="product.stock_quantity === 0" class="input-group">
+              <button type="button" class="btn btn-secondary btn-block" disabled>商品已無庫存</button>
+            </div>
+
+            <div v-else class="input-group">
               <input
                 v-model="productQuantity"
                 type="number"
@@ -62,6 +67,7 @@ export default {
   },
   methods: {
     handleAddToCart () {
+      console.log('加入商品數量', this.productQuantity)
       this.$emit('clickAddToCart', this.product.id, parseInt(this.productQuantity))
     }
   }

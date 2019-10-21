@@ -65,18 +65,34 @@ export default {
     async handleAddToCart (productId, quantity) {
       try {
         const vm = this
+        const productQuantity = vm.product.stock_quantity
 
-        const response = await cartAPI.addToCart(productId, quantity)
-
-        if (response.statusText !== 'OK') {
-          throw new Error(response.statusText)
+        // 商品庫存 > 消費者需求
+        if (productQuantity < quantity) {
+          return Toast.fire({
+            type: 'warning',
+            title: `商品數量不足，目前剩餘 ${productQuantity} 個，請重新輸入！`
+          })
         }
 
-        Toast.fire({
-          type: 'success',
-          title: '商品成功加入購物車！'
-        })
+        const { data, statusText } = await cartAPI.addToCart(productId, quantity)
 
+        if (statusText !== 'OK') {
+          throw new Error(statusText)
+        }
+
+        if (data.product === undefined) {
+          vm.productSQIsEnough = false
+          Toast.fire({
+            type: 'warning',
+            title: '抱歉，商品已無額外庫存囉！'
+          })
+        } else {
+          Toast.fire({
+            type: 'success',
+            title: '商品成功加入購物車！'
+          })
+        }
         vm.fetchProduct(productId)
       } catch (error) {
         Toast.fire({

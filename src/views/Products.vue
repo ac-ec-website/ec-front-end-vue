@@ -122,17 +122,23 @@ export default {
       try {
         const vm = this
 
-        const response = await cartAPI.addToCart(productId, quantity)
+        const { data, statusText } = await cartAPI.addToCart(productId, quantity)
 
-        if (response.statusText !== 'OK') {
-          throw new Error(response.statusText)
+        if (statusText !== 'OK') {
+          throw new Error(statusText)
         }
 
-        Toast.fire({
-          type: 'success',
-          title: '商品成功加入購物車！'
-        })
-
+        if (data.product === undefined) {
+          Toast.fire({
+            type: 'warning',
+            title: '商品已無額外庫存囉！'
+          })
+        } else {
+          Toast.fire({
+            type: 'success',
+            title: '商品成功加入購物車！'
+          })
+        }
         vm.fetchProducts()
       } catch (error) {
         Toast.fire({
